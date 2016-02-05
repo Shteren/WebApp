@@ -1,0 +1,23 @@
+package webapp.constants;
+
+public interface QuestionAndAnswersConstants {
+	
+	public final String INSERT_QUESTION_STMT = "INSERT INTO TBL_QUESTION(submitiontime,contexttext,submmitedusername)"
+			+ " VALUES(?,?,?)";
+
+	public final String INSERT_ANSWER_STMT = "INSERT INTO TBL_ANSWER(submitiontime,contexttext,questionid,submmitedusername)"
+			+ " VALUES(?,?,?,?)";
+	
+	public final String INSERT_TOPIC_STMT = "INSERT INTO TBL_TOPIC(topicName) VALUES (?)";
+	
+	public final String SELECT_NEWLY_QUESTIONS_STMT = "SELECT * FROM TBL_QUESTION"
+			+ "WHERE QUESTIONID NOT IN (SELECT tbl_question.QUESTIONID"
+			+ "FROM tbl_question JOIN tbl_answer"
+			+ "on tbl_question.QUESTIONID = tbl_answer.QUESTIONID)"
+			+ "ORDER BY SUBMITIONTIME";
+	
+	
+	
+
+
+}
