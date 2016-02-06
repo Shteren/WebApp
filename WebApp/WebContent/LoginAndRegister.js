@@ -4,7 +4,8 @@
 
 angular.module('inTableApp',[])
 	.controller('inTableController',['$scope','$http', function($scope, $http) {
-			$scope.register = function(){
+			$scope.register = function()
+			{
 				//validate rules for username
 				if(null == $scope.RegistrationName )
 				{
@@ -30,20 +31,21 @@ angular.module('inTableApp',[])
 					headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 			     })
 		     .success(function (result) 
-		    	     {
-		    	         if (result == true) 
-		    	         {
-		    	             alert('user is valid');
-		    	         }
-		    	         else 
-		    	         {
-		    	             alert('unauthorised access!');
-		    	         }
-		    	     })
-		    	     .error(function (error) 
-		    	     {
-		    	             $scope.status = 'Unable to connect' + error.message;
-		    	     });  
+    	     {
+		    	 alert(result.Result);
+    	         if (result.Result == true) 
+    	         {
+    	             alert('Resistration was successful');
+    	         }
+    	         else 
+    	         {
+    	        	 alert('Resistration Failed');
+    	         }
+    	     })
+    	     .error(function (error) 
+    	     {
+    	             $scope.status = 'Unable to connect' + error.message;
+    	     });  
 		}
 			
 			

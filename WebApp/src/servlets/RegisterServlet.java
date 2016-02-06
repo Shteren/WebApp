@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -17,6 +18,7 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
 import webapp.constants.DBConstants;
 import webapp.constants.UserConstants;
+import com.google.gson.JsonObject;
 
 /**
  * Servlet implementation class RegisterServlet
@@ -38,15 +40,15 @@ public class RegisterServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//obtain CustomerDB data source from Tomcat's context
-		Context context;
-		System.out.print("a");
+		BasicDataSource ds = null;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
 		try {
-			System.out.print("b");
-			context = new InitialContext();
-			BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-			Connection conn = ds.getConnection(); // get connection
+			Context context = new InitialContext();
+			ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
+			conn = ds.getConnection(); // get connection
 			
-			PreparedStatement pstmt = conn.prepareStatement(UserConstants.INSERT_USER_STMT);
+			pstmt = conn.prepareStatement(UserConstants.INSERT_USER_STMT);
 			// get the parameters from incoming json
 			String Usename = request.getParameter("userName");
 			String Password = request.getParameter("password");
@@ -58,20 +60,45 @@ public class RegisterServlet extends HttpServlet {
 			pstmt.setString(3,Nickname);
 			pstmt.setString(4,Desc);
 			
+			//execute insert command
 			pstmt.executeUpdate();
-			System.out.print("c");
 			//commit update
-			conn.commit(); 
-			System.out.print("d");
+			conn.commit();
 			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.print("here");
-			e.printStackTrace();
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			System.out.print("there");
-			e.printStackTrace();
+			pstmt.close();
+			conn.close();
+			
+			//build Json Answer
+			JsonObject json = new JsonObject();
+			json.addProperty("Result", true);
+			String Answer = json.toString();
+			
+			PrintWriter writer = response.getWriter();
+        	writer.println(Answer);
+        	writer.close();
+			
+			
+		} catch (SQLException | NamingException e) {
+				try {
+					if(pstmt != null)
+						pstmt.close();
+					
+					if(conn != null)
+						conn.close();
+					
+					
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			//build Json Answer
+			JsonObject json = new JsonObject();
+			json.addProperty("Result", false);
+			String Answer = json.toString();
+			
+			PrintWriter writer = response.getWriter();
+        	writer.println(Answer);
+        	writer.close();
 		}
 	}
 
