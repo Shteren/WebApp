@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
@@ -68,6 +69,12 @@ public class RegisterServlet extends HttpServlet {
 			pstmt.close();
 			conn.close();
 			
+			////// Success ////// 
+			// Set session to be valid
+			HttpSession session = request.getSession();
+			session.setMaxInactiveInterval(3600); // seconds 
+			session.setAttribute("Username", Usename);
+						
 			//build Json Answer
 			JsonObject json = new JsonObject();
 			json.addProperty("Result", true);
@@ -91,6 +98,11 @@ public class RegisterServlet extends HttpServlet {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+			
+			// invalidate Session
+			HttpSession session = request.getSession();
+			session.setAttribute("Username", null);
+			session.invalidate();
 			//build Json Answer
 			JsonObject json = new JsonObject();
 			json.addProperty("Result", false);

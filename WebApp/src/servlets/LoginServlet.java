@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.smartcardio.ResponseAPDU;
 import javax.xml.ws.Response;
 
@@ -57,9 +58,10 @@ public class LoginServlet extends HttpServlet {
     		
     		pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_NAME_STMT);
     		//Statement stmt = conn.createStatement();
-    		pstmt.setString(1, request.getParameter("userName"));
+    		String Username = request.getParameter("userName");
+    		pstmt.setString(1, Username);
     		//String query = "SELECT * FROM tbl_user where username = '" + request.getParameter("userName") + "'";
-    		System.out.println(request.getParameter("userName"));
+    		System.out.println(Username);
     		
     		ResultSet rs = pstmt.executeQuery();
     		// 
@@ -80,10 +82,18 @@ public class LoginServlet extends HttpServlet {
 	    		if (userPassword.equals(request.getParameter("password"))) // compare the password
 	    		{
 	    			json.addProperty("Result", true);
+	    			// Set session to be valid
+	    			HttpSession session = request.getSession();
+	    			session.setMaxInactiveInterval(3600); // seconds 
+	    			session.setAttribute("Username", Username);
+	    			
 	    		}
 	    		else
 	    		{
 	    			json.addProperty("Result", false);
+	    			HttpSession session = request.getSession();
+	    			session.setAttribute("Username", null);
+	    			session.invalidate();
 	    		}
 	    		
 	    		Answer = json.toString();
@@ -106,14 +116,20 @@ public class LoginServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-		//build Json Answer
-		json = new JsonObject();
-		json.addProperty("Result", false);
-		Answer = json.toString();
-		
-		PrintWriter writer = response.getWriter();
-    	writer.println(Answer);
-    	writer.close();
+			
+			// invalidate Session
+			HttpSession session = request.getSession();
+			session.setAttribute("Username", null);
+			session.invalidate();
+			
+			//build Json Answer
+			json = new JsonObject();
+			json.addProperty("Result", false);
+			Answer = json.toString();
+			
+			PrintWriter writer = response.getWriter();
+	    	writer.println(Answer);
+	    	writer.close();
     	}
 		
 	}

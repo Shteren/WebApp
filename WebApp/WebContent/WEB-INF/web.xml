@@ -37,4 +37,14 @@
     <servlet-name>RegisterServlet</servlet-name>
     <url-pattern>/RegisterServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>GetSessionStatus</display-name>
+    <servlet-name>GetSessionStatus</servlet-name>
+    <servlet-class>servlets.GetSessionStatus</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetSessionStatus</servlet-name>
+    <url-pattern>/GetSessionStatus</url-pattern>
+  </servlet-mapping>
 </web-app>
