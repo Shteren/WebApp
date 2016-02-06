@@ -60,10 +60,10 @@ angular.module('inTableApp',[])
 			     })
 		     .success(function (result) 
     	     {
-		    	 alert(result.Result);
     	         if (result.Result == true) 
     	         {
-    	             alert('Resistration was successful');
+    	           //alert('Resistration was successful');
+    	        	window.location.assign("MainPage.html")
     	         }
     	         else 
     	         {
@@ -76,22 +76,28 @@ angular.module('inTableApp',[])
     	     });  
 		}
 			
-			
+		// login function handler	
 		$scope.login = function(){
 			$http({
-				  method: 'GET',
+				  method: 'POST',
 				  url: 'http://localhost:8080/WebApp/LoginServlet',
 					params: {
 						userName: $scope.name,
 						password: $scope.password,			
 					}
-			}).then(function successCallback(response) {
-			    // this callback will be called asynchronously
-			    // when the response is available
-			  }, function errorCallback(response) {
-			    // called asynchronously if an error occurs
-			    // or server returns response with an error status.
-			  });
+			}).success( function(response) {
+			
+	   	         if (response.Result == true) 
+	   	         {
+	   	           //alert('Resistration was successful');
+	   	        	window.location.assign("MainPage.html")
+	   	         }
+	   	         else 
+	   	         {
+	   	        	 alert('Login Failed');
+	   	         }
+				
+			 });
 		}
 		$scope.switchLoginRegister = function(){
 			$scope.LoginShowFlag = !$scope.LoginShowFlag;

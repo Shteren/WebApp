@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +20,8 @@ import javax.xml.ws.Response;
 
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
+import com.google.gson.JsonObject;
+
 import webapp.constants.DBConstants;
 import webapp.constants.UserConstants;
 
@@ -36,94 +39,83 @@ public class LoginServlet extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-		System.out.println("Here is get servlet");
-		try {
-        	//obtain CustomerDB data source from Tomcat's context
-    		Context context = new InitialContext();
-    		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-    		Connection conn = ds.getConnection();
-    		
-    		PreparedStatement pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_NAME_STMT);
-    		//Statement stmt = conn.createStatement();
-    		pstmt.setString(1, request.getParameter("userName"));
-    		//String query = "SELECT * FROM tbl_user where username = '" + request.getParameter("userName") + "'";
-    		System.out.println(request.getParameter("userName"));
-    		
-    		ResultSet rs = pstmt.executeQuery();
-    		if(!rs.next())
-    			response.sendError(500);
-    		
-    		String userPassword = rs.getString("password");
-    		if (userPassword.equals(request.getParameter("password"))){
-    				System.out.println("password is valid");
-    		}else{
-    			System.out.println("password is wrong");
-    		}
-			rs.close();
-			pstmt.close();
-    		conn.close();
-		}catch (SQLException | NamingException e) {
-    		getServletContext().log("Error while closing connection", e);
-    		response.sendError(500);//internal server error
-    	}
-
-	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-		System.out.println("Here is servlet");
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		JsonObject json = new JsonObject();
+		String Answer;
 		try {
         	//obtain CustomerDB data source from Tomcat's context
     		Context context = new InitialContext();
     		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-    		Connection conn = ds.getConnection();
+    		conn = ds.getConnection();
     		
-    		PreparedStatement stmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_NAME_STMT);
-    		PreparedStatement pstmt = conn.prepareStatement(UserConstants.INSERT_USER_STMT);
+    		pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_NAME_STMT);
     		//Statement stmt = conn.createStatement();
-    		String UserName = request.getParameter("userName");
-    		stmt.setString(1,UserName );
+    		pstmt.setString(1, request.getParameter("userName"));
+    		//String query = "SELECT * FROM tbl_user where username = '" + request.getParameter("userName") + "'";
     		System.out.println(request.getParameter("userName"));
     		
-    		ResultSet rs = stmt.executeQuery();
-    		//System.out.println(rs.getString(0));
-    		if(!rs.next())
-    		{	  		
-    			pstmt.setString(1,request.getParameter("userName"));
-    			pstmt.setString(2,request.getParameter("password"));
-    			pstmt.setString(3,request.getParameter("nickName"));
-    			pstmt.setString(4,request.getParameter("description"));			
+    		ResultSet rs = pstmt.executeQuery();
+    		// 
+    		if(!rs.next()) // Username doesn't exist
+			{
+    			//build Json Answer
+    			json.addProperty("Result", false);
+    			Answer = json.toString();
     			
-    			pstmt.executeUpdate();
+    			PrintWriter writer = response.getWriter();
+            	writer.println(Answer);
+            	writer.close();
+    			return;
+			}
+    		else
+    		{
+	    		String userPassword = rs.getString("password"); // get the password from Result set
+	    		if (userPassword.equals(request.getParameter("password"))) // compare the password
+	    		{
+	    			json.addProperty("Result", true);
+	    		}
+	    		else
+	    		{
+	    			json.addProperty("Result", false);
+	    		}
+	    		
+	    		Answer = json.toString();
     			
-    			//commit update
-    			conn.commit(); 			
-    			//close statements
-    			
-    			System.out.println("insert to table");
-    			
-    		}else{
-    			response.sendError(500);
-    		}  			
-    		//close connection
+    			PrintWriter writer = response.getWriter();
+            	writer.println(Answer);
+            	writer.close();
+    		}
 			rs.close();
-			stmt.close();
 			pstmt.close();
     		conn.close();
-		} catch (SQLException | NamingException e) {
-    		getServletContext().log("Error while closing connection", e);
-    		response.sendError(500);//internal server error
+		}catch (SQLException | NamingException e) {
+			try {
+				if(pstmt != null)
+					pstmt.close();
+				
+				if(conn != null)
+					conn.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		//build Json Answer
+		json = new JsonObject();
+		json.addProperty("Result", false);
+		Answer = json.toString();
+		
+		PrintWriter writer = response.getWriter();
+    	writer.println(Answer);
+    	writer.close();
     	}
+		
 	}
 
 }
