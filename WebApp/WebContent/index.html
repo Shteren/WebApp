@@ -8,31 +8,34 @@
 <link rel="stylesheet" href="css/bootstrap.css" >
 </head>
 <body>
-<div class="center"  data-ng-app="inTableApp" data-ng-controller="inTableController">
-	<div style="width:30%">
-		<form>
-			<div>
-			  <label>User Name:</label>
-			  <input class="form-control" placeholder="User Name" type="text" data-ng-model="RegistrationName" name="username" >
-		  	</div>
-		  	<div>
-		  		<label>Password:</label>
-		  		<input class="form-control" placeholder="Password" type="password" data-ng-model="RegistrationPassword" name="password">
-		  	</div>
-		  	<div>
-		  		<label>Nick Name:</label>
-		  		<input class="form-control" placeholder="Nick Name" type="text" data-ng-model="RegistrationNickname" name="nickname" >
-		  	</div>
-		  	<div>
-		  		<label>Description:</label>
-		  		<input class="form-control"  placeholder="Description" type="text" data-ng-model="RegistrationDescription" name="description" >  
-		  	</div>
-		  	<div>
-		  		<br><input class="btn btn-primary" data-ng-click="register()" value="Register">
-		  	</div> 
-		</form>
+<div  data-ng-app="inTableApp" data-ng-controller="inTableController">
+		<!-- Register Form -->
+		<div style="margin-left: 30%;width:30%" data-ng-show="!LoginShowFlag">
+			<form>
+				<div>
+				  <label>User Name:</label>
+				  <input class="form-control" placeholder="User Name" type="text" data-ng-model="RegistrationName" name="username" >
+			  	</div>
+			  	<div>
+			  		<label>Password:</label>
+			  		<input class="form-control" placeholder="Password" type="password" data-ng-model="RegistrationPassword" name="password">
+			  	</div>
+			  	<div>
+			  		<label>Nick Name:</label>
+			  		<input class="form-control" placeholder="Nick Name" type="text" data-ng-model="RegistrationNickname" name="nickname" >
+			  	</div>
+			  	<div>
+			  		<label>Description:</label>
+			  		<input class="form-control"  placeholder="Description" type="text" data-ng-model="RegistrationDescription" name="description" >  
+			  	</div>
+			  	<div>
+			  		<br><input class="btn btn-primary " style="width:50%" data-ng-click="register()" value="Register">
+			  		<label>Already registered?<a href="" data-ng-click = "switchLoginRegister()" >Login</a></label>
+			  	</div> 
+			</form>
 	</div>
-	<div style="width:30%">
+	<!-- LOGIN form -->
+	<div style="margin-left: 30%;width:30%" data-ng-show="LoginShowFlag">
 		<form>
 			<div>
 		  		<label>User Name: </label>
@@ -43,6 +46,7 @@
 			  <input class="form-control"  placeholder="password" type="password" ng-model="password" name="password" ><br> 
 			</div>
 			  <br><input class="btn btn-primary" type="submit" data-ng-click = "login()" value="Login">
+			  <label>Not Registered yet?<a href="" data-ng-click = "switchLoginRegister()" >Register</a></label>
 		</form>
 	</div>
 </div>

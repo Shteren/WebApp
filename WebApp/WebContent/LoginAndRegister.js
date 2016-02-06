@@ -4,6 +4,8 @@
 
 angular.module('inTableApp',[])
 	.controller('inTableController',['$scope','$http', function($scope, $http) {
+			$scope.LoginShowFlag = true;
+		
 			$scope.register = function()
 			{
 				//validate rules for username
@@ -15,6 +17,32 @@ angular.module('inTableApp',[])
 				if($scope.RegistrationName.length > 10 )
 				{
 					alert("Max characters in username is 10");
+					return;
+				}
+				if(null == $scope.RegistrationPassword )
+				{
+					alert("Please Fill the Password Field");
+					return;
+				}
+				if($scope.RegistrationPassword.length > 8 )
+				{
+					alert("Max characters in Password is 8");
+					return;
+				}
+				if(null == $scope.RegistrationNickname )
+				{
+					alert("Please Fill the Password Field");
+					return;
+				}
+				if($scope.RegistrationNickname.length > 20 )
+				{
+					alert("Max characters in Nickname is 20");
+					return;
+				}
+			
+				if($scope.RegistrationDescription.length > 50 )
+				{
+					alert("Description must be not longer then 50 characters");
 					return;
 				}
 				$http(
@@ -65,6 +93,8 @@ angular.module('inTableApp',[])
 			    // or server returns response with an error status.
 			  });
 		}
-
+		$scope.switchLoginRegister = function(){
+			$scope.LoginShowFlag = !$scope.LoginShowFlag;
+		}
 }]);
 
