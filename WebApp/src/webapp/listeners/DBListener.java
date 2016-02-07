@@ -62,7 +62,7 @@ public class DBListener implements ServletContextListener, ServletContextAttribu
     		
     		boolean created = false;
     		try{
-    			//create Customers table
+    			//create DB table
     			Statement stmt = conn.createStatement();
     			stmt.executeUpdate(DBConstants.CREATE_USERS_TABLE);
     			stmt.executeUpdate(DBConstants.CREATE_QUESTIONS_TABLE);
@@ -78,6 +78,7 @@ public class DBListener implements ServletContextListener, ServletContextAttribu
     		}catch (SQLException e){
     			//check if exception thrown since table was already created (so we created the database already 
     			//in the past
+    			System.out.println(e.toString());
     			created = tableAlreadyExists(e);
     			if (!created){
     				throw e;//re-throw the exception so it will be caught in the

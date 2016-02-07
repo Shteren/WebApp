@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src= "js/angular.min.js"></script>
-<script src=LoginAndRegister.js></script>
-<link rel="stylesheet" href="css/bootstrap.css" >
+<script src="js/LoginAndRegister.js"></script>
+<link rel="stylesheet" href="css/bootstrap.css">
 </head>
 <body>
 <div  data-ng-app="inTableApp" data-ng-controller="inTableController">
@@ -29,6 +29,10 @@
 				  	<div>
 				  		<label>Description:</label>
 				  		<input class="form-control"  placeholder="Description" type="text" data-ng-model="RegistrationDescription" name="description" >  
+				  	</div>
+				  	<div>
+				  		<label>PhotoURL:</label>
+				  		<input class="form-control"  placeholder="insert your Photo url" type="text" data-ng-model="RegistrationPhoto" name="Photo" >  
 				  	</div>
 				  	<div>
 				  		<br><input class="btn btn-primary " style="width:50%" data-ng-click="register()" value="Register">

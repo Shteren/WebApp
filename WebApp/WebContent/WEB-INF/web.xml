@@ -47,4 +47,14 @@
     <servlet-name>GetSessionStatus</servlet-name>
     <url-pattern>/GetSessionStatus</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Questions</display-name>
+    <servlet-name>Questions</servlet-name>
+    <servlet-class>servlets.Questions</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Questions</servlet-name>
+    <url-pattern>/Questions</url-pattern>
+  </servlet-mapping>
 </web-app>
