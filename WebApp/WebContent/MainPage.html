@@ -9,16 +9,16 @@
 </head>
 <body data-ng-app="inTableApp" data-ng-controller="mainPageController">
 	<div style="width: 50%">
-		<form>
-			<div>
+		<form role="form">
+			<div class="form-group">
 		  		<label>Insert your question here:</label>
 		  		<textarea class="form-control" placeholder="Whats bothering you?" type="text" data-ng-model="questionTxt" ></textarea> 		  																						 		
 		  	</div>	
-		  	<div>
+		  	<div class="form-group">
 		  		<label>Tag Tag's</label>
 		  		<input class="form-control" type="text" data-ng-model="topics">
 		  	</div>
-		  	<div>
+		  	<div class="form-group">
 		  		<br><input class="btn btn-primary " style="width:50%" data-ng-click="addQuestion()" value="Question">
 		  	</div>
 		</form>
