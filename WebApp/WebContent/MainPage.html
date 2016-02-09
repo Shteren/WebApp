@@ -26,5 +26,12 @@
 		  	</div>
 		</form>
 	</div>
+	<div>
+		<div data-ng-repeat="x in GetQuestionsResult">
+			<label data-ng-bind="x.Nickname">{{x.QuestionsText}} by {{x.Nickname}}</label>
+			<br>
+		</div>
+	
+	</div>
 </body>
 </html>

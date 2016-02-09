@@ -57,4 +57,14 @@
     <servlet-name>QuestionsServlet</servlet-name>
     <url-pattern>/QuestionsServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>GetQuestionsServlet</display-name>
+    <servlet-name>GetQuestionsServlet</servlet-name>
+    <servlet-class>servlets.GetQuestionsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetQuestionsServlet</servlet-name>
+    <url-pattern>/GetQuestionsServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

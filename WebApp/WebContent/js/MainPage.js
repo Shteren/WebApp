@@ -1,10 +1,26 @@
-/**
- * 
- */
-
-
 angular.module('inTableApp',[])
 	.controller('mainPageController',['$scope','$http', function($scope, $http) {
+		
+
+		$scope.GetQuestions = function()
+		{
+			$http({ method: 'POST',
+		        url: 'http://localhost:8080/WebApp/GetQuestionsServlet',
+				params: null,
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		     })
+		     .success(function(response) 
+		     {
+		        for( i =0 ; i < response.length ; i++)
+	        	{
+		        	$scope.GetQuestionsResult.push(response[i]);
+	        	}
+		     })
+		     .error(function (error) 
+		     {
+		             $scope.status = 'Unable to connect' + error.message;
+		     });  
+		}
 		
 		$scope.CheckSession = function()
 		{
@@ -60,9 +76,11 @@ angular.module('inTableApp',[])
 			
 		}
 		
-		//
+		// code start from here when page is loading
 		$scope.CheckSession();
 		
+		$scope.GetQuestionsResult =[];
+		$scope.GetQuestions();
 		
 		
 		
