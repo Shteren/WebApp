@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -40,6 +41,15 @@ public class QuestionsServlet extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
    
+    public void InsertTopics(Connection connection, String[] topiclist) throws SQLException{
+    	PreparedStatement pstmt = connection.prepareStatement(QuestionAndAnswersConstants.INSERT_TOPIC_STMT);
+    	for (String topic : topiclist) {
+    		pstmt.setString(1, topic);
+    		pstmt.executeUpdate();
+		}
+    	connection.commit();
+    	pstmt.close();
+    }
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -61,7 +71,8 @@ public class QuestionsServlet extends HttpServlet {
 			String contentTxt = request.getParameter("questionTxt");
 			String topics = request.getParameter("questionTopics");
 			String nickname = (String)session.getAttribute("Nickname");
-			
+			String[] topicsList = topics.split(",");
+			InsertTopics(conn, topicsList); 
 			// insert parameters into SQL Insert
 			pstmt.setString(1,submiition.toString());
 			pstmt.setString(2,contentTxt);
@@ -70,9 +81,33 @@ public class QuestionsServlet extends HttpServlet {
 			//execute insert command
 			pstmt.executeUpdate();
 			//commit update
+			
 			conn.commit();
 			
 			pstmt.close();
+			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_LAST_QUESTION_STMT);
+			
+			
+			
+			
+			
+			ResultSet rs = pstmt.executeQuery();
+    		// 
+    		if(!rs.next()) // Username doesn't exist
+			{
+    			System.out.println("here");
+			}
+    		else
+    		{
+    			System.out.println("else");
+    		}
+			
+			
+			
+			
+			
+			
+			
 			conn.close();
 			
 			////// Success //////
