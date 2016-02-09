@@ -81,6 +81,7 @@ angular.module('inTableApp',[])
 		     })
 		     .success(function (result) 
 		     {
+		    	 alert(result);
 		         if (result.Result == true) 
 		         {
 		           //alert('Resistration was successful');
@@ -129,7 +130,7 @@ angular.module('inTableApp',[])
 		};
 		
 		
-		//////// Entering here be default ////////////	
+		//////// Entering here be default-when page loading ////////////	
 		$scope.LoginShowFlag = true;
 		
 		$scope.CheckSession();

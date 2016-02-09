@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -51,6 +52,7 @@ public class DBListener implements ServletContextListener, ServletContextAttribu
      */
     public void contextInitialized(ServletContextEvent event)  { 
     	// TODO Auto-generated method stub
+    
     	ServletContext cntx = event.getServletContext();
     	
     	try{

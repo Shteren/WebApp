@@ -6,7 +6,30 @@
 angular.module('inTableApp',[])
 	.controller('mainPageController',['$scope','$http', function($scope, $http) {
 		
+		$scope.CheckSession = function()
+		{
+			$http({ method: 'POST',
+		        url: 'http://localhost:8080/WebApp/GetSessionStatus',
+				params: null,
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		     })
+		     .success(function (result) 
+		     {
+		         if (result.Result == false) 
+		         {
+		           //alert('Resistration was successful');
+		        	window.location.assign("index.html");
+		         }
+		        
+		     })
+		     .error(function (error) 
+		     {
+		             $scope.status = 'Unable to connect' + error.message;
+		     });  
+		}
+		
 		$scope.addQuestion=function(){
+			alert("here is addQuestion");
 		     if(null == $scope.questionTxt)
 				{
 					alert("Please fill in your question");
@@ -19,28 +42,29 @@ angular.module('inTableApp',[])
 				}
 		     
 			$http({ method: 'POST',
-		        url: 'http://localhost:8080/WebApp/Questions',
+		        url: 'http://localhost:8080/WebApp/QuestionsServlet',
 				params: {
 					questionTxt: $scope.questionTxt,
 					questionTopics: $scope.topics,
 				},
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		     })
-		     .success(function (result) 
+		     .success(function(result) 
 		     {
-		         if (result.Result == true) 
-		         {
-		           //alert('Resistration was successful');
-		        	window.location.assign("MainPage.html");
-		         }
-		        
+		        alert("Done");
 		     })
-
 		     .error(function (error) 
 		     {
 		             $scope.status = 'Unable to connect' + error.message;
-		     });  
+		     }); 
+			
 		}
+		
+		//
+		$scope.CheckSession();
+		
+		
+		
 		
 		
 	}]);

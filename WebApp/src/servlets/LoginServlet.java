@@ -79,6 +79,7 @@ public class LoginServlet extends HttpServlet {
     		else
     		{
 	    		String userPassword = rs.getString("password"); // get the password from Result set
+	    		String nickname = rs.getString("nickname");
 	    		if (userPassword.equals(request.getParameter("password"))) // compare the password
 	    		{
 	    			json.addProperty("Result", true);
@@ -86,13 +87,14 @@ public class LoginServlet extends HttpServlet {
 	    			HttpSession session = request.getSession();
 	    			session.setMaxInactiveInterval(3600); // seconds 
 	    			session.setAttribute("Username", Username);
-	    			
+	    			session.setAttribute("Nickname", nickname);
 	    		}
 	    		else
 	    		{
 	    			json.addProperty("Result", false);
 	    			HttpSession session = request.getSession();
 	    			session.setAttribute("Username", null);
+	    			session.setAttribute("Nickname", null);
 	    			session.invalidate();
 	    		}
 	    		

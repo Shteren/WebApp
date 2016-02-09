@@ -17,7 +17,7 @@ public interface DBConstants {
 	public final String CREATE_QUESTIONS_TABLE = "CREATE TABLE tbl_question (questionId INT GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
 			+ "submitionTime TIMESTAMP NOT NULL,"
 			+ "contextText varchar(300) NOT NULL,"
-			+"numberOfVotes INT ,"
+			+ "numberOfVotes INT,"
 			+ "submmitedUsername varchar(20) REFERENCES tbl_user(nickname))";
 	public final String CREATE_ANSWERS_TABLE = "CREATE TABLE tbl_answer (answerId INT GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY,"
 			+ "submitionTime TIMESTAMP NOT NULL,"

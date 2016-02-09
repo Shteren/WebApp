@@ -49,12 +49,12 @@
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>Questions</display-name>
-    <servlet-name>Questions</servlet-name>
-    <servlet-class>servlets.Questions</servlet-class>
+    <display-name>QuestionsServlet</display-name>
+    <servlet-name>QuestionsServlet</servlet-name>
+    <servlet-class>servlets.QuestionsServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>Questions</servlet-name>
-    <url-pattern>/Questions</url-pattern>
+    <servlet-name>QuestionsServlet</servlet-name>
+    <url-pattern>/QuestionsServlet</url-pattern>
   </servlet-mapping>
 </web-app>

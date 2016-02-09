@@ -12,7 +12,7 @@
 		<form role="form">
 			<div class="form-group">
 		  		<label>Insert your question here:</label>
-		  		<textarea class="form-control" placeholder="Whats bothering you?" type="text" data-ng-model="questionTxt" ></textarea> 		  																						 		
+		  		<textarea class="form-control" placeholder="Whats bothering you?" data-ng-model="questionTxt" ></textarea> 		  																						 		
 		  	</div>	
 		  	<div class="form-group">
 		  		<label>Tag Tag's</label>
@@ -20,6 +20,9 @@
 		  	</div>
 		  	<div class="form-group">
 		  		<br><input class="btn btn-primary " style="width:50%" data-ng-click="addQuestion()" value="Question">
+		  	</div>
+		  	<div class="form-group">
+		  		<br><input class="btn btn-primary " style="width:50%" data-ng-click="logOut()" value="log out">
 		  	</div>
 		</form>
 	</div>

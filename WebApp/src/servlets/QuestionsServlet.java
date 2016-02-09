@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -19,6 +20,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.apache.tomcat.jni.Time;
 
+import com.google.gson.JsonObject;
+
 import webapp.constants.DBConstants;
 import webapp.constants.QuestionAndAnswersConstants;
 import webapp.constants.UserConstants;
@@ -26,21 +29,23 @@ import webapp.constants.UserConstants;
 /**
  * Servlet implementation class Questions
  */
-public class Questions extends HttpServlet {
+public class QuestionsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Questions() {
+    public QuestionsServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
-
+   
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		
 		BasicDataSource ds = null;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -55,12 +60,31 @@ public class Questions extends HttpServlet {
 			Timestamp submiition =  new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
 			String contentTxt = request.getParameter("questionTxt");
 			String topics = request.getParameter("questionTopics");
-			String username = session.getAttribute("Username").toString();
+			String nickname = (String)session.getAttribute("Nickname");
 			
 			// insert parameters into SQL Insert
 			pstmt.setString(1,submiition.toString());
 			pstmt.setString(2,contentTxt);
-			pstmt.setString(3,username);
+			pstmt.setString(3,nickname);
+			
+			//execute insert command
+			pstmt.executeUpdate();
+			//commit update
+			conn.commit();
+			
+			pstmt.close();
+			conn.close();
+			
+			////// Success //////
+			
+			//build Json Answer
+			JsonObject json = new JsonObject();
+			json.addProperty("Result", true);
+			String Answer = json.toString();
+			
+			PrintWriter writer = response.getWriter();
+        	writer.println(Answer);
+        	writer.close();
 			
 		} catch (SQLException | NamingException e) {
 			try {
@@ -74,10 +98,19 @@ public class Questions extends HttpServlet {
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}	
+			}
+			
+			//build Json Answer
+			JsonObject json = new JsonObject();
+			json.addProperty("Result", false);
+			String Answer = json.toString();
+			
+			PrintWriter writer = response.getWriter();
+        	writer.println(Answer);
+        	writer.close();
 		}
 		
-			
+		
 			
 	}
 }

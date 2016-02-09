@@ -74,7 +74,7 @@ public class RegisterServlet extends HttpServlet {
 			HttpSession session = request.getSession();
 			session.setMaxInactiveInterval(3600); // seconds 
 			session.setAttribute("Username", Usename);
-						
+			session.setAttribute("Nickname", Nickname);		
 			//build Json Answer
 			JsonObject json = new JsonObject();
 			json.addProperty("Result", true);
@@ -102,6 +102,7 @@ public class RegisterServlet extends HttpServlet {
 			// invalidate Session
 			HttpSession session = request.getSession();
 			session.setAttribute("Username", null);
+			session.setAttribute("Nickname", null);
 			session.invalidate();
 			//build Json Answer
 			JsonObject json = new JsonObject();
