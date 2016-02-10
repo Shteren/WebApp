@@ -37,6 +37,10 @@ angular.module('inTableApp',[])
 		           //alert('Resistration was successful');
 		        	window.location.assign("index.html");
 		         }
+		         else
+	        	 {
+		        	 $scope.NickName = result.Nickname;
+	        	 }
 		        
 		     })
 		     .error(function (error) 
@@ -74,7 +78,6 @@ angular.module('inTableApp',[])
 		     {
 		             $scope.status = 'Unable to connect' + error.message;
 		     }); 
-			
 		}
 		
 		$scope.logOut=function(){
@@ -96,9 +99,27 @@ angular.module('inTableApp',[])
 			
 		}
 		
+		$scope.myFunc = function() 
+		{
+			if( ($scope.topics.length) > 50)
+			{
+				$scope.HideShowTagCharacterError = true;
+				//$scope.topics = $scope.topics.substring(0, 50 );
+				return;
+			
+			}
+			$scope.HideShowTagCharacterError = false;
+	        if ($scope.topics[ $scope.topics.length -1 ] == ",")
+	        {
+	        	$scope.tag.push( $scope.topics.substring(0, $scope.topics.length-1 ) );
+	        	$scope.topics = "";
+	        }
+	    };
 		
 		
 		// code start from here when page is loading
+	    $scope.HideShowTagCharacterError = false;
+	    $scope.tag = [];
 		$scope.CheckSession();
 		
 		$scope.GetQuestionsResult =[];

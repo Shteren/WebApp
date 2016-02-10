@@ -34,6 +34,7 @@ public class GetSessionStatus extends HttpServlet {
 		//get the session
 		HttpSession session = request.getSession();
 		String SessionUsername = (String) session.getAttribute("Username");
+		String SessionNickname = (String) session.getAttribute("Nickname");
 		JsonObject json = new JsonObject();
 		String Answer;
 		if (SessionUsername == null){
@@ -43,6 +44,7 @@ public class GetSessionStatus extends HttpServlet {
 			json.addProperty("Result", true);
 		}
 		json.addProperty("Username", SessionUsername);
+		json.addProperty("Nickname", SessionNickname);
 		//build Json Answer
 	
 		Answer = json.toString();
