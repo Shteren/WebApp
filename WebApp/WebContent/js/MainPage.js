@@ -61,12 +61,13 @@ angular.module('inTableApp',[])
 					alert("Your question is too long");
 					return;
 				}
-		     
+		    $scope.topicList = $scope.tag.toString();
+		    alert($scope.topicList);
 			$http({ method: 'POST',
 		        url: 'http://localhost:8080/WebApp/QuestionsServlet',
 				params: {
 					questionTxt: $scope.questionTxt,
-					questionTopics: $scope.topics,
+					questionTopics: $scope.topicList,
 				},
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		     })
@@ -111,7 +112,9 @@ angular.module('inTableApp',[])
 			$scope.HideShowTagCharacterError = false;
 	        if ($scope.topics[ $scope.topics.length -1 ] == ",")
 	        {
+	        	
 	        	$scope.tag.push( $scope.topics.substring(0, $scope.topics.length-1 ) );
+	        	//$scope.topicList= $scope.topicList.concat($scope.topics);
 	        	$scope.topics = "";
 	        }
 	    };
@@ -120,6 +123,7 @@ angular.module('inTableApp',[])
 		// code start from here when page is loading
 	    $scope.HideShowTagCharacterError = false;
 	    $scope.tag = [];
+	    $scope.topicList;
 		$scope.CheckSession();
 		
 		$scope.GetQuestionsResult =[];
