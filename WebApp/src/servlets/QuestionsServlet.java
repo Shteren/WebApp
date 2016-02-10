@@ -41,14 +41,24 @@ public class QuestionsServlet extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
    
-    public void InsertTopics(Connection connection, String[] topiclist) throws SQLException{
-    	PreparedStatement pstmt = connection.prepareStatement(QuestionAndAnswersConstants.INSERT_TOPIC_STMT);
-    	if (topiclist.length==0){
+    public void InsertTopics(Connection connection, String[] topiclist) throws SQLException{//Try catch and no throw so we can deal with each topic individually and not with the man catch 
+    	PreparedStatement pstmt;
+		pstmt = connection.prepareStatement(QuestionAndAnswersConstants.INSERT_TOPIC_STMT);
+	
+    	if (topiclist==null){
     	
     	}else{
 	    	for (String topic : topiclist) {
-	    		pstmt.setString(1, topic);
-	    		pstmt.executeUpdate();
+	    		try {
+					pstmt.setString(1, topic);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+	    		try {
+					pstmt.executeUpdate();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
     	}
     	connection.commit();
@@ -75,7 +85,10 @@ public class QuestionsServlet extends HttpServlet {
 			String contentTxt = request.getParameter("questionTxt");
 			String topics = request.getParameter("questionTopics");
 			String nickname = (String)session.getAttribute("Nickname");
-			String[] topicsList = topics.split(",");
+			String[] topicsList = null;
+			if(topics != null && !topics.isEmpty()){
+				topicsList = topics.split(",");
+			}
 			InsertTopics(conn, topicsList); 
 			// insert parameters into SQL Insert
 			pstmt.setString(1,submiition.toString());
