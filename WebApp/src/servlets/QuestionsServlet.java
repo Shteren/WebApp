@@ -64,6 +64,39 @@ public class QuestionsServlet extends HttpServlet {
     	connection.commit();
     	pstmt.close();
     }
+    public void InsertTopicsQusrtionRel(Connection connection, String[] topiclist, String id) throws SQLException {
+    	PreparedStatement pstmt;
+    	pstmt = connection.prepareStatement(QuestionAndAnswersConstants.INSERT_QUESTION_TOPIC_REL_STMT);
+    	if (topiclist!=null){
+	    	for (String topic : topiclist) 
+	    	{
+	    		try {
+					pstmt.setInt(1, Integer.parseInt(id));
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    		try {
+					pstmt.setString(2, topic );
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    		try {
+					pstmt.executeUpdate();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    	}
+    	}
+    	connection.commit();
+    	pstmt.close();
+    
+    }
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -118,10 +151,10 @@ public class QuestionsServlet extends HttpServlet {
     		{
     			id = rs.getString(1);
     		}
+    		
 			
 			
-			
-			
+    		InsertTopicsQusrtionRel(conn, topicsList, id);
 			
 			conn.commit();
 			pstmt.close();

@@ -30,7 +30,7 @@ public interface QuestionAndAnswersConstants {
 			//+ " LIMIT 1";
 	public final String SELECT_LAST_QUESTION_STMT ="SELECT QUESTIONID FROM TBL_QUESTION ORDER BY submitiontime DESC ";
 	
-	
+	public final String INSERT_QUESTION_TOPIC_REL_STMT= "INSERT INTO tbl_rel_question_topic (questionId,topicName) VALUES(?,?)";
 
 
 }
