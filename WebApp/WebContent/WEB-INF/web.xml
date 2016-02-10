@@ -67,4 +67,14 @@
     <servlet-name>GetQuestionsServlet</servlet-name>
     <url-pattern>/GetQuestionsServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>logOutServlet</display-name>
+    <servlet-name>logOutServlet</servlet-name>
+    <servlet-class>servlets.logOutServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>logOutServlet</servlet-name>
+    <url-pattern>/logOutServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

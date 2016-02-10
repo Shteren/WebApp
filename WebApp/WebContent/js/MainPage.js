@@ -77,6 +77,27 @@ angular.module('inTableApp',[])
 			
 		}
 		
+		$scope.logOut=function(){
+			
+		     
+			$http({ method: 'POST',
+		        url: 'http://localhost:8080/WebApp/logOutServlet',
+				params:null,
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		     })
+		     .success(function(result) 
+		     {
+		    	 window.location.assign("index.html");
+		     })
+		     .error(function (error) 
+		     {
+		             $scope.status = 'Unable to connect' + error.message;
+		     }); 
+			
+		}
+		
+		
+		
 		// code start from here when page is loading
 		$scope.CheckSession();
 		
