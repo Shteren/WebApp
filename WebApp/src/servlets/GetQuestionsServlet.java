@@ -58,10 +58,16 @@ public class GetQuestionsServlet extends HttpServlet {
     		conn = ds.getConnection();
     		
     		Collection<Question> QuestionResults = new ArrayList<Question>(); 
+    		// get number of questions
+    		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_NEWLY_QUESTIONS_STMT);
+    		
+    		ResultSet rs = pstmt.executeQuery();
+    		rs.next();
+    		int numofquestions = rs.getInt(1);
     		
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_NEWLY_QUESTIONS_STMT);
     		
-    		ResultSet rs = pstmt.executeQuery();
+    		rs = pstmt.executeQuery();
     		while( rs.next() )
     		{
     			//int rate = Integer.parseInt(rs.getString(4));
