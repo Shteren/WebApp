@@ -14,6 +14,7 @@ angular.module('inTableApp',[])
 		        for( i =0 ; i < response.length ; i++)
 	        	{
 		        	$scope.GetQuestionsResult.push(response[i]);
+		        	//alert(response[i]);
 	        	}
 		     })
 		     .error(function (error) 
@@ -45,7 +46,7 @@ angular.module('inTableApp',[])
 		}
 		
 		$scope.addQuestion=function(){
-			alert("here is addQuestion");
+			
 		     if(null == $scope.questionTxt)
 				{
 					alert("Please fill in your question");

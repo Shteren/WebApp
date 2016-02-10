@@ -43,10 +43,14 @@ public class QuestionsServlet extends HttpServlet {
    
     public void InsertTopics(Connection connection, String[] topiclist) throws SQLException{
     	PreparedStatement pstmt = connection.prepareStatement(QuestionAndAnswersConstants.INSERT_TOPIC_STMT);
-    	for (String topic : topiclist) {
-    		pstmt.setString(1, topic);
-    		pstmt.executeUpdate();
-		}
+    	if (topiclist.length==0){
+    	
+    	}else{
+	    	for (String topic : topiclist) {
+	    		pstmt.setString(1, topic);
+	    		pstmt.executeUpdate();
+			}
+    	}
     	connection.commit();
     	pstmt.close();
     }
@@ -82,9 +86,8 @@ public class QuestionsServlet extends HttpServlet {
 			pstmt.executeUpdate();
 			//commit update
 			
-			conn.commit();
+			//conn.commit();
 			
-			pstmt.close();
 			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_LAST_QUESTION_STMT);
 			
 			
@@ -92,6 +95,7 @@ public class QuestionsServlet extends HttpServlet {
 			
 			
 			ResultSet rs = pstmt.executeQuery();
+			String id ="";
     		// 
     		if(!rs.next()) // Username doesn't exist
 			{
@@ -99,14 +103,15 @@ public class QuestionsServlet extends HttpServlet {
 			}
     		else
     		{
-    			System.out.println("else");
+    			id = rs.getString(1);
     		}
 			
 			
 			
 			
 			
-			
+			conn.commit();
+			pstmt.close();
 			
 			conn.close();
 			

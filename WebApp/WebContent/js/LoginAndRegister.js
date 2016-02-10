@@ -89,7 +89,7 @@ angular.module('inTableApp',[])
 		         }
 		         else 
 		         {
-		        	 alert('Resistration Failed');
+		        	 alert('Registration Failed');
 		         }
 		     })
 		     .error(function (error) 

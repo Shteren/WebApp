@@ -25,10 +25,10 @@ public interface QuestionAndAnswersConstants {
 			+ " on tbl_question.QUESTIONID = tbl_answer.QUESTIONID)"
 			+ " ORDER BY SUBMITIONTIME";
 	
-	public final String SELECT_LAST_QUESTION_STMT = "SELECT * FROM TBL_QUESTION" 
-			+ " ORDER BY SUBMITIONTIME DESC"  
-			+ "FETCH FIRST 1 ROWS ONLY";
-	
+	//public final String SELECT_LAST_QUESTION_STMT = "SELECT * FROM TBL_QUESTION" 
+		//	+ " ORDER BY SUBMITIONTIME DESC"  
+			//+ " LIMIT 1";
+	public final String SELECT_LAST_QUESTION_STMT ="SELECT QUESTIONID FROM TBL_QUESTION ORDER BY submitiontime DESC ";
 	
 	
 
