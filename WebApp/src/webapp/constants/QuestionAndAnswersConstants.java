@@ -23,17 +23,17 @@ public interface QuestionAndAnswersConstants {
 			+ " WHERE QUESTIONID NOT IN (SELECT tbl_question.QUESTIONID"
 			+ " FROM tbl_question JOIN tbl_answer"
 			+ " on tbl_question.QUESTIONID = tbl_answer.QUESTIONID)"
-			+ " ORDER BY SUBMITIONTIME ";
+			+ " ORDER BY SUBMITIONTIME DESC FETCH FIRST 20 ROWS ONLY";
 	
-	public final String COUNT_NEWLY_QUESTIONS_STMT = "SELECT COUNT (QUESTIONID) FROM TBL_QUESTION"
+	public final String COUNT_NEWLY_QUESTIONS_STMT = "SELECT COUNT (*) FROM TBL_QUESTION"
 			+ " WHERE QUESTIONID NOT IN (SELECT tbl_question.QUESTIONID"
 			+ " FROM tbl_question JOIN tbl_answer"
-			+ " on tbl_question.QUESTIONID = tbl_answer.QUESTIONID)"
-			+ " ORDER BY SUBMITIONTIME ";
+			+ " on tbl_question.QUESTIONID = tbl_answer.QUESTIONID)";
 	//public final String SELECT_LAST_QUESTION_STMT = "SELECT * FROM TBL_QUESTION" 
 		//	+ " ORDER BY SUBMITIONTIME DESC"  
 			//+ " LIMIT 1";
-	public final String SELECT_LAST_QUESTION_STMT ="SELECT QUESTIONID FROM TBL_QUESTION ORDER BY submitiontime DESC ";
+	public final String SELECT_LAST_QUESTION_STMT ="SELECT QUESTIONID FROM TBL_QUESTION ORDER BY submitiontime DESC FETCH FIRST 1 ROWS ONLY";
+	//public final String SELECT_LAST_QUESTION_STMT ="SELECT QUESTIONID FROM TBL_QUESTION ORDER BY submitiontime DESC ";
 	
 	public final String INSERT_QUESTION_TOPIC_REL_STMT= "INSERT INTO tbl_rel_question_topic (questionId,topicName) VALUES(?,?)";
 

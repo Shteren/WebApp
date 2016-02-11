@@ -85,6 +85,7 @@ public class GetQuestionsServlet extends HttpServlet {
 			pstmt.close();
     		conn.close();
 		}catch (SQLException | NamingException e) {
+			System.out.println(e.toString());
 			try {
 				if(pstmt != null)
 					pstmt.close();

@@ -136,20 +136,15 @@ public class QuestionsServlet extends HttpServlet {
 			
 			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_LAST_QUESTION_STMT);
 			
-			
-			
-			
-			
 			ResultSet rs = pstmt.executeQuery();
-			String id ="";
-    		// 
-    		if(!rs.next()) // Username doesn't exist
+			String id = "";
+    		if(!rs.next()) // Question doesn't exist
 			{
     			System.out.println("here");
 			}
     		else
     		{
-    			id = rs.getString(1);
+    			 id = rs.getString(1);
     		}
     		
 			
