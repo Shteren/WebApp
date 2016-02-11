@@ -50,6 +50,7 @@ public class GetQuestionsServlet extends HttpServlet {
 		PreparedStatement pstmt = null;
 		JsonObject json = new JsonObject();
 		String Answer;
+		//dfgjjfg
 		//this is just for try
 		try 
 		{
