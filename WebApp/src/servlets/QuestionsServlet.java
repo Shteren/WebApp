@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.UUID;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
