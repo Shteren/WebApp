@@ -50,7 +50,6 @@ angular.module('inTableApp',[])
 		}
 		
 		$scope.addQuestion=function(){
-			
 		     if(null == $scope.questionTxt)
 				{
 					alert("Please fill in your question");
@@ -62,6 +61,7 @@ angular.module('inTableApp',[])
 					return;
 				}
 		    $scope.topicList = $scope.tag.toString();
+		    alert("insert topicss questions");
 		    alert($scope.topicList);
 			$http({ method: 'POST',
 		        url: 'http://localhost:8080/WebApp/QuestionsServlet',
@@ -81,9 +81,37 @@ angular.module('inTableApp',[])
 		     }); 
 		}
 		
+		
+		$scope.nextClick=function(){
+			$scope.prevOrNextPageNumCounter ++;
+			alert($scope.prevOrNextPageNumCounter);
+			$http({ method: 'POST',
+		        url: 'http://localhost:8080/WebApp/GetPreviouesOrNextQuestions',
+				params:{
+					//prevOrNext: "prev",
+					currentPage: $scope.prevOrNextPageNumCounter
+					
+				},
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		     })
+		     .success(function(response) 
+		     {
+		    	 $scope.GetQuestionsResult = angular.copy(response);
+		    	 
+			        /*for( i =0 ; i < response.length ; i++)
+		        	{
+			        	$scope.GetQuestionsResult.push(response[i]);
+			        	//alert(response[i]);
+		        	}*/
+		     })
+		     .error(function (error) 
+		     {
+		             $scope.status = 'Unable to connect' + error.message;
+		     });
+		}
+		
 		$scope.logOut=function(){
-			
-		     
+				     
 			$http({ method: 'POST',
 		        url: 'http://localhost:8080/WebApp/logOutServlet',
 				params:null,
@@ -119,13 +147,14 @@ angular.module('inTableApp',[])
 	        }
 	    };
 		
+
 		
 		// code start from here when page is loading
 	    $scope.HideShowTagCharacterError = false;
 	    $scope.tag = [];
+	    $scope.prevOrNextPageNumCounter = 0;
 	    $scope.topicList;
-		$scope.CheckSession();
-		
+		$scope.CheckSession();		
 		$scope.GetQuestionsResult =[];
 		$scope.GetQuestions();
 		

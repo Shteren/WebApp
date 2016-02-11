@@ -23,7 +23,8 @@ public interface QuestionAndAnswersConstants {
 			+ " WHERE QUESTIONID NOT IN (SELECT tbl_question.QUESTIONID"
 			+ " FROM tbl_question JOIN tbl_answer"
 			+ " on tbl_question.QUESTIONID = tbl_answer.QUESTIONID)"
-			+ " ORDER BY SUBMITIONTIME DESC FETCH FIRST 20 ROWS ONLY";
+			+ " ORDER BY SUBMITIONTIME DESC"
+			+ " OFFSET ? ROWS FETCH NEXT 20 ROWS ONLY";
 	
 	public final String COUNT_NEWLY_QUESTIONS_STMT = "SELECT COUNT (*) FROM TBL_QUESTION"
 			+ " WHERE QUESTIONID NOT IN (SELECT tbl_question.QUESTIONID"

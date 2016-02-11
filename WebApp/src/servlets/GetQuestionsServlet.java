@@ -64,7 +64,17 @@ public class GetQuestionsServlet extends HttpServlet {
     		rs.next();
     		int numofquestions = rs.getInt(1);
     		
+    		String currentPage = request.getParameter("currentPage");
+    		int intCurrentPage;
+    		if (null == currentPage)
+    			intCurrentPage = 0;
+    		else
+    		{
+    			intCurrentPage = Integer.parseInt(request.getParameter("currentPage"));
+    		}
+    		int fromQuestion = intCurrentPage * 20;
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_NEWLY_QUESTIONS_STMT);
+    		pstmt.setInt(1, fromQuestion);
     		
     		rs = pstmt.executeQuery();
     		while( rs.next() )
@@ -73,11 +83,16 @@ public class GetQuestionsServlet extends HttpServlet {
     			QuestionResults.add(new Question(rs.getString(2) ,rs.getString(3) , null,0, rs.getString(5) ));
     		}
     		Gson gson = new Gson();
+    		//JsonObject numberOfQuestion= new JsonObject();
+    		//numberOfQuestion.addProperty("numOfQuestions", numofquestions);
         	//convert from customers collection to json
         	String QuestionsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
         	
+        	//String QuestionResultAndTheNumberOfThem =  "["+QuestionsJsonResult+","+numberOfQuestion+"]";
+        	
 			PrintWriter writer = response.getWriter();
 	    	writer.println(QuestionsJsonResult);
+	    	//writer.println(QuestionResultAndTheNumberOfThem);
 	    	writer.close();
     		
 			rs.close();
@@ -94,8 +109,7 @@ public class GetQuestionsServlet extends HttpServlet {
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}
-			
+			}			
     	}
 	}
 

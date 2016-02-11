@@ -77,4 +77,14 @@
     <servlet-name>logOutServlet</servlet-name>
     <url-pattern>/logOutServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>GetPreviouesOrNextQuestions</display-name>
+    <servlet-name>GetPreviouesOrNextQuestions</servlet-name>
+    <servlet-class>servlets.GetPreviouesOrNextQuestions</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetPreviouesOrNextQuestions</servlet-name>
+    <url-pattern>/GetPreviouesOrNextQuestions</url-pattern>
+  </servlet-mapping>
 </web-app>

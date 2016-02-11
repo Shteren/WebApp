@@ -170,6 +170,7 @@ public class QuestionsServlet extends HttpServlet {
         	writer.close();
 			
 		} catch (SQLException | NamingException e) {
+			System.out.println(e.toString());
 			try {
 				if(pstmt != null)
 					pstmt.close();

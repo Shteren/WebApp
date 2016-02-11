@@ -50,17 +50,24 @@
 			  	</div>
 			</form>
 		</div>
-		<!--<div class = "col-sm-6 col-md-3">
-      		<a href = "#" class = "thumbnail">
-         	<img src = "https://upload.wikimedia.org/wikipedia/commons/a/a0/Heart_anterior_exterior_view.jpg" alt = "Generic placeholder thumbnail">
-      		</a>
-   		</div>   -->
+
 		<div>
 			<div data-ng-repeat="x in GetQuestionsResult" class="panel panel-default">
 				<label >{{x.QuestionsText}} by {{x.Nickname}}</label>
 				<br>
 			</div>
 		
+		</div>
+		<div>
+			<nav>
+	  			<ul class="pager">
+	   			 <li><a href="#" data-ng-click="previousClick()">Previous </a></li>
+	   			 <li><a href="#" data-ng-click="nextClick()">Next</a></li>
+
+					
+	  			</ul>
+	  				
+			</nav>
 		</div>
 	</div>
 </body>
