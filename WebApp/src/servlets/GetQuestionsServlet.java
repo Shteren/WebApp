@@ -1,6 +1,4 @@
 package servlets;
-/** Question servlet **/
-/** tryyyyyyyy */
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -51,9 +49,6 @@ public class GetQuestionsServlet extends HttpServlet {
 		PreparedStatement pstmt = null;
 		JsonObject json = new JsonObject();
 		String Answer;
-		//dfgjjfg
-		//this is just for try
-		//miriiii
 		try 
 		{
         	//obtain CustomerDB data source from Tomcat's context
