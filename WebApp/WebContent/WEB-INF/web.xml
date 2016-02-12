@@ -19,6 +19,7 @@
     <servlet-name>LoginServlet</servlet-name>
     <url-pattern>/login</url-pattern>
     <url-pattern>/session</url-pattern>
+    <url-pattern>/logout</url-pattern>
   </servlet-mapping>
   <listener>
     <listener-class>webapp.listeners.DBListener</listener-class>
@@ -38,16 +39,6 @@
     <servlet-name>RegisterServlet</servlet-name>
     <url-pattern>/RegisterServlet</url-pattern>
   </servlet-mapping>
-  <!-- servlet>
-    <description></description>
-    <display-name>GetSessionStatus</display-name>
-    <servlet-name>GetSessionStatus</servlet-name>
-    <servlet-class>servlets.GetSessionStatus</servlet-class>
-  </servlet>>
-  <servlet-mapping>
-    <servlet-name>GetSessionStatus</servlet-name>
-    <url-pattern>/GetSessionStatus</url-pattern>
-  </servlet-mapping-->
   <servlet>
     <description></description>
     <display-name>QuestionsServlet</display-name>
@@ -80,12 +71,12 @@
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>GetPreviouesOrNextQuestions</display-name>
-    <servlet-name>GetPreviouesOrNextQuestions</servlet-name>
-    <servlet-class>servlets.GetPreviouesOrNextQuestions</servlet-class>
+    <display-name>AnswersServlet</display-name>
+    <servlet-name>AnswersServlet</servlet-name>
+    <servlet-class>servlets.AnswersServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>GetPreviouesOrNextQuestions</servlet-name>
-    <url-pattern>/GetPreviouesOrNextQuestions</url-pattern>
+    <servlet-name>AnswersServlet</servlet-name>
+    <url-pattern>/AnswersServlet</url-pattern>
   </servlet-mapping>
 </web-app>

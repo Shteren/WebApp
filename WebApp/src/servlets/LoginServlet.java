@@ -50,7 +50,7 @@ public class LoginServlet extends HttpServlet {
 			String userName = request.getParameter("userName");
 			String pass = request.getHeader("password");			
 			answer = login(userName, pass, request.getSession());
-		} else //case where the uri is session
+		} else if (uri.contains("session")) //case where the uri is session
 		{
 			answer = getSessionStatus(request.getSession());
 		}
@@ -59,6 +59,20 @@ public class LoginServlet extends HttpServlet {
 		writer.println(answer);
 		writer.close();
 		
+	}
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("application/json");
+		String uri = request.getRequestURI();
+		String answer = null;
+		if (uri.contains("logout"))
+		{
+			answer = logOut(request.getSession());
+		
+	    }
+		PrintWriter writer = response.getWriter();
+		writer.println(answer);
+		writer.close();
 	}
 	
 	private String login(String userName, String password, HttpSession session)
@@ -157,6 +171,26 @@ public class LoginServlet extends HttpServlet {
 		Answer = json.toString();
 		return Answer;
 		
+	}
+	
+	private String logOut(HttpSession session)
+	{
+		String answer;
+
+		try{
+			session.setAttribute("Username", null);
+			session.setAttribute("Nickname", null);
+			session.invalidate();
+			JsonObject json = new JsonObject();
+			json.addProperty("Result", true);
+			answer = json.toString();
+		}catch(Exception e){
+			JsonObject json = new JsonObject();
+			json.addProperty("Result", false);
+			answer = json.toString();
+		}
+		
+		return answer;
 	}
 }
 

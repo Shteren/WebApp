@@ -12,14 +12,16 @@ public class Question
 	private String questionTxt;
 	private List<String> questionTopics;
 	private String Nickname;
+	private int questionVotes;
 	private int QuestionRating;
 	
-	public Question(String s,String txt,List<String> topicsList, int Rate, String nick)
+	public Question(String s,String txt,List<String> topicsList, int Rate, String nick, int vote)
 	{
 		subtime = s; 
 		questionTxt = txt;
 		questionTopics = topicsList;
 		Nickname = nick;
+		questionVotes = vote;
 		QuestionRating = Rate;
 	}
 	
@@ -53,6 +55,14 @@ public class Question
 
 	public void setNickname(String nickname) {
 		Nickname = nickname;
+	}
+	
+	public int getQuestionVotes() {
+		return questionVotes;
+	}
+
+	public void setQuestionVotes(int questionVotes) {
+		this.questionVotes = questionVotes;
 	}
 
 	public int getQuestionRating() {

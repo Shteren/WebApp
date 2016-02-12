@@ -5,11 +5,13 @@ import java.util.Collection;
 
 import com.google.gson.reflect.TypeToken;
 
+import webapp.model.Answer;
 import webapp.model.Question;
 
 public interface QuestionAndAnswersConstants {
 	
 	public final Type QUESTIONS_COLLECTION = new TypeToken<Collection<Question>>(){}.getType();
+	public final Type ANSWERS_COLLECTION = new TypeToken<Collection<Answer>>(){}.getType();
 	
 	public final String INSERT_QUESTION_STMT = "INSERT INTO TBL_QUESTION(submitiontime,contexttext,submmitedusername)"
 			+ " VALUES(?,?,?)";
@@ -41,9 +43,9 @@ public interface QuestionAndAnswersConstants {
 			//+ " LIMIT 1";
 	public final String SELECT_LAST_QUESTION_STMT ="SELECT QUESTIONID FROM TBL_QUESTION ORDER BY submitiontime DESC FETCH FIRST 1 ROWS ONLY";
 	//public final String SELECT_LAST_QUESTION_STMT ="SELECT QUESTIONID FROM TBL_QUESTION ORDER BY submitiontime DESC ";
-	public final String SELECT_QUESTION_BY_ID_STMT = "SELECT QUESTIONID FROM TBL_QUESTION WHERE QUESTIONID=?";
+	public final String SELECT_QUESTION_BY_ID_STMT = "SELECT * FROM TBL_QUESTION WHERE QUESTIONID=?";
 	
-	public final String SELECT_ANSWER_BY_ID_STMT = "SELECT ANSWERID FROM TBL_ANSWER WHERE ANSWERID=?";
+	public final String SELECT_ANSWER_BY_ID_STMT = "SELECT * FROM TBL_ANSWER WHERE ANSWERID=?";
 	
 	public final String SELECT_EXISTING_QUESTIONS_STMT = "SELECT * FROM TBL_QUESTION"
 			+ " WHERE QUESTIONID IN (SELECT tbl_question.QUESTIONID"

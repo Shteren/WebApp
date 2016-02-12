@@ -80,7 +80,7 @@ public class GetQuestionsServlet extends HttpServlet {
     		while( rs.next() )
     		{
     			//int rate = Integer.parseInt(rs.getString(4));
-    			QuestionResults.add(new Question(rs.getString(2) ,rs.getString(3) , null,0, rs.getString(5) ));
+    			//QuestionResults.add(new Question(rs.getString(2) ,rs.getString(3) , null,0, rs.getString(5) ));
     		}
     		Gson gson = new Gson();
     		//JsonObject numberOfQuestion= new JsonObject();
