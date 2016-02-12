@@ -37,19 +37,36 @@ public class LoginServlet extends HttpServlet {
      */
     public LoginServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("application/json");
+		String uri = request.getRequestURI();
+		String answer = null;
+		if (uri.contains("login"))
+		{
+			String userName = request.getParameter("userName");
+			String pass = request.getHeader("password");			
+			answer = login(userName, pass, request.getSession());
+		} else //case where the uri is session
+		{
+			answer = getSessionStatus(request.getSession());
+		}
+				
+		PrintWriter writer = response.getWriter();
+		writer.println(answer);
+		writer.close();
+		
+	}
+	
+	private String login(String userName, String password, HttpSession session)
+	{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		JsonObject json = new JsonObject();
-		String Answer;
+		String answer;
 		try {
         	//obtain CustomerDB data source from Tomcat's context
     		Context context = new InitialContext();
@@ -58,10 +75,9 @@ public class LoginServlet extends HttpServlet {
     		
     		pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_NAME_STMT);
     		//Statement stmt = conn.createStatement();
-    		String Username = request.getParameter("userName");
-    		pstmt.setString(1, Username);
+    		//String Username = request.getParameter("userName");
+    		pstmt.setString(1, userName);
     		//String query = "SELECT * FROM tbl_user where username = '" + request.getParameter("userName") + "'";
-    		System.out.println(Username);
     		
     		ResultSet rs = pstmt.executeQuery();
     		// 
@@ -69,45 +85,36 @@ public class LoginServlet extends HttpServlet {
 			{
     			//build Json Answer
     			json.addProperty("Result", false);
-    			Answer = json.toString();
-    			
-    			PrintWriter writer = response.getWriter();
-            	writer.println(Answer);
-            	writer.close();
-    			return;
+    			answer = json.toString();
 			}
     		else
     		{
 	    		String userPassword = rs.getString("password"); // get the password from Result set
 	    		String nickname = rs.getString("nickname");
-	    		if (userPassword.equals(request.getParameter("password"))) // compare the password
+	    		if (userPassword.equals(password)) // compare the password
 	    		{
 	    			json.addProperty("Result", true);
 	    			// Set session to be valid
-	    			HttpSession session = request.getSession();
 	    			session.setMaxInactiveInterval(3600); // seconds 
-	    			session.setAttribute("Username", Username);
+	    			session.setAttribute("Username", userName);
 	    			session.setAttribute("Nickname", nickname);
 	    		}
 	    		else
 	    		{
 	    			json.addProperty("Result", false);
-	    			HttpSession session = request.getSession();
 	    			session.setAttribute("Username", null);
 	    			session.setAttribute("Nickname", null);
 	    			session.invalidate();
 	    		}
 	    		
-	    		Answer = json.toString();
-    			
-    			PrintWriter writer = response.getWriter();
-            	writer.println(Answer);
-            	writer.close();
+	    		answer = json.toString();    			
+	    		
     		}
 			rs.close();
 			pstmt.close();
     		conn.close();
-		}catch (SQLException | NamingException e) {
+    		
+		} catch (SQLException | NamingException e) {
 			try {
 				if(pstmt != null)
 					pstmt.close();
@@ -115,25 +122,43 @@ public class LoginServlet extends HttpServlet {
 				if(conn != null)
 					conn.close();
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				// Conitnue with the flow altough there is exception
 			}
 			
 			// invalidate Session
-			HttpSession session = request.getSession();
 			session.setAttribute("Username", null);
 			session.invalidate();
 			
 			//build Json Answer
 			json = new JsonObject();
 			json.addProperty("Result", false);
-			Answer = json.toString();
-			
-			PrintWriter writer = response.getWriter();
-	    	writer.println(Answer);
-	    	writer.close();
-    	}
+			answer = json.toString();
+		}
+		return answer;
+	}
+	
+	private String getSessionStatus(HttpSession session)
+	{	
+		
+		String SessionUsername = (String) session.getAttribute("Username");
+		String SessionNickname = (String) session.getAttribute("Nickname");
+		JsonObject json = new JsonObject();
+		String Answer;
+		if (SessionUsername == null){
+			session.invalidate();
+			json.addProperty("Result", false);
+		}else{
+			json.addProperty("Result", true);
+		}
+		json.addProperty("Username", SessionUsername);
+		json.addProperty("Nickname", SessionNickname);
+		//build Json Answer
+	
+		Answer = json.toString();
+		return Answer;
 		
 	}
-
 }
+
+
+

@@ -4,10 +4,10 @@ angular.module('inTableApp',[])
 
 		$scope.GetQuestions = function()
 		{
-			$http({ method: 'POST',
-		        url: 'http://localhost:8080/WebApp/GetQuestionsServlet',
+			$http({ method: 'GET',
+		        url: 'http://localhost:8080/WebApp/questions',
 				params: null,
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				
 		     })
 		     .success(function(response) 
 		     {
@@ -25,12 +25,11 @@ angular.module('inTableApp',[])
 		
 		$scope.CheckSession = function()
 		{
-			$http({ method: 'POST',
-		        url: 'http://localhost:8080/WebApp/GetSessionStatus',
+			$http({ method: 'GET',
+		        url: 'http://localhost:8080/WebApp/session',
 				params: null,
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		     })
-		     .success(function (result) 
+		     .success(function (response) 
 		     {
 		         if (result.Result == false) 
 		         {
@@ -60,18 +59,18 @@ angular.module('inTableApp',[])
 					alert("Your question is too long");
 					return;
 				}
-		    $scope.topicList = $scope.tag.toString();
+		    $scope.topicList = $scope.tag;
 		    alert("insert topicss questions");
 		    alert($scope.topicList);
 			$http({ method: 'POST',
-		        url: 'http://localhost:8080/WebApp/QuestionsServlet',
-				params: {
+		        url: 'http://localhost:8080/WebApp/questions',
+				data: {
 					questionTxt: $scope.questionTxt,
 					questionTopics: $scope.topicList,
 				},
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				headers: {'Content-Type': 'application/json'}
 		     })
-		     .success(function(result) 
+		     .success(function(response) 
 		     {
 		        alert("Done");
 		     })
@@ -85,14 +84,13 @@ angular.module('inTableApp',[])
 		$scope.nextClick=function(){
 			$scope.prevOrNextPageNumCounter ++;
 			alert($scope.prevOrNextPageNumCounter);
-			$http({ method: 'POST',
-		        url: 'http://localhost:8080/WebApp/GetPreviouesOrNextQuestions',
+			$http({ method: 'GET',
+		        url: 'http://localhost:8080/WebApp/questions',
 				params:{
 					//prevOrNext: "prev",
 					currentPage: $scope.prevOrNextPageNumCounter
 					
 				},
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		     })
 		     .success(function(response) 
 		     {

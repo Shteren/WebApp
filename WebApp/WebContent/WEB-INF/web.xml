@@ -17,7 +17,8 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>LoginServlet</servlet-name>
-    <url-pattern>/LoginServlet</url-pattern>
+    <url-pattern>/login</url-pattern>
+    <url-pattern>/session</url-pattern>
   </servlet-mapping>
   <listener>
     <listener-class>webapp.listeners.DBListener</listener-class>
@@ -37,16 +38,16 @@
     <servlet-name>RegisterServlet</servlet-name>
     <url-pattern>/RegisterServlet</url-pattern>
   </servlet-mapping>
-  <servlet>
+  <!-- servlet>
     <description></description>
     <display-name>GetSessionStatus</display-name>
     <servlet-name>GetSessionStatus</servlet-name>
     <servlet-class>servlets.GetSessionStatus</servlet-class>
-  </servlet>
+  </servlet>>
   <servlet-mapping>
     <servlet-name>GetSessionStatus</servlet-name>
     <url-pattern>/GetSessionStatus</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping-->
   <servlet>
     <description></description>
     <display-name>QuestionsServlet</display-name>
@@ -55,7 +56,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>QuestionsServlet</servlet-name>
-    <url-pattern>/QuestionsServlet</url-pattern>
+    <url-pattern>/questions/*</url-pattern>
   </servlet-mapping>
   <servlet>
     <description></description>

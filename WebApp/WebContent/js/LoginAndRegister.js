@@ -7,14 +7,12 @@ angular.module('inTableApp',[])
 		
 		$scope.CheckSession = function()
 		{
-			$http({ method: 'POST',
-		        url: 'http://localhost:8080/WebApp/GetSessionStatus',
-				params: null,
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+			$http({ method: 'GET',
+		        url: 'http://localhost:8080/WebApp/session'
 		     })
-		     .success(function (result) 
+		     .success(function (response) 
 		     {
-		         if (result.Result == true) 
+		         if (response.Result == true) 
 		         {
 		           //alert('Resistration was successful');
 		        	window.location.assign("MainPage.html");
@@ -102,12 +100,13 @@ angular.module('inTableApp',[])
 		$scope.login = function()
 		{
 			$http({
-				  method: 'POST',
-				  url: 'http://localhost:8080/WebApp/LoginServlet',
-					params: {
-						userName: $scope.name,
-						password: $scope.password,			
-					}
+				  method: 'GET',
+				  url: 'http://localhost:8080/WebApp/login',
+				  	params: {
+						userName: $scope.name			
+					},
+					headers: {'password': $scope.password}
+					
 			}).success( function(response) {
 			
 	   	         if (response.Result == true) 
