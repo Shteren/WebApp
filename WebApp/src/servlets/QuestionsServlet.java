@@ -65,7 +65,7 @@ public class QuestionsServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
-		int questionId = Integer.parseInt(requestPathParts[1]);
+		String questionId = requestPathParts[1];
 		//In case the path is "/question/<questionId>"
 		if(requestPathParts.length < 3) {
 			//In case the path is "/questions/<somequestionId>"
@@ -277,60 +277,32 @@ public class QuestionsServlet extends HttpServlet {
 					{
 						currentPage = "0";
 					}
-					Collection<Question> newlyQuestionResult = selectNewlyQuestionsByCurrentPage(Integer.parseInt(currentPage));
-		    		Gson gson = new Gson();
+					selectNewlyQuestionsByCurrentPage(Integer.parseInt(currentPage), response);
 		    		int numofquestions = getNumberOfLeftPages(Integer.parseInt(currentPage), "new");
 		    		JsonObject numberOfQuestion= new JsonObject();
 		    		numberOfQuestion.addProperty("numOfQuestions", numofquestions);
-		        	//convert from customers collection to json
-		        	String newlyQuestionsJsonResult = gson.toJson(newlyQuestionResult, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
-		        
-					PrintWriter writer = response.getWriter();
-			    	writer.println(newlyQuestionsJsonResult);
-			    	//writer.println(QuestionResultAndTheNumberOfThem);
-			    	writer.close();
 			    	break;
 				}
 				case "all":
 				{
-					Collection<Question> newlyQuestionResult = selectExistingQuestionsByCurrentPage(Integer.parseInt(currentPage));
-		    		Gson gson = new Gson();
-		    		int numofquestions = getNumberOfLeftPages(Integer.parseInt(currentPage), "all");
-		    		JsonObject numberOfQuestion= new JsonObject();
-		    		numberOfQuestion.addProperty("numOfQuestions", numofquestions);
-		        	//convert from customers collection to json
-		        	String newlyQuestionsJsonResult = gson.toJson(newlyQuestionResult, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
-		        	
-					PrintWriter writer = response.getWriter();
-			    	writer.println(newlyQuestionsJsonResult);
-			    	//writer.println(QuestionResultAndTheNumberOfThem);
-			    	writer.close();
+					selectExistingQuestionsByCurrentPage(Integer.parseInt(currentPage), response);
 			    	break;
 				}
 			}			
 			
 		}else
 		{
-			Collection<Question> newlyQuestionResult = selectQuestionsByTopic(topicName, Integer.parseInt(currentPage));
+			selectQuestionsByTopic(topicName, Integer.parseInt(currentPage), response);
     		Gson gson = new Gson();
     		int numofquestions = getNumberOfLeftPages(Integer.parseInt(currentPage), "existing");
     		JsonObject numberOfQuestion= new JsonObject();
     		numberOfQuestion.addProperty("numOfQuestions", numofquestions);
-        	//convert from customers collection to json
-        	String newlyQuestionsJsonResult = gson.toJson(newlyQuestionResult, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
-        	
-        	//String QuestionResultAndTheNumberOfThem =  "["+QuestionsJsonResult+","+numberOfQuestion+"]";
-        	
-			PrintWriter writer = response.getWriter();
-	    	writer.println(newlyQuestionsJsonResult);
-	    	//writer.println(QuestionResultAndTheNumberOfThem);
-	    	writer.close();
 	    	
 		}	
 			
 	}
 	
-	private void getQuestion(int questionId, HttpServletRequest request, HttpServletResponse response)
+	private void getQuestion(String questionId, HttpServletRequest request, HttpServletResponse response)
 	{
 		Connection conn = null;
 		PreparedStatement pstmt = null, stmt = null;
@@ -344,10 +316,10 @@ public class QuestionsServlet extends HttpServlet {
 			conn = ds.getConnection();
 			
 			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_QUESTION_BY_ID_STMT);
-			pstmt.setInt(1, questionId);
+			pstmt.setInt(1, Integer.parseInt(questionId));
     		ResultSet rs = pstmt.executeQuery();
     		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
-    		stmt.setInt(1,questionId);
+    		stmt.setInt(1,Integer.parseInt(questionId));
     		ResultSet rss = pstmt.executeQuery();
     		ArrayList<String> topics = new ArrayList<>();
     		while (rss.next())
@@ -363,7 +335,7 @@ public class QuestionsServlet extends HttpServlet {
 			String submittedUser =  rs.getString(6);
     		if (rs.next())
     		{
-    			question = new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate);
+    			question = new Question(Integer.parseInt(questionId), submittionTime ,contentTxt ,topics, submittedUser, votes, rate);
     		}
     		
     		rs.close();
@@ -432,16 +404,18 @@ public class QuestionsServlet extends HttpServlet {
 	}
 	
 	
-	private Collection<Question> selectNewlyQuestionsByCurrentPage(int currentPage) {
+	private void selectNewlyQuestionsByCurrentPage(int currentPage, HttpServletResponse response) throws IOException {
 		Connection conn = null;
 		PreparedStatement pstmt = null, stmt = null;
 		JsonObject json = new JsonObject();
 		String Answer;
 		Collection<Question> QuestionResults = new ArrayList<Question>(); 
+		Gson gson = new Gson();
 		try 
 		{
         	//obtain CustomerDB data source from Tomcat's context
     		Context context = new InitialContext();
+    		ResultSet rss = null;
     		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
     		conn = ds.getConnection();    		   		
     		/** prepare the statement of select 20 questions by current page **/
@@ -454,22 +428,36 @@ public class QuestionsServlet extends HttpServlet {
     			int questionId = rs.getInt(1);
         		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
         		stmt.setInt(1,questionId);
-        		ResultSet rss = pstmt.executeQuery();
+        		rss = stmt.executeQuery();
         		ArrayList<String> topics = new ArrayList<>();
         		while (rss.next())
         		{
         			topics.add(rss.getString(1));
         		}
-        		rss.close();
+
     			String submittionTime = rs.getString(2);
     			String contentTxt = rs.getString(3);
     			int votes = rs.getInt(4);
     			int rate = rs.getInt(5);    			
     			String submittedUser =  rs.getString(6);
     			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
-    		}  		
-    		rs.close();
+    			topics.clear();
+    			
+    		}  	
+
     		
+        	String newlyQuestionsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
+    		int numofquestions = getNumberOfLeftPages(currentPage, "all");
+    		JsonObject numberOfQuestion= new JsonObject();
+    		numberOfQuestion.addProperty("numOfQuestions", numofquestions);
+    		
+			PrintWriter writer = response.getWriter();
+	    	writer.println(newlyQuestionsJsonResult);
+	    	//writer.println(numberOfQuestion);
+	    	writer.close();
+	    	
+    		rss.close();   		
+    		rs.close();
     		pstmt.close();
     		stmt.close();
     		conn.close();
@@ -486,10 +474,9 @@ public class QuestionsServlet extends HttpServlet {
 				e1.printStackTrace();
 			}			
     	}
-		return QuestionResults;
 	}
 	
-	private Collection<Question> selectExistingQuestionsByCurrentPage(int currentPage) {
+	private void selectExistingQuestionsByCurrentPage(int currentPage, HttpServletResponse response) throws IOException {
 		Connection conn = null;
 		PreparedStatement pstmt = null, stmt = null;
 		JsonObject json = new JsonObject();
@@ -500,7 +487,9 @@ public class QuestionsServlet extends HttpServlet {
         	//obtain CustomerDB data source from Tomcat's context
     		Context context = new InitialContext();
     		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-    		conn = ds.getConnection();    		   		
+    		conn = ds.getConnection();    		
+    		Gson gson = new Gson();
+    		ResultSet rss = null;
     		/** prepare the statement of select 20 questions by current page **/
     		int fromQuestion = currentPage * 20;
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_EXISTING_QUESTIONS_STMT);
@@ -512,14 +501,12 @@ public class QuestionsServlet extends HttpServlet {
     			int questionId = rs.getInt(1);
         		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
         		stmt.setInt(1,questionId);
-        		ResultSet rss = pstmt.executeQuery();
+        		rss = stmt.executeQuery();
         		ArrayList<String> topics = new ArrayList<>();
         		while (rss.next())
         		{
         			topics.add(rss.getString(1));
         		}
-        		rss.close();
-        		stmt.close();
     			String submittionTime = rs.getString(2);
     			String contentTxt = rs.getString(3);
     			int votes = rs.getInt(4);
@@ -527,6 +514,19 @@ public class QuestionsServlet extends HttpServlet {
     			String submittedUser =  rs.getString(6);
     			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
     		}  		
+    		
+        	String allQuestionsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
+    		int numofquestions = getNumberOfLeftPages(currentPage, "all");
+    		JsonObject numberOfQuestion= new JsonObject();
+    		numberOfQuestion.addProperty("numOfQuestions", numofquestions);
+	        
+			PrintWriter writer = response.getWriter();
+	    	writer.println(allQuestionsJsonResult);
+	    	//writer.println(numberOfQuestion);
+	    	writer.close();
+	    	
+    		rss.close();
+    		stmt.close();
 			rs.close();
 			pstmt.close();
 			stmt.close();
@@ -544,10 +544,9 @@ public class QuestionsServlet extends HttpServlet {
 				e1.printStackTrace();
 			}			
     	}
-		return QuestionResults;
 	}
 	
-	private Collection<Question> selectQuestionsByTopic(String topicName, int currentPage) {
+	private void selectQuestionsByTopic(String topicName, int currentPage, HttpServletResponse response) throws IOException {
 		Connection conn = null;
 		PreparedStatement pstmt = null, stmt = null;
 		JsonObject json = new JsonObject();
@@ -558,33 +557,42 @@ public class QuestionsServlet extends HttpServlet {
         	//obtain CustomerDB data source from Tomcat's context
     		Context context = new InitialContext();
     		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-    		conn = ds.getConnection();    		   		
+    		conn = ds.getConnection();  
+    		Gson gson = new Gson();
+    		ResultSet rss = null;
     		/** prepare the statement of select 20 questions by current page **/
     		int fromQuestion = currentPage * 20;
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_QUESTIONS_BY_TOPIC_STMT);
     		pstmt.setString(1, topicName);
-    		pstmt.setInt(2, fromQuestion);
-    		
+    		pstmt.setInt(2, fromQuestion);    		
     		ResultSet rs = pstmt.executeQuery();
     		while( rs.next() )
     		{
     			int questionId = rs.getInt(1);
         		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
         		stmt.setInt(1,questionId);
-        		ResultSet rss = pstmt.executeQuery();
+        		rss = stmt.executeQuery();
         		ArrayList<String> topics = new ArrayList<>();
         		while (rss.next())
         		{
         			topics.add(rss.getString(1));
         		}
-        		rss.close();
+        		
     			String submittionTime = rs.getString(2);
     			String contentTxt = rs.getString(3);
     			int votes = rs.getInt(4);
     			int rate = rs.getInt(5);    			
     			String submittedUser =  rs.getString(6);
     			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
-    		}  		
+    		}  
+    		
+        	String QuestionsByTopicsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
+	        
+			PrintWriter writer = response.getWriter();
+	    	writer.println(QuestionsByTopicsJsonResult);
+	    	writer.close();
+    		
+    		rss.close();
 			rs.close();
 			pstmt.close();
 			stmt.close();
@@ -602,7 +610,6 @@ public class QuestionsServlet extends HttpServlet {
 				e1.printStackTrace();
 			}			
     	}
-		return QuestionResults;
 	}
 	
 	
@@ -762,7 +769,7 @@ public class QuestionsServlet extends HttpServlet {
     	}
     }
     
-    private void searchForQuestionAnswers(HttpServletRequest request, HttpServletResponse response,int questionId) throws IOException 
+    private void searchForQuestionAnswers(HttpServletRequest request, HttpServletResponse response,String questionId) throws IOException 
     {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -777,7 +784,7 @@ public class QuestionsServlet extends HttpServlet {
     		conn = ds.getConnection();    		   		
     		/** prepare the statement of select all question answers **/
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_ANSWERS_BY_QUESTION_ID_STMT);
-    		pstmt.setInt(1, questionId);
+    		pstmt.setInt(1, Integer.parseInt(questionId));
     		
     		ResultSet rs = pstmt.executeQuery();
     		while( rs.next() )
@@ -787,7 +794,7 @@ public class QuestionsServlet extends HttpServlet {
     			String contentTxt = rs.getString(3);
     			String submittedUser =  rs.getString(6);
     			int votes = rs.getInt(4);
-    			answersResults.add(new Answer(answerId,submittionTime ,contentTxt, votes, questionId, submittedUser));
+    			answersResults.add(new Answer(answerId,submittionTime ,contentTxt, votes, Integer.parseInt(questionId), submittedUser));
     		}  	
     		
     		Gson gson = new Gson();
