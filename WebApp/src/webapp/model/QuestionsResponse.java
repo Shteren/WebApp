@@ -2,7 +2,7 @@ package webapp.model;
 
 import java.util.Collection;
 import java.util.List;
-
+//class for build Json response of questions
 public class QuestionsResponse {
 	private Collection<Question> questions;
 	int numOfPages;
