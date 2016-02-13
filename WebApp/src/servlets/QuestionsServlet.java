@@ -148,7 +148,7 @@ public class QuestionsServlet extends HttpServlet {
     		}
     					
     		InsertTopicsQusrtionRel(conn, topics, id);
-			
+    		UpdateUserRating(conn, nickname);
 			conn.commit();
 			pstmt.close();
 			
@@ -166,15 +166,18 @@ public class QuestionsServlet extends HttpServlet {
         	writer.close();
 			
 		} catch (SQLException | NamingException e) {
+			
 			System.out.println(e.toString());
 			try {
-				if(pstmt != null)
+				if(pstmt != null){
 					pstmt.close();
+				}
 				
-				if(conn != null)
+				if(conn != null){
+					conn.rollback();
 					conn.close();
-				
-				
+				}
+								
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
@@ -405,8 +408,6 @@ public class QuestionsServlet extends HttpServlet {
 	private void selectNewlyQuestionsByCurrentPage(int currentPage, HttpServletResponse response) throws IOException {
 		Connection conn = null;
 		PreparedStatement pstmt = null, stmt = null;
-		JsonObject json = new JsonObject();
-		String Answer;
 		Collection<Question> QuestionResults = new ArrayList<Question>(); 
 		Gson gson = new Gson();
 		try 
@@ -414,7 +415,7 @@ public class QuestionsServlet extends HttpServlet {
         	//obtain CustomerDB data source from Tomcat's context
     		Context context = new InitialContext();
     		ResultSet rss = null;
-    		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
+			BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
     		conn = ds.getConnection();    		   		
     		/** prepare the statement of select 20 questions by current page **/
     		int fromQuestion = currentPage * 20;
@@ -856,5 +857,28 @@ public class QuestionsServlet extends HttpServlet {
 		return answersAvgVotes;
     }
             	
-
+    private void UpdateUserRating(Connection conn, String nickname) throws SQLException{
+    	PreparedStatement userStmt = null, quesStmt = null, ansStmt = null;
+    	ResultSet quesRes = null, ansRes = null;
+    	
+    	quesStmt = conn.prepareStatement(UserConstants.SELECT_AVG_QUESTION_BY_USER_NAME);
+    	quesStmt.setString(1, nickname);
+    	ansStmt = conn.prepareStatement(UserConstants.SELECT_AVG_ANSWER_BY_USER_NAME);
+    	ansStmt.setString(1, nickname);
+    	userStmt = conn.prepareStatement(UserConstants.UPDATE_USER_RATING_STMT);
+    	
+    	quesRes = quesStmt.executeQuery();
+    	ansRes = ansStmt.executeQuery();
+    	
+    	if (quesRes.next() && ansRes.next()) {
+    		double rating = (0.2 * (quesRes.getInt(1)) + (0.8 * (ansRes.getInt(1))));
+    		userStmt.setDouble(1, rating);
+    		userStmt.setString(2, nickname);
+    		userStmt.executeUpdate();
+    	}
+    	
+    	quesStmt.close();
+    	ansStmt.close();
+    	userStmt.close();
+    }
 }

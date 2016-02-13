@@ -31,13 +31,13 @@
   </resource-ref>
   <servlet>
     <description></description>
-    <display-name>RegisterServlet</display-name>
-    <servlet-name>RegisterServlet</servlet-name>
-    <servlet-class>servlets.RegisterServlet</servlet-class>
+    <display-name>UsersServlet</display-name>
+    <servlet-name>UsersServlet</servlet-name>
+    <servlet-class>servlets.UsersServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>RegisterServlet</servlet-name>
-    <url-pattern>/RegisterServlet</url-pattern>
+    <servlet-name>UsersServlet</servlet-name>
+    <url-pattern>/users/*</url-pattern>
   </servlet-mapping>
   <servlet>
     <description></description>

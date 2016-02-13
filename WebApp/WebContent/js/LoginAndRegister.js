@@ -67,7 +67,7 @@ angular.module('inTableApp',[])
 			$http(
 				 {
 		         method: 'POST',
-		         url: 'http://localhost:8080/WebApp/RegisterServlet',
+		         url: 'http://localhost:8080/WebApp/users',
 					params: {
 						userName: $scope.RegistrationName,
 						password: $scope.RegistrationPassword,

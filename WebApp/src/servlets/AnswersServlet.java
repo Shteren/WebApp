@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 
 import webapp.constants.DBConstants;
 import webapp.constants.QuestionAndAnswersConstants;
+import webapp.constants.UserConstants;
 import webapp.model.Answer;
 import webapp.model.Question;
 
@@ -92,6 +93,7 @@ public class AnswersServlet extends HttpServlet {
 			
 			//execute insert command
 			pstmt.executeUpdate();
+			UpdateUserRating(conn, nickname);
 			
 			conn.commit();
 			pstmt.close();
@@ -115,8 +117,11 @@ public class AnswersServlet extends HttpServlet {
 				if(pstmt != null)
 					pstmt.close();
 				
-				if(conn != null)
+				if(conn != null){
+					conn.rollback();
 					conn.close();
+				}
+					
 				
 				
 			} catch (SQLException e1) {
@@ -270,6 +275,31 @@ public class AnswersServlet extends HttpServlet {
 				e1.printStackTrace();
 			}
     	}
+    }
+    
+    private void UpdateUserRating(Connection conn, String nickname) throws SQLException{
+    	PreparedStatement userStmt = null, quesStmt = null, ansStmt = null;
+    	ResultSet quesRes = null, ansRes = null;
+    	
+    	quesStmt = conn.prepareStatement(UserConstants.SELECT_AVG_QUESTION_BY_USER_NAME);
+    	quesStmt.setString(1, nickname);
+    	ansStmt = conn.prepareStatement(UserConstants.SELECT_AVG_ANSWER_BY_USER_NAME);
+    	ansStmt.setString(1, nickname);
+    	userStmt = conn.prepareStatement(UserConstants.UPDATE_USER_RATING_STMT);
+    	
+    	quesRes = quesStmt.executeQuery();
+    	ansRes = ansStmt.executeQuery();
+    	
+    	if (quesRes.next() && ansRes.next()) {
+    		double rating = (0.2 * (quesRes.getInt(1)) + (0.8 * (ansRes.getInt(1))));
+    		userStmt.setDouble(1, rating);
+    		userStmt.setString(2, nickname);
+    		userStmt.executeUpdate();
+    	}
+    	
+    	quesStmt.close();
+    	ansStmt.close();
+    	userStmt.close();
     }
 
 }

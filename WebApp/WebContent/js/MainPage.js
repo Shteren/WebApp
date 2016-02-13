@@ -112,8 +112,8 @@ angular.module('inTableApp',[])
 				     
 			$http({ method: 'POST',
 		        url: 'http://localhost:8080/WebApp/logOutServlet',
-				params:null,
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		        params:null,
+		        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		     })
 		     .success(function(result) 
 		     {
