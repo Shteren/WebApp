@@ -3,6 +3,7 @@ package webapp.model;
 import java.util.Collection;
 import java.util.List;
 //class for build Json response of questions
+//Mor you are stupido
 public class QuestionsResponse {
 	private Collection<Question> questions;
 	int numOfPages;
