@@ -36,6 +36,7 @@ import webapp.constants.QuestionAndAnswersConstants;
 import webapp.constants.UserConstants;
 import webapp.model.Answer;
 import webapp.model.Question;
+import webapp.model.QuestionsResponse;
 
 /**
  * Servlet implementation class Questions
@@ -278,9 +279,6 @@ public class QuestionsServlet extends HttpServlet {
 						currentPage = "0";
 					}
 					selectNewlyQuestionsByCurrentPage(Integer.parseInt(currentPage), response);
-		    		int numofquestions = getNumberOfLeftPages(Integer.parseInt(currentPage), "new");
-		    		JsonObject numberOfQuestion= new JsonObject();
-		    		numberOfQuestion.addProperty("numOfQuestions", numofquestions);
 			    	break;
 				}
 				case "all":
@@ -445,15 +443,15 @@ public class QuestionsServlet extends HttpServlet {
     			
     		}  	
 
-    		
-        	String newlyQuestionsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
-    		int numofquestions = getNumberOfLeftPages(currentPage, "all");
-    		JsonObject numberOfQuestion= new JsonObject();
-    		numberOfQuestion.addProperty("numOfQuestions", numofquestions);
+
+        	//String newlyQuestionsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
+    		int numofquestions = (getNumberOfLeftPages(currentPage, "new"))/20;
+    		QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numofquestions);   
+    		String newlyQuestionsJsonResult = gson.toJson(qestionsResponse, QuestionsResponse.class);
+
     		
 			PrintWriter writer = response.getWriter();
 	    	writer.println(newlyQuestionsJsonResult);
-	    	//writer.println(numberOfQuestion);
 	    	writer.close();
 	    	
     		rss.close();   		
@@ -514,15 +512,13 @@ public class QuestionsServlet extends HttpServlet {
     			String submittedUser =  rs.getString(6);
     			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
     		}  		
-    		
-        	String allQuestionsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
-    		int numofquestions = getNumberOfLeftPages(currentPage, "all");
-    		JsonObject numberOfQuestion= new JsonObject();
-    		numberOfQuestion.addProperty("numOfQuestions", numofquestions);
+    		       	
+    		int numofquestions = (getNumberOfLeftPages(currentPage, "all"))/20;
+    		QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numofquestions);
+    		String allQuestionsJsonResult = gson.toJson(qestionsResponse, QuestionsResponse.class);
 	        
 			PrintWriter writer = response.getWriter();
 	    	writer.println(allQuestionsJsonResult);
-	    	//writer.println(numberOfQuestion);
 	    	writer.close();
 	    	
     		rss.close();
