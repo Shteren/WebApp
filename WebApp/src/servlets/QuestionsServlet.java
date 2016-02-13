@@ -65,7 +65,7 @@ public class QuestionsServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
-		String questionId = requestPathParts[1];
+		int questionId = Integer.parseInt(requestPathParts[1]);
 		//In case the path is "/question/<questionId>"
 		if(requestPathParts.length < 3) {
 			//In case the path is "/questions/<somequestionId>"
@@ -76,7 +76,7 @@ public class QuestionsServlet extends HttpServlet {
 		String resourceToGet = requestPathParts[2];
 		if (resourceToGet.equals("answers"))
 		{
-			searchForQuestionAnswers(request, response, Integer.parseInt(questionId));
+			searchForQuestionAnswers(request, response, questionId);
 			return;
 		//resource is not answers and we are not handling that
 		} else
@@ -84,22 +84,7 @@ public class QuestionsServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
-
     }
-
-
-		/*HttpSession session = request.getSession();
-		String requestPath = request.getPathInfo();
-		Gson gson = new Gson();
-        	//convert from customers collection to json
-        	String QuestionsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
-			PrintWriter writer = response.getWriter();
-	    	writer.println(QuestionsJsonResult);
-	    	writer.close();
-	    	
-    		//JsonObject numberOfQuestion= new JsonObject();
-    		//numberOfQuestion.addProperty("numOfQuestions", numofquestions);
-		}*/
 						
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
@@ -203,9 +188,7 @@ public class QuestionsServlet extends HttpServlet {
         	writer.close();
 		}		
 			
-	}
-	
-	
+	}		
 	
 @Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -223,7 +206,7 @@ public class QuestionsServlet extends HttpServlet {
 			return;
 		}
 		Gson gson = new Gson();
-		String questionId = requestPathParts[1];
+		int questionId = Integer.parseInt(requestPathParts[1]);
 		Question question;
 		int numOfVotes=0;
 		try {
@@ -274,7 +257,7 @@ public class QuestionsServlet extends HttpServlet {
 	{
 		String currentPage = request.getParameter("currentPage");
 		String topicName = request.getParameter("topicName");
-		String newOrAll = request.getParameter("newOrExisting");
+		String newOrAll = request.getParameter("newOrAll");
 		if (newOrAll == null)
 		{
 			newOrAll = "new";
@@ -301,9 +284,7 @@ public class QuestionsServlet extends HttpServlet {
 		    		numberOfQuestion.addProperty("numOfQuestions", numofquestions);
 		        	//convert from customers collection to json
 		        	String newlyQuestionsJsonResult = gson.toJson(newlyQuestionResult, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
-		        	
-		        	//String QuestionResultAndTheNumberOfThem =  "["+QuestionsJsonResult+","+numberOfQuestion+"]";
-		        	
+		        
 					PrintWriter writer = response.getWriter();
 			    	writer.println(newlyQuestionsJsonResult);
 			    	//writer.println(QuestionResultAndTheNumberOfThem);
@@ -319,8 +300,6 @@ public class QuestionsServlet extends HttpServlet {
 		    		numberOfQuestion.addProperty("numOfQuestions", numofquestions);
 		        	//convert from customers collection to json
 		        	String newlyQuestionsJsonResult = gson.toJson(newlyQuestionResult, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
-		        	
-		        	//String QuestionResultAndTheNumberOfThem =  "["+QuestionsJsonResult+","+numberOfQuestion+"]";
 		        	
 					PrintWriter writer = response.getWriter();
 			    	writer.println(newlyQuestionsJsonResult);
@@ -351,7 +330,7 @@ public class QuestionsServlet extends HttpServlet {
 			
 	}
 	
-	private void getQuestion(String questionId, HttpServletRequest request, HttpServletResponse response)
+	private void getQuestion(int questionId, HttpServletRequest request, HttpServletResponse response)
 	{
 		Connection conn = null;
 		PreparedStatement pstmt = null, stmt = null;
@@ -365,21 +344,33 @@ public class QuestionsServlet extends HttpServlet {
 			conn = ds.getConnection();
 			
 			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_QUESTION_BY_ID_STMT);
+			pstmt.setInt(1, questionId);
     		ResultSet rs = pstmt.executeQuery();
-    		String nickName = (String)request.getSession().getAttribute("nickName");
     		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
-    		stmt.setString(1, rs.getString(1));
+    		stmt.setInt(1,questionId);
     		ResultSet rss = pstmt.executeQuery();
     		ArrayList<String> topics = new ArrayList<>();
-    		while (rs.next())
+    		while (rss.next())
     		{
     			topics.add(rss.getString(1));
     		}
     		Question question;
+    		
+			String submittionTime = rs.getString(2);
+			String contentTxt = rs.getString(3);
+			int votes = rs.getInt(4);
+			int rate = rs.getInt(5);    			
+			String submittedUser =  rs.getString(6);
     		if (rs.next())
     		{
-    			question = new Question(rs.getString(1), rs.getString(2), topics, rs.getInt(5), nickName,rs.getInt(4));
+    			question = new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate);
     		}
+    		
+    		rs.close();
+    		rss.close();
+    		pstmt.close();
+    		stmt.close();
+    		conn.close();
     		
 		}catch (SQLException | NamingException e) {
 			System.out.println(e.toString());
@@ -419,6 +410,13 @@ public class QuestionsServlet extends HttpServlet {
     		ResultSet rs = pstmt.executeQuery();
     		rs.next();
     		numberOfQuestions = rs.getInt(1);
+    		
+    		rs.close();
+    		//rss.close();
+    		pstmt.close();
+    		//stmt.close();
+    		conn.close();
+    		
 		}catch (SQLException | NamingException e) {
 			System.out.println(e.toString());
 			try {
@@ -436,7 +434,7 @@ public class QuestionsServlet extends HttpServlet {
 	
 	private Collection<Question> selectNewlyQuestionsByCurrentPage(int currentPage) {
 		Connection conn = null;
-		PreparedStatement pstmt = null;
+		PreparedStatement pstmt = null, stmt = null;
 		JsonObject json = new JsonObject();
 		String Answer;
 		Collection<Question> QuestionResults = new ArrayList<Question>(); 
@@ -450,19 +448,30 @@ public class QuestionsServlet extends HttpServlet {
     		int fromQuestion = currentPage * 20;
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_NEWLY_QUESTIONS_STMT);
     		pstmt.setInt(1, fromQuestion);
-    		
     		ResultSet rs = pstmt.executeQuery();
     		while( rs.next() )
     		{
+    			int questionId = rs.getInt(1);
+        		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
+        		stmt.setInt(1,questionId);
+        		ResultSet rss = pstmt.executeQuery();
+        		ArrayList<String> topics = new ArrayList<>();
+        		while (rss.next())
+        		{
+        			topics.add(rss.getString(1));
+        		}
+        		rss.close();
     			String submittionTime = rs.getString(2);
     			String contentTxt = rs.getString(3);
+    			int votes = rs.getInt(4);
+    			int rate = rs.getInt(5);    			
     			String submittedUser =  rs.getString(6);
-    			int rate = Integer.parseInt(rs.getString(5));
-    			int votes = Integer.parseInt(rs.getString(4));
-    			QuestionResults.add(new Question(submittionTime ,contentTxt ,null,rate, submittedUser,votes));
+    			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
     		}  		
-			rs.close();
-			pstmt.close();
+    		rs.close();
+    		
+    		pstmt.close();
+    		stmt.close();
     		conn.close();
     		    		    		
 		}catch (SQLException | NamingException e) {
@@ -482,7 +491,7 @@ public class QuestionsServlet extends HttpServlet {
 	
 	private Collection<Question> selectExistingQuestionsByCurrentPage(int currentPage) {
 		Connection conn = null;
-		PreparedStatement pstmt = null;
+		PreparedStatement pstmt = null, stmt = null;
 		JsonObject json = new JsonObject();
 		String Answer;
 		Collection<Question> QuestionResults = new ArrayList<Question>(); 
@@ -500,15 +509,27 @@ public class QuestionsServlet extends HttpServlet {
     		ResultSet rs = pstmt.executeQuery();
     		while( rs.next() )
     		{
+    			int questionId = rs.getInt(1);
+        		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
+        		stmt.setInt(1,questionId);
+        		ResultSet rss = pstmt.executeQuery();
+        		ArrayList<String> topics = new ArrayList<>();
+        		while (rss.next())
+        		{
+        			topics.add(rss.getString(1));
+        		}
+        		rss.close();
+        		stmt.close();
     			String submittionTime = rs.getString(2);
     			String contentTxt = rs.getString(3);
+    			int votes = rs.getInt(4);
+    			int rate = rs.getInt(5);    			
     			String submittedUser =  rs.getString(6);
-    			int rate = Integer.parseInt(rs.getString(5));
-    			int votes = Integer.parseInt(rs.getString(4));
-    			QuestionResults.add(new Question(submittionTime ,contentTxt ,null,rate, submittedUser,votes));
+    			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
     		}  		
 			rs.close();
 			pstmt.close();
+			stmt.close();
     		conn.close();
     		    		    		
 		}catch (SQLException | NamingException e) {
@@ -528,7 +549,7 @@ public class QuestionsServlet extends HttpServlet {
 	
 	private Collection<Question> selectQuestionsByTopic(String topicName, int currentPage) {
 		Connection conn = null;
-		PreparedStatement pstmt = null;
+		PreparedStatement pstmt = null, stmt = null;
 		JsonObject json = new JsonObject();
 		String Answer;
 		Collection<Question> QuestionResults = new ArrayList<Question>(); 
@@ -547,16 +568,26 @@ public class QuestionsServlet extends HttpServlet {
     		ResultSet rs = pstmt.executeQuery();
     		while( rs.next() )
     		{
+    			int questionId = rs.getInt(1);
+        		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
+        		stmt.setInt(1,questionId);
+        		ResultSet rss = pstmt.executeQuery();
+        		ArrayList<String> topics = new ArrayList<>();
+        		while (rss.next())
+        		{
+        			topics.add(rss.getString(1));
+        		}
+        		rss.close();
     			String submittionTime = rs.getString(2);
     			String contentTxt = rs.getString(3);
+    			int votes = rs.getInt(4);
+    			int rate = rs.getInt(5);    			
     			String submittedUser =  rs.getString(6);
-    			int rate = Integer.parseInt(rs.getString(5));
-    			int votes = Integer.parseInt(rs.getString(4));
-    			//int rate = Integer.parseInt(rs.getString(4));
-    			QuestionResults.add(new Question(submittionTime ,contentTxt ,null,rate, submittedUser,votes));
+    			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
     		}  		
 			rs.close();
 			pstmt.close();
+			stmt.close();
     		conn.close();
     		    		    		
 		}catch (SQLException | NamingException e) {
@@ -628,7 +659,7 @@ public class QuestionsServlet extends HttpServlet {
   
     }
     
-    private int checkIfQuestionIdInDBandSendVoteNumber(String questionId)
+    private int checkIfQuestionIdInDBandSendVoteNumber(int questionId)
     {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -643,7 +674,7 @@ public class QuestionsServlet extends HttpServlet {
     		conn = ds.getConnection();    		   		
     		/** prepare the statement of check if questions id is in DB **/
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_QUESTION_BY_ID_STMT);
-    		pstmt.setInt(1,Integer.parseInt(questionId));
+    		pstmt.setInt(1,questionId);
     		
     		ResultSet rs = pstmt.executeQuery();
     		if( !rs.next() )
@@ -673,7 +704,7 @@ public class QuestionsServlet extends HttpServlet {
 		return votes;
     }
     
-    private void updateVoteOfQuesion(HttpServletRequest request,HttpServletResponse response,String questionId,int numOfVotes) throws IOException
+    private void updateVoteOfQuesion(HttpServletRequest request,HttpServletResponse response,int questionId,int numOfVotes) throws IOException
     {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -686,15 +717,18 @@ public class QuestionsServlet extends HttpServlet {
     		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
     		conn = ds.getConnection();    		   		
     		/** prepare the statement of update vote and rating in tbl_question and tbl_vote_question in DB **/
+    		int answersRating = calculateRatingScoreOfQuestion(questionId, numOfVotes);
+    		double questionRating = 0.2 * numOfVotes + 0.8 * answersRating;
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.UPDATE_VOTE_FOR_QUESTIONS_STMT);
     		pstmt.setInt(1, numOfVotes);
-    		pstmt.setString(2, questionId);
+    		pstmt.setDouble(2, questionRating);
+    		pstmt.setInt(3, questionId);
     		
     		pstmt.executeUpdate();
     		pstmt.close();
     		String submittedUser = (String)request.getSession().getAttribute("nickName");
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.INSERT_VOTE_FOR_QUESTIONS_STMT);
-    		pstmt.setString(1, questionId);
+    		pstmt.setInt(1, questionId);
     		pstmt.setString(2, submittedUser);
     		pstmt.setInt(3, numOfVotes);
     		
@@ -777,10 +811,47 @@ public class QuestionsServlet extends HttpServlet {
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}			
-    	}
-		
-		
+    	}		
 	}
-    	
+    
+    private int calculateRatingScoreOfQuestion(int questionId, int numOfVotes)
+    {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int answersAvgVotes = 0;
+		try 
+		{
+        	//obtain CustomerDB data source from Tomcat's context
+    		Context context = new InitialContext();
+    		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
+    		conn = ds.getConnection();    		   		
+    		/** prepare the statement of select all question answers **/
+    		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_AVG_ANSWERS_BY_QUESTION_ID_STMT);
+    		pstmt.setInt(1, questionId);
+    		
+    		ResultSet rs = pstmt.executeQuery();
+    		if ( rs.next() )
+    		{
+    			answersAvgVotes = rs.getInt(1);
+    		} else
+    		{
+    			// do something
+    		}
+    			
+		}catch (SQLException | NamingException e) {
+			System.out.println(e.toString());
+			try {
+				if(pstmt != null)
+					pstmt.close();
+				
+				if(conn != null)
+					conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}			
+    	}
+		return answersAvgVotes;
+    }
+            	
 
 }

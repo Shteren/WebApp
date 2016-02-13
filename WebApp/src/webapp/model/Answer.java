@@ -5,7 +5,7 @@ public class Answer {
 	private int answerId;
 	private String submmitionTime;
 	private String answerTxt;
-	private int rating;
+	private int answerVote;
 	private int questionId;
 	private String nickName;
 
@@ -14,7 +14,7 @@ public class Answer {
 		this.answerId = answerId;
 		this.submmitionTime = submmitionTime;
 		this.answerTxt = answerTxt;
-		this.rating = rating;
+		this.answerVote = rating;
 		this.questionId = quesionId;
 		this.nickName = nickName;
 		
@@ -45,11 +45,11 @@ public class Answer {
 	}
 
 	public int getRating() {
-		return rating;
+		return answerVote;
 	}
 
 	public void setRating(int rating) {
-		this.rating = rating;
+		this.answerVote = rating;
 	}
 	
 	public int getQuestionId() {

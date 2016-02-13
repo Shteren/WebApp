@@ -66,7 +66,7 @@ angular.module('inTableApp',[])
 		        url: 'http://localhost:8080/WebApp/questions',
 				data: {
 					questionTxt: $scope.questionTxt,
-					questionTopics: $scope.topicList,
+					questionTopics: $scope.topicList
 				},
 				headers: {'Content-Type': 'application/json'}
 		     })

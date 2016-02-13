@@ -65,10 +65,13 @@ public interface QuestionAndAnswersConstants {
 			+ " where questionId=?"
 			+ " order by numberOfVotes" ;
 	
+	public final String SELECT_AVG_ANSWERS_BY_QUESTION_ID_STMT = "select AVG(numberOfVotes) from tbl_answer "
+			+ " where questionId=?";
+	
 	public final String INSERT_VOTE_FOR_QUESTIONS_STMT = "INSERT INTO tbl_rel_user_question_vote VALUES (?,?,?)";
 	public final String INSERT_VOTE_FOR_ANSWER_STMT = "INSERT INTO tbl_rel_user_answer_vote VALUES (?,?,?)";
 	
-	public final String UPDATE_VOTE_FOR_QUESTIONS_STMT = "UPDATE tbl_question SET numberOfVotes=? WHERE QUESTIONID=?";
+	public final String UPDATE_VOTE_FOR_QUESTIONS_STMT = "UPDATE tbl_question SET numberOfVotes=?, questionRating=? WHERE QUESTIONID=?";
 	public final String UPDATE_VOTE_FOR_ANSWER_STMT = "UPDATE tbl_answer SET numberOfVotes=? WHERE QUESTIONID=?";
 
 }

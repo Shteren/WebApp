@@ -8,29 +8,39 @@ import com.sun.jmx.snmp.Timestamp;
 
 public class Question 
 {
-	private String subtime;
+	private int questionId;
+	private String submmitionTime;
 	private String questionTxt;
 	private List<String> questionTopics;
-	private String Nickname;
-	private int questionVotes;
+	private String nickName;
+	private int questionVote;
 	private int QuestionRating;
 	
-	public Question(String s,String txt,List<String> topicsList, int Rate, String nick, int vote)
+	public Question(int Id, String subtime,String txt,List<String> topicsList, String nick, int vote, int Rate)
 	{
-		subtime = s; 
+		questionId = Id;
+		submmitionTime = subtime; 
 		questionTxt = txt;
 		questionTopics = topicsList;
-		Nickname = nick;
-		questionVotes = vote;
+		nickName = nick;
+		questionVote = vote;
 		QuestionRating = Rate;
 	}
 	
+	public int getQuestionId() {
+		return questionId;
+	}
+
+	public void setQuestionId(int questionId) {
+		this.questionId = questionId;
+	}
+
 	public String getSubtime() {
-		return subtime;
+		return submmitionTime;
 	}
 
 	public void setSubtime(String subtime) {
-		this.subtime = subtime;
+		this.submmitionTime = subtime;
 	}
 
 	public String getQuestionsText() {
@@ -50,19 +60,19 @@ public class Question
 	}
 
 	public String getNickname() {
-		return Nickname;
+		return nickName;
 	}
 
 	public void setNickname(String nickname) {
-		Nickname = nickname;
+		nickName = nickname;
 	}
 	
 	public int getQuestionVotes() {
-		return questionVotes;
+		return questionVote;
 	}
 
 	public void setQuestionVotes(int questionVotes) {
-		this.questionVotes = questionVotes;
+		this.questionVote = questionVotes;
 	}
 
 	public int getQuestionRating() {
