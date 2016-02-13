@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="windows-1255">
+<title>Insert title here</title>
+<script src= "js/angular.min.js"></script>
+<script src="js/QuestionsByTopic.js"></script>
+<link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body data-ng-app="inTopicQuestion" data-ng-controller="TopicQuestionController">
+	<div class="container">
+		<div>
+			<nav role="navigation" class="navbar navbar-default">
+			    <div class="navbar-header">
+			        <a href="#" class="navbar-brand">Hello {{NickName}}</a>
+			    </div>
+			    <div id="navbarCollapse" class="collapse navbar-collapse">
+			        <ul class="nav navbar-nav">
+			            <li><a href="#">Home</a></li>
+			            <li class="active"><a href="#">Browse Questions</a></li>
+			            <li><a href="#">Leader Board</a></li>
+			        </ul>
+			        <ul class="nav navbar-nav navbar-right">
+			            <li><a href="" data-ng-click="logOut()">Logout</a></li>
+			        </ul>
+			    </div>
+			</nav>
+		</div>
+		<div>
+			<label>Please enter topic name or choose from the list below :</label>
+			<div class="col-lg-6">
+			    <div class="input-group" style="width:50%">
+			      <input type="text" class="form-control"   placeholder="Search for...">
+			      <span class="input-group-btn">
+			        <button class="btn btn-default" type="button">Search</button>
+			      </span>
+			    </div><!-- /input-group -->
+			  </div><!-- /.col-lg-6 -->
+			</div><!-- /.row -->
+		
+		
+		<br><br>
+		<div >
+		<div class="panel panel-default">
+			<p> dfgfh </p>
+		</div>
+		<div>
+			<button type="button" class="btn btn-default " style="width:30%" data-ng-click="switchAnswerShowFlag()" value="showAnswer">showAnswer</button>
+			<div class="btn-group" role="group" aria-label="...">
+			<button type="button" class="btn btn-default" aria-label="Right Align" >
+			<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"> {{up}}</span></button>
+			<button type="button" class="btn btn-default" aria-label="Right Align" >
+			<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"> {{down}}</span></button>
+			</div>
+		
+    	
+		</div>
+		
+		<div class="panel panel-default" data-ng-show="AnswerShowFlag">
+			<p> dfgfh </p>
+			<div class="btn-group" role="group" aria-label="..." style="float:right">
+				<button type="button" class="btn btn-default" aria-label="Right Align" >
+				<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"> {{up}}</span></button>
+				<button type="button" class="btn btn-default" aria-label="Right Align" >
+				<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"> {{down}}</span></button>
+			</div>
+		</div>
+		
+		</div>
+		</div>
+
+	
+</body>
+</html>

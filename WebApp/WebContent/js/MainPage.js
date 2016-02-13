@@ -1,6 +1,29 @@
 angular.module('inTableApp',[])
 	.controller('mainPageController',['$scope','$http', function($scope, $http) {
 		
+		$scope.CheckNextButton = function()
+		{
+			if( $scope.NumOfPages == $scope.prevOrNextPageNumCounter )
+	   		 {
+		    		 $scope.NextButtonFlag = true; // disabled
+	   		 }
+		    	 else
+	   		 {
+		    		 $scope.NextButtonFlag = false; // enabled
+	   		 }
+		}
+		$scope.CheckPreviousButton = function()
+		{
+	    	
+	    	 if( 0 == $scope.prevOrNextPageNumCounter )
+    		 {
+	    		 $scope.PreviousButtonFlag = true; // disabled
+    		 }
+	    	 else
+    		 {
+	    		 $scope.PreviousButtonFlag = false; // enabled
+    		 }
+		}
 
 		$scope.GetQuestions = function()
 		{
@@ -11,11 +34,19 @@ angular.module('inTableApp',[])
 		     })
 		     .success(function(response) 
 		     {
-		        for( i =0 ; i < response.length ; i++)
+		    	 $scope.NumOfPages = response.numOfPages ;
+		    	 $scope.CheckNextButton();
+		    	 $scope.CheckPreviousButton();
+		    	 
+		    	 $scope.PreviousButtonFlag = true; // disable previous button
+		    	 
+		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
+		       /* for( i =0 ; i < response.questions.length ; i++)
 	        	{
-		        	$scope.GetQuestionsResult.push(response[i]);
+		        	$scope.GetQuestionsResult.push(response.questions[i]);
 		        	//alert(response[i]);
 	        	}
+	        	*/
 		     })
 		     .error(function (error) 
 		     {
@@ -31,14 +62,14 @@ angular.module('inTableApp',[])
 		     })
 		     .success(function (response) 
 		     {
-		         if (result.Result == false) 
+		         if (response.Result == false) 
 		         {
 		           //alert('Resistration was successful');
 		        	window.location.assign("index.html");
 		         }
 		         else
 	        	 {
-		        	 $scope.NickName = result.Nickname;
+		        	 $scope.NickName = response.Nickname;
 	        	 }
 		        
 		     })
@@ -60,8 +91,8 @@ angular.module('inTableApp',[])
 					return;
 				}
 		    $scope.topicList = $scope.tag;
-		    alert("insert topicss questions");
-		    alert($scope.topicList);
+		    
+		   
 			$http({ method: 'POST',
 		        url: 'http://localhost:8080/WebApp/questions',
 				data: {
@@ -72,7 +103,12 @@ angular.module('inTableApp',[])
 		     })
 		     .success(function(response) 
 		     {
-		        alert("Done");
+		    		$scope.questionTxt = "";
+			    	$scope.tag=[];
+			    	$scope.topics = "";
+			
+			        
+			        $scope.GetQuestions();
 		     })
 		     .error(function (error) 
 		     {
@@ -81,9 +117,10 @@ angular.module('inTableApp',[])
 		}
 		
 		
-		$scope.nextClick=function(){
+		$scope.nextClick=function()
+		{
 			$scope.prevOrNextPageNumCounter ++;
-			alert($scope.prevOrNextPageNumCounter);
+			//alert($scope.prevOrNextPageNumCounter);
 			$http({ method: 'GET',
 		        url: 'http://localhost:8080/WebApp/questions',
 				params:{
@@ -94,8 +131,48 @@ angular.module('inTableApp',[])
 		     })
 		     .success(function(response) 
 		     {
-		    	 $scope.GetQuestionsResult = angular.copy(response);
+		    	 $scope.NumOfPages = response.numOfPages ;
+		    	 $scope.CheckNextButton();
+		    	 $scope.CheckPreviousButton();
+
 		    	 
+		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
+		    	 
+		    	 scroll(0,0);
+			        /*for( i =0 ; i < response.length ; i++)
+		        	{
+			        	$scope.GetQuestionsResult.push(response[i]);
+			        	//alert(response[i]);
+		        	}*/
+		     })
+		     .error(function (error) 
+		     {
+		             $scope.status = 'Unable to connect' + error.message;
+		     });
+		}
+		
+		$scope.previousClick = function()
+		{
+			$scope.prevOrNextPageNumCounter--;
+			//alert($scope.prevOrNextPageNumCounter);
+			$http({ method: 'GET',
+		        url: 'http://localhost:8080/WebApp/questions',
+				params:{
+					//prevOrNext: "prev",
+					currentPage: $scope.prevOrNextPageNumCounter
+					
+				},
+		     })
+		     .success(function(response) 
+		     {
+		    	 $scope.NumOfPages = response.numOfPages ;
+		    	 
+		    	 $scope.CheckNextButton();
+		    	 $scope.CheckPreviousButton();
+		    	 
+		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
+		    	 
+		    	 scroll(0,0);
 			        /*for( i =0 ; i < response.length ; i++)
 		        	{
 			        	$scope.GetQuestionsResult.push(response[i]);
@@ -139,8 +216,11 @@ angular.module('inTableApp',[])
 	        if ($scope.topics[ $scope.topics.length -1 ] == ",")
 	        {
 	        	
-	        	$scope.tag.push( $scope.topics.substring(0, $scope.topics.length-1 ) );
-	        	//$scope.topicList= $scope.topicList.concat($scope.topics);
+	         	if ($scope.tag.indexOf($scope.topics.substring(0, $scope.topics.length-1 )) == -1){  //push topic if it does not exist
+	       	     
+	        		$scope.tag.push( $scope.topics.substring(0, $scope.topics.length-1 ) );
+	        	}
+	        	
 	        	$scope.topics = "";
 	        }
 	    };
@@ -148,12 +228,15 @@ angular.module('inTableApp',[])
 
 		
 		// code start from here when page is loading
+	    $scope.NextButtonFlag = false;
+	    $scope.PreviousButtonFlag = false;
 	    $scope.HideShowTagCharacterError = false;
 	    $scope.tag = [];
 	    $scope.prevOrNextPageNumCounter = 0;
 	    $scope.topicList;
 		$scope.CheckSession();		
 		$scope.GetQuestionsResult =[];
+		$scope.NumOfPages = 0;
 		$scope.GetQuestions();
 		
 		
