@@ -37,7 +37,6 @@ angular.module('inTableApp',[])
 		    	 $scope.NumOfPages = response.numOfPages ;
 		    	 $scope.CheckNextButton();
 		    	 $scope.CheckPreviousButton();
-		    	 
 		    	 $scope.PreviousButtonFlag = true; // disable previous button
 		    	 
 		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
@@ -225,7 +224,42 @@ angular.module('inTableApp',[])
 	        }
 	    };
 		
-
+	    $scope.voteUp = function(obj){
+	    	alert(obj.questionId);
+			$http({ method: 'PUT',
+		        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId,
+		        data: { questionVote: +1},
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		     })
+		     .success(function(result) 
+		     {
+		    	 alert("updated vote");
+		    	 obj.questionVote++;
+		    	 
+		     })
+		     .error(function (error) 
+		     {
+		             $scope.status = 'Unable to connect' + error.message;
+		     }); 
+	    }
+	    
+	    $scope.voteDown = function(obj){
+	    	alert(obj.questionId);
+			$http({ method: 'PUT',
+		        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId,
+		        data: { questionVote: -1},
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		     })
+		     .success(function(result) 
+		     {
+		    	 alert("updated vote");
+		    	 obj.questionVote++;
+		     })
+		     .error(function (error) 
+		     {
+		             $scope.status = 'Unable to connect' + error.message;
+		     }); 
+	    }
 		
 		// code start from here when page is loading
 	    $scope.NextButtonFlag = false;

@@ -59,28 +59,34 @@
 					<table>
 						<tr>
 							<td style="width:15%">
-								<div class="btn-group" role="group" aria-label="...">
-									<button type="button" class="btn btn-default" aria-label="Right Align" >
+								<div class="btn-group-vertical"  role="group" aria-label="..." style="margin-left:15%;">
+									<button type="button" class="btn btn-default" aria-label="Right Align" data-ng-click="voteUp(x)">
 									<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"> {{up}}</span></button>
-									<button type="button" class="btn btn-default" aria-label="Right Align" >
+									<button type="button" class="btn btn-default" aria-label="Right Align" >{{x.questionVote}}</button>
+									<button type="button" class="btn btn-default" aria-label="Right Align" data-ng-click="voteDown(x)">
 									<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"> {{down}}</span></button>
 								</div>
 							</td>
 							<td>&nbsp</td>
-							<td style="width:85%">{{x.questionTxt}}</td>
+							<td style="width:85%">
+								<div>
+									<label>{{x.questionTxt}}</label>
+								</div>
+								<br>					<!-- Write an answer  -->
+								<div >
+								    <div>
+								        <form class="form-inline" >           
+								                <textarea class="form-control" style="width:60%;resize:vertical" placeholder="So what is your answer Smartass"></textarea>
+								                <button type="submit" class="btn">Send</button>            
+								        </form>
+								    </div>
+								</div>
+							</td>
 						</tr>
+						
 					</table>
 					<br>
-					<!-- Write an answer  -->
-					<div style="margin-left:15%;">
-					    <div>
-					        <form class="form-inline" >           
-					                <textarea class="form-control" style="width:60%;resize:vertical" placeholder="So what is your answer Smartass"></textarea>
-					                <button type="submit" class="btn">Send</button>            
-					        </form>
-					    </div>
-					</div>
-					<br>
+					
 				</div>
 			
 			</div>
