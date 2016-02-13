@@ -79,7 +79,7 @@ angular.module('inTableApp',[])
 		     })
 		     .success(function (result) 
 		     {
-		    	 alert(result);
+		    	 //alert(result);
 		         if (result.Result == true) 
 		         {
 		           //alert('Resistration was successful');

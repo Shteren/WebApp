@@ -26,7 +26,7 @@
 			    </div>
 			</nav>
 		</div>
-		<div style="width: 50%">
+		<div style="margin:auto; width: 50%;">
 			<form role="form">
 				<div class="form-group">
 			  		<label>Insert your question here:</label>
@@ -39,34 +39,59 @@
 			  		<div class="alert alert-danger" role="alert" data-ng-show="HideShowTagCharacterError">
   						<a href="#" class="alert-link" >More than 50 Characters</a>
 					</div>
-			  		<div data-ng-repeat="t in tag" style="float:left">
-			  			<label class="label label-default">{{t}}</label>
+					<div class="navbar" style="">
+				  		<div data-ng-repeat="t in tag" style="float:left">
+				  			<label class="label label-default">{{t}}</label>
+				  		</div>
 			  		</div>
-			  		
 			  	</div>
-			  	<br>
-			  	<div class="form-group">
-			  		<br><input class="btn btn-primary " style="width:50%" data-ng-click="addQuestion()" value="Question">
+			  	<div class="form-group" style="margin: auto;">
+			  		<button class="btn btn-primary " data-ng-click="addQuestion()">Question</button>
 			  	</div>
 			</form>
 		</div>
-
-		<div>
-			<div data-ng-repeat="x in GetQuestionsResult" class="panel panel-default">
-				<label >{{x.questionTxt}} by {{x.nickName}}</label>
-				<br>
+		<br>
+		<div class="navbar navbar-default" >
+			<br><br>
+			<div style="margin: auto;width:70%;">
+				<div  data-ng-repeat="x in GetQuestionsResult" class="panel panel-default">
+					<h4> Question by {{x.nickName}}</h4>
+					<table>
+						<tr>
+							<td style="width:15%">
+								<div class="btn-group" role="group" aria-label="...">
+									<button type="button" class="btn btn-default" aria-label="Right Align" >
+									<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"> {{up}}</span></button>
+									<button type="button" class="btn btn-default" aria-label="Right Align" >
+									<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"> {{down}}</span></button>
+								</div>
+							</td>
+							<td>&nbsp</td>
+							<td style="width:85%">{{x.questionTxt}}</td>
+						</tr>
+					</table>
+					<br>
+					<!-- Write an answer  -->
+					<div style="margin-left:15%;">
+					    <div>
+					        <form class="form-inline" >           
+					                <textarea class="form-control" style="width:60%;resize:vertical" placeholder="So what is your answer Smartass"></textarea>
+					                <button type="submit" class="btn">Send</button>            
+					        </form>
+					    </div>
+					</div>
+					<br>
+				</div>
+			
 			</div>
-		
 		</div>
 		<div>
 			<nav>
 	  			<ul class="pager">
-	   			 <li><a href="#" data-ng-click="previousClick()">Previous </a></li>
-	   			 <li><a href="#" data-ng-click="nextClick()">Next</a></li>
-
-					
+	   			 <li ><button  data-ng-disabled="PreviousButtonFlag" data-ng-click="previousClick()" class = "btn btn-info"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></button></li>
+	   			 <li ><button data-ng-disabled="NextButtonFlag" data-ng-click="nextClick()" class = "btn btn-info"><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></button></li>	
+	  			<li>Page {{prevOrNextPageNumCounter+1}} of {{NumOfPages+1}}</li>
 	  			</ul>
-	  				
 			</nav>
 		</div>
 	</div>
