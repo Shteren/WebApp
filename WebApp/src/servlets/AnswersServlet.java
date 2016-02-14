@@ -235,6 +235,17 @@ public class AnswersServlet extends HttpServlet {
     		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
     		conn = ds.getConnection();    		   		
     		/** prepare the statement of update vote and rating in tbl_question and tbl_vote_question in DB **/
+       		pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_VOTE_ANSWER_STMT);
+    		String userNickName = (String)(request.getSession().getAttribute("NickName"));
+    		pstmt.setString(1, userNickName);
+    		ResultSet rs = pstmt.executeQuery();
+    		if ( rs.next() )
+    		{
+    			// The user already voted
+    			rs.close();
+    			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    			return;
+    		}
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.UPDATE_VOTE_FOR_ANSWER_STMT);
     		pstmt.setInt(1, numOfVotes);
     		pstmt.setInt(2, answerId);
