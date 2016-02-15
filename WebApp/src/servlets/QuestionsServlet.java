@@ -216,7 +216,7 @@ public class QuestionsServlet extends HttpServlet {
 		try {
 			question = gson.fromJson(request.getReader(), Question.class);
 			numOfVotes = question.getQuestionVotes();
-			numOfVotes += checkIfQuestionIdInDBandSendVoteNumber(request, questionId);
+			numOfVotes += checkIfQuestionIdInDBandSendVoteNumber(request, response, questionId);
 			if(numOfVotes == -1){
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				return;
@@ -229,7 +229,7 @@ public class QuestionsServlet extends HttpServlet {
 		
 		try {
 			updateVoteOfQuesion(request,response,questionId,numOfVotes);
-	        gson.toJson(question, response.getWriter());
+	        //gson.toJson(question, response.getWriter());
 	        response.setStatus(HttpServletResponse.SC_OK);
 			
 		} catch (Exception e) {
@@ -664,7 +664,7 @@ public class QuestionsServlet extends HttpServlet {
   
     }
     
-    private int checkIfQuestionIdInDBandSendVoteNumber(HttpServletRequest request, int questionId)
+    private int checkIfQuestionIdInDBandSendVoteNumber(HttpServletRequest request, HttpServletResponse response, int questionId) throws IOException
     {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -688,10 +688,14 @@ public class QuestionsServlet extends HttpServlet {
     		} else
     		{
 				String nickName = (request.getSession().getAttribute("Nickname")).toString();
-    			if (rs.getString(6) == nickName)
+    			if (rs.getString(6) == nickName) {
+        			PrintWriter writer = response.getWriter();
+        	    	writer.println("It's your question");
+        	    	writer.close();
+        	    	votes = -1;
+    			} else {
     				votes = rs.getInt(4);
-    			else
-    				votes = -1;
+    			}   				
     		}
     		
 			rs.close();

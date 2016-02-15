@@ -65,7 +65,7 @@ public interface QuestionAndAnswersConstants {
 			+ " where questionId=?"
 			+ " order by numberOfVotes" ;
 	
-	public final String SELECT_AVG_ANSWERS_BY_QUESTION_ID_STMT = "select AVG(numberOfVotes) from tbl_answer "
+	public final String SELECT_AVG_ANSWERS_BY_QUESTION_ID_STMT = "select AVG(CAST (numberOfVotes AS DOUBLE PRECISION)) from tbl_answer "
 			+ " where questionId=?";
 	
 	public final String INSERT_VOTE_FOR_QUESTIONS_STMT = "INSERT INTO tbl_rel_user_question_vote VALUES (?,?,?)";

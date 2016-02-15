@@ -164,7 +164,7 @@ public class AnswersServlet extends HttpServlet {
 		try {
 			answer = gson.fromJson(request.getReader(), Answer.class);
 			numOfVotes = answer.getRating();
-			numOfVotes += checkIfAnswerIdInDBandSendVoteNumber(Integer.parseInt(answerId));
+			numOfVotes += checkIfAnswerIdInDBandSendVoteNumber(request, response, Integer.parseInt(answerId));
 			if(numOfVotes == -1){
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				return;
@@ -174,10 +174,20 @@ public class AnswersServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
+		
+		try {
+			updateVoteOfAnswer(request, response, Integer.parseInt(answerId), numOfVotes);
+	        //gson.toJson(Answer, response.getWriter());
+	        response.setStatus(HttpServletResponse.SC_OK);
+			
+		} catch (Exception e) {
+			//log.error("Exception in process, e);
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	
-    private int checkIfAnswerIdInDBandSendVoteNumber(int answerId)
+    private int checkIfAnswerIdInDBandSendVoteNumber(HttpServletRequest request, HttpServletResponse response, int answerId) throws IOException
     {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -200,7 +210,15 @@ public class AnswersServlet extends HttpServlet {
     			votes = -1;
     		} else
     		{
-    			votes = rs.getInt(4);
+				String nickName = (request.getSession().getAttribute("Nickname")).toString();
+    			if (rs.getString(6) == nickName) {
+        			PrintWriter writer = response.getWriter();
+        	    	writer.println("It's your question");
+        	    	writer.close();
+    			}    				
+    			else {
+    				votes = rs.getInt(4);
+    			}
     		}
     		
 			rs.close();
@@ -243,8 +261,9 @@ public class AnswersServlet extends HttpServlet {
     		{
     			// The user already voted
     			rs.close();
-    			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-    			return;
+    			PrintWriter writer = response.getWriter();
+    	    	writer.println("The user already vote");
+    	    	writer.close();
     		}
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.UPDATE_VOTE_FOR_ANSWER_STMT);
     		pstmt.setInt(1, numOfVotes);

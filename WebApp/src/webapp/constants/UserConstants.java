@@ -16,10 +16,10 @@ public interface UserConstants {
 			+ " order by submitionTime"
 			+ " FETCH First 5 ROWS ONLY";
 	
-	public final String SELECT_AVG_QUESTION_BY_USER_NAME = "SELECT AVG(questionRating) FROM TBL_QUESTION"
+	public final String SELECT_AVG_QUESTION_BY_USER_NAME = "SELECT AVG(CAST (questionRating AS DOUBLE PRECISION)) FROM TBL_QUESTION"
 			+ "WHERE submmitedUsername =?";
 	
-	public final String SELECT_AVG_ANSWER_BY_USER_NAME = "SELECT AVG(numberOfVotes) FROM TBL_ANSWER"
+	public final String SELECT_AVG_ANSWER_BY_USER_NAME = "SELECT AVG(CAST (numberOfVotes AS DOUBLE PRECISION)) FROM TBL_ANSWER"
 			+ "WHERE submmitedUsername =?";
 	
 	public final String SELECT_TOP_RATED_USERS_STMT = "select * from tbl_user"
