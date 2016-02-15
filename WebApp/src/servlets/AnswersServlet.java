@@ -236,7 +236,7 @@ public class AnswersServlet extends HttpServlet {
     		conn = ds.getConnection();    		   		
     		/** prepare the statement of update vote and rating in tbl_question and tbl_vote_question in DB **/
        		pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_VOTE_ANSWER_STMT);
-    		String userNickName = (String)(request.getSession().getAttribute("NickName"));
+    		String userNickName = (String)(request.getSession().getAttribute("Nickname"));
     		pstmt.setString(1, userNickName);
     		ResultSet rs = pstmt.executeQuery();
     		if ( rs.next() )

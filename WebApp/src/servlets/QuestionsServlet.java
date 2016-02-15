@@ -216,7 +216,7 @@ public class QuestionsServlet extends HttpServlet {
 		try {
 			question = gson.fromJson(request.getReader(), Question.class);
 			numOfVotes = question.getQuestionVotes();
-			numOfVotes += checkIfQuestionIdInDBandSendVoteNumber(questionId);
+			numOfVotes += checkIfQuestionIdInDBandSendVoteNumber(request, questionId);
 			if(numOfVotes == -1){
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				return;
@@ -633,6 +633,7 @@ public class QuestionsServlet extends HttpServlet {
     	connection.commit();
     	pstmt.close();
     }
+	
     public void InsertTopicsQusrtionRel(Connection connection, List<String> topiclist, String id) throws SQLException {
     	PreparedStatement pstmt;
     	pstmt = connection.prepareStatement(QuestionAndAnswersConstants.INSERT_QUESTION_TOPIC_REL_STMT);
@@ -663,7 +664,7 @@ public class QuestionsServlet extends HttpServlet {
   
     }
     
-    private int checkIfQuestionIdInDBandSendVoteNumber(int questionId)
+    private int checkIfQuestionIdInDBandSendVoteNumber(HttpServletRequest request, int questionId)
     {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -686,7 +687,11 @@ public class QuestionsServlet extends HttpServlet {
     			votes = -1;
     		} else
     		{
-    			votes = rs.getInt(4);
+				String nickName = (request.getSession().getAttribute("Nickname")).toString();
+    			if (rs.getString(6) == nickName)
+    				votes = rs.getInt(4);
+    			else
+    				votes = -1;
     		}
     		
 			rs.close();
@@ -722,14 +727,16 @@ public class QuestionsServlet extends HttpServlet {
     		conn = ds.getConnection();    		   		
     		/** prepare the statement of update vote and rating in tbl_question and tbl_vote_question in DB **/
     		pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_VOTE_QUESTION_STMT);
-    		String userNickName = (String)(request.getSession().getAttribute("NickName"));
+    		String userNickName = (String)(request.getSession().getAttribute("Nickname"));
     		pstmt.setString(1, userNickName);
     		ResultSet rs = pstmt.executeQuery();
     		if ( rs.next() )
     		{
     			// The user already voted
     			rs.close();
-    			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    			PrintWriter writer = response.getWriter();
+    	    	writer.println("The user already vote");
+    	    	writer.close();
     			return;
     		}
 			
