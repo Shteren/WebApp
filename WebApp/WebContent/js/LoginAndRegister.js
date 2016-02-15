@@ -58,12 +58,15 @@ angular.module('inTableApp',[])
 				alert("Max characters in Nickname is 20");
 				return;
 			}
-		
-			if($scope.RegistrationDescription.length > 50 )
+			if(null != $scope.RegistrationDescription )
 			{
-				alert("Description must be not longer then 50 characters");
-				return;
+				if($scope.RegistrationDescription.length > 50 )
+				{
+					alert("Description must be not longer then 50 characters");
+					return;
+				}
 			}
+			
 			$http(
 				 {
 		         method: 'POST',

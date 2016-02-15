@@ -30,9 +30,9 @@
 			<label>Please enter topic name or choose from the list below :</label>
 			<div class="col-lg-6">
 			    <div class="input-group" style="width:50%">
-			      <input type="text" class="form-control"   placeholder="Search for...">
+			      <input type="text" class="form-control"   placeholder="Search for..." data-ng-model="topic">
 			      <span class="input-group-btn">
-			        <button class="btn btn-default" type="button">Search</button>
+			        <button class="btn btn-default" type="button" data-ng-click="GetQuestionsByTopic()">Search</button>
 			      </span>
 			    </div><!-- /input-group -->
 			  </div><!-- /.col-lg-6 -->
@@ -40,7 +40,57 @@
 		
 		
 		<br><br>
-		<div >
+		<div class="navbar navbar-default" >
+			<br><br>
+			<div style="margin: auto;width:70%;">
+				<div  data-ng-repeat="x in GetQuestionsResult" class="panel panel-default">
+					<h4> Question by {{x.nickName}}</h4>
+					<table>
+						<tr>
+							<td style="width:15%">
+								<div class="btn-group-vertical"  role="group" aria-label="..." style="margin-left:15%;">
+									<button type="button" class="btn btn-default" aria-label="Right Align" data-ng-click="voteUp(x)">
+									<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"> {{up}}</span></button>
+									<button type="button" class="btn btn-default" aria-label="Right Align" >{{x.questionVote}}</button>
+									<button type="button" class="btn btn-default" aria-label="Right Align" data-ng-click="voteDown(x)">
+									<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"> {{down}}</span></button>
+								</div>
+							</td>
+							<td>&nbsp</td>
+							<td style="width:85%">
+								<div>
+									<label>{{x.questionTxt}}</label>
+								</div>
+								<br>					<!-- Write an answer  -->
+								<div >
+								    <div>
+								        <form class="form-inline" >           
+								                <textarea class="form-control" style="width:60%;resize:vertical" placeholder="So what is your answer Smartass"></textarea>
+								                <button type="submit" class="btn">Send</button>            
+								        </form>
+								    </div>
+								</div>
+							</td>
+						</tr>
+						
+					</table>
+					<br>
+					
+				</div>
+			
+			</div>
+		</div>
+		<div>
+			<nav>
+	  			<ul class="pager">
+	   			 <li ><button  data-ng-disabled="PreviousButtonFlag" data-ng-click="previousClick()" class = "btn btn-info"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></button></li>
+	   			 <li ><button data-ng-disabled="NextButtonFlag" data-ng-click="nextClick()" class = "btn btn-info"><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></button></li>	
+	  			<li>Page {{prevOrNextPageNumCounter+1}} of {{NumOfPages+1}}</li>
+	  			</ul>
+			</nav>
+		</div>
+	</div>
+		<!-- <div >
 		<div class="panel panel-default">
 			<p> dfgfh </p>
 		</div>
@@ -67,8 +117,8 @@
 		</div>
 		
 		</div>
-		</div>
+		</div> 
 
-	
+	 -->
 </body>
 </html>
