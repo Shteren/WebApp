@@ -1,5 +1,6 @@
 package webapp.model;
 
+import java.util.Collection;
 import java.util.List;
 
 public class User {
@@ -10,15 +11,16 @@ public class User {
 	private String description;
 	private double userRating;
 	private String photoUrl;
-	private List<String> experties;
+	private Collection<String> experties;
 			
-	public User(String userName, String password, String nickName, String description, double userRating, String photoUrl) {
+	public User(String userName, String password, String nickName, String description, double userRating, String photoUrl, Collection<String> experties) {
 		this.userName = userName;
 		this.password = password;
 		this.nickName = nickName;
 		this.description = description;
 		this.userRating = userRating;
 		this.photoUrl = photoUrl;
+		this.experties = experties;
 	}
 	
 	public String getUserName() {
@@ -60,7 +62,7 @@ public class User {
 		this.photoUrl = photoUrl;
 	}
 
-	public List<String> getExperties() {
+	public Collection<String> getExperties() {
 		return experties;
 	}
 

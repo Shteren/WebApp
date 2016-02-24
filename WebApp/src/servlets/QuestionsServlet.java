@@ -36,6 +36,7 @@ import webapp.constants.QuestionAndAnswersConstants;
 import webapp.constants.UserConstants;
 import webapp.model.Answer;
 import webapp.model.Question;
+import webapp.model.QuestionAndAnswerDBAccess;
 import webapp.model.QuestionsResponse;
 
 /**
@@ -57,7 +58,7 @@ public class QuestionsServlet extends HttpServlet {
 		//In case there is only query params or no params
 		String requestPath = request.getPathInfo();
 		if(requestPath == null) {
-			searchQuestions(request, response);
+			QuestionAndAnswerDBAccess.searchQuestions(request, response);
 			return;
 		}
 		String[] requestPathParts = requestPath.split("/");
@@ -106,6 +107,126 @@ public class QuestionsServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
+		insertNewQuestion(request, response, question);
+	}		
+	
+@Override
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("application/json");
+		String requestPath = request.getPathInfo();
+		// method put must get uri of questionId
+		if(requestPath == null) {
+			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			return;
+		}
+		String[] requestPathParts = requestPath.split("/");
+		//if uri path is smaller than 2 it is wrong url so we have to return METHOD_NOT_ALLOWED
+		if(requestPathParts.length != 2) {
+			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			return;
+		}
+		Gson gson = new Gson();
+		int questionId = Integer.parseInt(requestPathParts[1]);
+		Question question;
+		int numOfVotes=0;
+		try {
+			question = gson.fromJson(request.getReader(), Question.class);
+			numOfVotes = question.getQuestionVotes();
+			numOfVotes += checkIfQuestionIdInDBandSendVoteNumber(request, response, questionId);
+			if(numOfVotes == -1){
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+		//Problem with reading json to user
+		} catch(Exception e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		
+		try {
+			updateVoteOfQuesion(request,response,questionId,numOfVotes);
+	        //gson.toJson(question, response.getWriter());
+	        response.setStatus(HttpServletResponse.SC_OK);
+			
+		} catch (Exception e) {
+			//log.error("Exception in process, e);
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+		
+		try {
+	        gson.toJson(question, response.getWriter());
+	        response.setStatus(HttpServletResponse.SC_OK);
+			
+		} catch (Exception e) {
+			//log.error("Exception in process, e);
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+	}
+		
+	
+
+	//////////////*** implementation of methods that handling with DB ***/////////////////	
+
+	
+	private void getQuestion(String questionId, HttpServletRequest request, HttpServletResponse response)
+	{
+		Connection conn = null;
+		PreparedStatement pstmt = null, stmt = null;
+		JsonObject json = new JsonObject();
+		String Answer;	
+		
+		try
+		{
+			Context context = new InitialContext();
+			BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
+			conn = ds.getConnection();
+			
+			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_QUESTION_BY_ID_STMT);
+			pstmt.setInt(1, Integer.parseInt(questionId));
+    		ResultSet rs = pstmt.executeQuery();
+    		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
+    		stmt.setInt(1,Integer.parseInt(questionId));
+    		ResultSet rss = pstmt.executeQuery();
+    		ArrayList<String> topics = new ArrayList<>();
+    		while (rss.next())
+    		{
+    			topics.add(rss.getString(1));
+    		}
+    		Question question;
+    		
+			String submittionTime = rs.getString(2);
+			String contentTxt = rs.getString(3);
+			int votes = rs.getInt(4);
+			int rate = rs.getInt(5);    			
+			String submittedUser =  rs.getString(6);
+    		if (rs.next())
+    		{
+    			question = new Question(Integer.parseInt(questionId), submittionTime ,contentTxt ,topics, submittedUser, votes, rate);
+    		}
+    		
+    		rs.close();
+    		rss.close();
+    		pstmt.close();
+    		stmt.close();
+    		conn.close();
+    		
+		}catch (SQLException | NamingException e) {
+			System.out.println(e.toString());
+			try {
+				if(pstmt != null)
+					pstmt.close();				
+				if(conn != null)
+					conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}						
+	}
+	
+
+	
+	private void insertNewQuestion(HttpServletRequest request, HttpServletResponse response, Question question) throws IOException
+	{
 		BasicDataSource ds = null;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -191,424 +312,7 @@ public class QuestionsServlet extends HttpServlet {
         	writer.println(Answer);
         	writer.close();
 		}		
-			
-	}		
-	
-@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("application/json");
-		String requestPath = request.getPathInfo();
-		// method put must get uri of questionId
-		if(requestPath == null) {
-			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-			return;
-		}
-		String[] requestPathParts = requestPath.split("/");
-		//if uri path is smaller than 2 it is wrong url so we have to return METHOD_NOT_ALLOWED
-		if(requestPathParts.length != 2) {
-			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-			return;
-		}
-		Gson gson = new Gson();
-		int questionId = Integer.parseInt(requestPathParts[1]);
-		Question question;
-		int numOfVotes=0;
-		try {
-			question = gson.fromJson(request.getReader(), Question.class);
-			numOfVotes = question.getQuestionVotes();
-			numOfVotes += checkIfQuestionIdInDBandSendVoteNumber(request, response, questionId);
-			if(numOfVotes == -1){
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				return;
-			}
-		//Problem with reading json to user
-		} catch(Exception e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-		
-		try {
-			updateVoteOfQuesion(request,response,questionId,numOfVotes);
-	        //gson.toJson(question, response.getWriter());
-	        response.setStatus(HttpServletResponse.SC_OK);
-			
-		} catch (Exception e) {
-			//log.error("Exception in process, e);
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		}
-		
-		try {
-			/***********************/
-			/**NOW UPDATE THE USER IN THE DB**/
-			//db.update(user)...
-			//bla
-			//bla
-			/***********************/
-			
-	        gson.toJson(question, response.getWriter());
-	        response.setStatus(HttpServletResponse.SC_OK);
-			
-		} catch (Exception e) {
-			//log.error("Exception in process, e);
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		}
 	}
-		
-	
-
-	//////////////*** implementation of methods that handling with DB ***/////////////////	
-	private void searchQuestions(HttpServletRequest request, HttpServletResponse response) throws IOException
-	{
-		String currentPage = request.getParameter("currentPage");
-		String topicName = request.getParameter("topicName");
-		String newOrAll = request.getParameter("newOrAll");
-		if (newOrAll == null)
-		{
-			newOrAll = "new";
-		}
-		
-		if (null == topicName)
-		{
-			if (null == currentPage)
-			{
-				// bad request
-			}
-			switch(newOrAll)
-			{
-				case "new":
-				{
-					if(currentPage == null)
-					{
-						currentPage = "0";
-					}
-					selectNewlyQuestionsByCurrentPage(Integer.parseInt(currentPage), response);
-			    	break;
-				}
-				case "all":
-				{
-					selectExistingQuestionsByCurrentPage(Integer.parseInt(currentPage), response);
-			    	break;
-				}
-			}			
-			
-		}else
-		{
-			selectQuestionsByTopic(topicName, Integer.parseInt(currentPage), response);
-    		Gson gson = new Gson();
-    		int numofquestions = getNumberOfLeftPages(Integer.parseInt(currentPage), "existing");
-    		JsonObject numberOfQuestion= new JsonObject();
-    		numberOfQuestion.addProperty("numOfQuestions", numofquestions);
-	    	
-		}	
-			
-	}
-	
-	private void getQuestion(String questionId, HttpServletRequest request, HttpServletResponse response)
-	{
-		Connection conn = null;
-		PreparedStatement pstmt = null, stmt = null;
-		JsonObject json = new JsonObject();
-		String Answer;	
-		
-		try
-		{
-			Context context = new InitialContext();
-			BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-			conn = ds.getConnection();
-			
-			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_QUESTION_BY_ID_STMT);
-			pstmt.setInt(1, Integer.parseInt(questionId));
-    		ResultSet rs = pstmt.executeQuery();
-    		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
-    		stmt.setInt(1,Integer.parseInt(questionId));
-    		ResultSet rss = pstmt.executeQuery();
-    		ArrayList<String> topics = new ArrayList<>();
-    		while (rss.next())
-    		{
-    			topics.add(rss.getString(1));
-    		}
-    		Question question;
-    		
-			String submittionTime = rs.getString(2);
-			String contentTxt = rs.getString(3);
-			int votes = rs.getInt(4);
-			int rate = rs.getInt(5);    			
-			String submittedUser =  rs.getString(6);
-    		if (rs.next())
-    		{
-    			question = new Question(Integer.parseInt(questionId), submittionTime ,contentTxt ,topics, submittedUser, votes, rate);
-    		}
-    		
-    		rs.close();
-    		rss.close();
-    		pstmt.close();
-    		stmt.close();
-    		conn.close();
-    		
-		}catch (SQLException | NamingException e) {
-			System.out.println(e.toString());
-			try {
-				if(pstmt != null)
-					pstmt.close();				
-				if(conn != null)
-					conn.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		}						
-	}
-	
-	private int getNumberOfLeftPages(int currentPage, String state)
-	{
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		JsonObject json = new JsonObject();
-		String Answer;
-		int numberOfQuestions = 0;
-		try 
-		{
-    		Context context = new InitialContext();
-    		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-    		conn = ds.getConnection();
-    		if ("new" == state)
-    		{
-    			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_NEWLY_QUESTIONS_STMT);
-    		} else    		
-    		{
-    			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_EXISTING_QUESTIONS_STMT);
-    		}    		
-    		// get number of questions
-    		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_NEWLY_QUESTIONS_STMT);
-    		
-    		ResultSet rs = pstmt.executeQuery();
-    		rs.next();
-    		numberOfQuestions = rs.getInt(1);
-    		
-    		rs.close();
-    		//rss.close();
-    		pstmt.close();
-    		//stmt.close();
-    		conn.close();
-    		
-		}catch (SQLException | NamingException e) {
-			System.out.println(e.toString());
-			try {
-				if(pstmt != null)
-					pstmt.close();				
-				if(conn != null)
-					conn.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}			
-    	}
-		return numberOfQuestions;			
-	}
-	
-	
-	private void selectNewlyQuestionsByCurrentPage(int currentPage, HttpServletResponse response) throws IOException {
-		Connection conn = null;
-		PreparedStatement pstmt = null, stmt = null;
-		Collection<Question> QuestionResults = new ArrayList<Question>(); 
-		Gson gson = new Gson();
-		try 
-		{
-        	//obtain CustomerDB data source from Tomcat's context
-    		Context context = new InitialContext();
-    		ResultSet rss = null;
-			BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-    		conn = ds.getConnection();    		   		
-    		/** prepare the statement of select 20 questions by current page **/
-    		int fromQuestion = currentPage * 20;
-    		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_NEWLY_QUESTIONS_STMT);
-    		pstmt.setInt(1, fromQuestion);
-    		ResultSet rs = pstmt.executeQuery();
-    		while( rs.next() )
-    		{
-    			int questionId = rs.getInt(1);
-        		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
-        		stmt.setInt(1,questionId);
-        		rss = stmt.executeQuery();
-        		ArrayList<String> topics = new ArrayList<>();
-        		while (rss.next())
-        		{
-        			topics.add(rss.getString(1));
-        		}
-
-    			String submittionTime = rs.getString(2);
-    			String contentTxt = rs.getString(3);
-    			int votes = rs.getInt(4);
-    			int rate = rs.getInt(5);    			
-    			String submittedUser =  rs.getString(6);
-    			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
-    			topics.clear();
-    			
-    		}  	
-
-
-        	//String newlyQuestionsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
-    		int numofquestions = (getNumberOfLeftPages(currentPage, "new"))/20;
-    		QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numofquestions);   
-    		String newlyQuestionsJsonResult = gson.toJson(qestionsResponse, QuestionsResponse.class);
-
-    		
-			PrintWriter writer = response.getWriter();
-	    	writer.println(newlyQuestionsJsonResult);
-	    	writer.close();
-	    	
-    		rss.close();   		
-    		rs.close();
-    		pstmt.close();
-    		stmt.close();
-    		conn.close();
-    		    		    		
-		}catch (SQLException | NamingException e) {
-			System.out.println(e.toString());
-			try {
-				if(pstmt != null)
-					pstmt.close();
-				
-				if(conn != null)
-					conn.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}			
-    	}
-	}
-	
-	private void selectExistingQuestionsByCurrentPage(int currentPage, HttpServletResponse response) throws IOException {
-		Connection conn = null;
-		PreparedStatement pstmt = null, stmt = null;
-		JsonObject json = new JsonObject();
-		String Answer;
-		Collection<Question> QuestionResults = new ArrayList<Question>(); 
-		try 
-		{
-        	//obtain CustomerDB data source from Tomcat's context
-    		Context context = new InitialContext();
-    		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-    		conn = ds.getConnection();    		
-    		Gson gson = new Gson();
-    		ResultSet rss = null;
-    		/** prepare the statement of select 20 questions by current page **/
-    		int fromQuestion = currentPage * 20;
-    		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_EXISTING_QUESTIONS_STMT);
-    		pstmt.setInt(1, fromQuestion);
-    		
-    		ResultSet rs = pstmt.executeQuery();
-    		while( rs.next() )
-    		{
-    			int questionId = rs.getInt(1);
-        		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
-        		stmt.setInt(1,questionId);
-        		rss = stmt.executeQuery();
-        		ArrayList<String> topics = new ArrayList<>();
-        		while (rss.next())
-        		{
-        			topics.add(rss.getString(1));
-        		}
-    			String submittionTime = rs.getString(2);
-    			String contentTxt = rs.getString(3);
-    			int votes = rs.getInt(4);
-    			int rate = rs.getInt(5);    			
-    			String submittedUser =  rs.getString(6);
-    			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
-    		}  		
-    		       	
-    		int numofquestions = (getNumberOfLeftPages(currentPage, "all"))/20;
-    		QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numofquestions);
-    		String allQuestionsJsonResult = gson.toJson(qestionsResponse, QuestionsResponse.class);
-	        
-			PrintWriter writer = response.getWriter();
-	    	writer.println(allQuestionsJsonResult);
-	    	writer.close();
-	    	
-    		rss.close();
-    		stmt.close();
-			rs.close();
-			pstmt.close();
-			stmt.close();
-    		conn.close();
-    		    		    		
-		}catch (SQLException | NamingException e) {
-			System.out.println(e.toString());
-			try {
-				if(pstmt != null)
-					pstmt.close();
-				
-				if(conn != null)
-					conn.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}			
-    	}
-	}
-	
-	private void selectQuestionsByTopic(String topicName, int currentPage, HttpServletResponse response) throws IOException {
-		Connection conn = null;
-		PreparedStatement pstmt = null, stmt = null;
-		JsonObject json = new JsonObject();
-		String Answer;
-		Collection<Question> QuestionResults = new ArrayList<Question>(); 
-		try 
-		{
-        	//obtain CustomerDB data source from Tomcat's context
-    		Context context = new InitialContext();
-    		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-    		conn = ds.getConnection();  
-    		Gson gson = new Gson();
-    		ResultSet rss = null;
-    		/** prepare the statement of select 20 questions by current page **/
-    		int fromQuestion = currentPage * 20;
-    		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_QUESTIONS_BY_TOPIC_STMT);
-    		pstmt.setString(1, topicName);
-    		pstmt.setInt(2, fromQuestion);    		
-    		ResultSet rs = pstmt.executeQuery();
-    		while( rs.next() )
-    		{
-    			int questionId = rs.getInt(1);
-        		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
-        		stmt.setInt(1,questionId);
-        		rss = stmt.executeQuery();
-        		ArrayList<String> topics = new ArrayList<>();
-        		while (rss.next())
-        		{
-        			topics.add(rss.getString(1));
-        		}
-        		
-    			String submittionTime = rs.getString(2);
-    			String contentTxt = rs.getString(3);
-    			int votes = rs.getInt(4);
-    			int rate = rs.getInt(5);    			
-    			String submittedUser =  rs.getString(6);
-    			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
-    		}  
-    		
-        	String QuestionsByTopicsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
-	        
-			PrintWriter writer = response.getWriter();
-	    	writer.println(QuestionsByTopicsJsonResult);
-	    	writer.close();
-    		
-    		rss.close();
-			rs.close();
-			pstmt.close();
-			stmt.close();
-    		conn.close();
-    		    		    		
-		}catch (SQLException | NamingException e) {
-			System.out.println(e.toString());
-			try {
-				if(pstmt != null)
-					pstmt.close();
-				
-				if(conn != null)
-					conn.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}			
-    	}
-	}
-	
 	
 	public void InsertTopics(Connection connection, List<String> topiclist) throws SQLException{//Try catch and no throw so we can deal with each topic individually and not with the man catch 
     	PreparedStatement pstmt;
@@ -753,7 +457,7 @@ public class QuestionsServlet extends HttpServlet {
     		
     		pstmt.executeUpdate();
     		pstmt.close();
-    		String submittedUser = (String)request.getSession().getAttribute("nickName");
+    		String submittedUser = (String)request.getSession().getAttribute("Nickname");
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.INSERT_VOTE_FOR_QUESTIONS_STMT);
     		pstmt.setInt(1, questionId);
     		pstmt.setString(2, submittedUser);
@@ -841,7 +545,7 @@ public class QuestionsServlet extends HttpServlet {
     	}		
 	}
     
-    private int calculateRatingScoreOfQuestion(int questionId, int numOfVotes)
+    public static int calculateRatingScoreOfQuestion(int questionId, int numOfVotes)
     {
 		Connection conn = null;
 		PreparedStatement pstmt = null;

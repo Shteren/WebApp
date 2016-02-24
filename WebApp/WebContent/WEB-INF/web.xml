@@ -77,7 +77,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>AnswersServlet</servlet-name>
-    <url-pattern>/AnswersServlet</url-pattern>
+    <url-pattern>/answers/*</url-pattern>
   </servlet-mapping>
     <servlet>
     <description></description>

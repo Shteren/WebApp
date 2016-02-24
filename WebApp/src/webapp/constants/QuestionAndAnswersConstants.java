@@ -12,6 +12,7 @@ public interface QuestionAndAnswersConstants {
 	
 	public final Type QUESTIONS_COLLECTION = new TypeToken<Collection<Question>>(){}.getType();
 	public final Type ANSWERS_COLLECTION = new TypeToken<Collection<Answer>>(){}.getType();
+	public final Type TOPICS_COLLECTION = new TypeToken<Collection<String>>(){}.getType();
 	
 	public final String INSERT_QUESTION_STMT = "INSERT INTO TBL_QUESTION(submitiontime,contexttext,submmitedusername)"
 			+ " VALUES(?,?,?)";
@@ -54,8 +55,9 @@ public interface QuestionAndAnswersConstants {
 			+ " ORDER BY QUESTIONRATING DESC"
 			+ " OFFSET ? ROWS FETCH NEXT 20 ROWS ONLY"; 
 	
-	public final String SELECT_QUESTIONS_BY_TOPIC_STMT = "SELECT * FROM tbl_rel_question_topic"
-			+ " WHERE TOPICNAME=?,"
+	public final String SELECT_QUESTIONS_BY_TOPIC_STMT = "SELECT * FROM tbl_question where"
+			+ " questionId IN (select questionId from tbl_rel_question_topic"
+								+ " WHERE TOPICNAME=?)"
 			+ " ORDER BY QUESTIONRATING DESC"
 			+ " OFFSET ? ROWS FETCH NEXT 20 ROWS ONLY";
 	
@@ -73,6 +75,13 @@ public interface QuestionAndAnswersConstants {
 	
 	public final String UPDATE_VOTE_FOR_QUESTIONS_STMT = "UPDATE tbl_question SET numberOfVotes=?, questionRating=? WHERE QUESTIONID=?";
 	public final String UPDATE_VOTE_FOR_ANSWER_STMT = "UPDATE tbl_answer SET numberOfVotes=? WHERE QUESTIONID=?";
+	
+	public final String SELECT_TOP_20_TOPICS_STMT = "select sum(tbl_question.questionRating), tbl_rel_question_topic.topicName"
+			+ " from tbl_question join tbl_tbl_rel_question_topic "
+			+ " on tbl_question.questionId = tbl_tbl_rel_question_topic.questionId"
+			+ " Group by tbl_rel_question_topic.topicName"
+			+ " order by sum(tbl_question.questionRating) DESC"
+			+ " OFFSET ? ROWS FETCH NEXT 20 ROWS ONLY";
 
 }
 

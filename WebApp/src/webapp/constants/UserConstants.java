@@ -16,11 +16,18 @@ public interface UserConstants {
 			+ " order by submitionTime"
 			+ " FETCH First 5 ROWS ONLY";
 	
-	public final String SELECT_AVG_QUESTION_BY_USER_NAME = "SELECT AVG(CAST (questionRating AS DOUBLE PRECISION)) FROM TBL_QUESTION"
-			+ "WHERE submmitedUsername =?";
+	public final String SELECT_LAST_5_QUESTION_USER_ANSWERED_STMT = "select * from "
+			+ " tbl_question JOIN tbl_anwer"
+			+ " on tbl_question.questionId = tbl_anwer.questionId"
+			+ " where tbl_answer.submmitedUsername=?"
+			+ " order by tbl_answer.submitionTime"
+			+ " FETCH First 5 ROWS ONLY)";
+	
+	public final String SELECT_AVG_QUESTION_BY_USER_NAME = "SELECT AVG(questionRating) FROM TBL_QUESTION"
+			+ " WHERE submmitedUsername=?";
 	
 	public final String SELECT_AVG_ANSWER_BY_USER_NAME = "SELECT AVG(CAST (numberOfVotes AS DOUBLE PRECISION)) FROM TBL_ANSWER"
-			+ "WHERE submmitedUsername =?";
+			+ " WHERE submmitedUsername=?";
 	
 	public final String SELECT_TOP_RATED_USERS_STMT = "select * from tbl_user"
 			+ " order by rating desc"
@@ -30,6 +37,15 @@ public interface UserConstants {
 	
 	public final String SELECT_USER_BY_VOTE_QUESTION_STMT = "select username from tbl_rel_user_question_vote where username=?";
 	public final String SELECT_USER_BY_VOTE_ANSWER_STMT = "select username from tbl_rel_user_answer_vote where username=?";
+	
+	public final String SELECT_USER_EXPERTIES_STMT = "SELECT tbl_rel_question_topic.topicName, sum(tbl_answer.numberOfVotes)"
+			+ " FROM tbl_answer JOIN tbl_question"
+			+ " on tbl_answer.QUESTIONID = tbl_question.QUESTIONID)"
+			+ " JOIN tbl_rel_question_topic"
+			+ " on tbl_question.QUESTIONID = tbl_rel_question_topic.QUESTIONID"
+			+ " WHERE tbl_answer.submmitedUsername=?"
+			+ " GROUP BY tbl_rel_question_topic.topicName"
+			+ " ORDER BY sum(tbl_answer.numberOfVotes) DESC";
 	
 
 }

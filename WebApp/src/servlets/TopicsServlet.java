@@ -74,7 +74,54 @@ public class TopicsServlet extends HttpServlet {
     
     
     private void selectTopicsByCurrentPage(int currentPage, HttpServletResponse response) throws IOException {
-
+    	
+		Connection conn = null;
+		PreparedStatement pstmt = null, stmt = null;
+		JsonObject json = new JsonObject();
+		String Answer;
+		Collection<String> topicsResults = new ArrayList<String>(); 
+		try 
+		{
+        	//obtain CustomerDB data source from Tomcat's context
+    		Context context = new InitialContext();
+    		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
+    		conn = ds.getConnection();  
+    		Gson gson = new Gson();
+    		ResultSet rss = null;
+    		/** prepare the statement of select 20 topics by current page **/
+    		int fromQuestion = currentPage * 20;
+    		ArrayList<String> topics = new ArrayList<>();
+    		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOP_20_TOPICS_STMT);
+    		pstmt.setInt(1, fromQuestion);    		
+    		ResultSet rs = pstmt.executeQuery();
+    		while( rs.next() )
+    		{
+    			String topicName = rs.getString(2);
+        		topics.add(topicName);        		
+    		}  
+    		
+        	String topicsJsonResult = gson.toJson(topics, QuestionAndAnswersConstants.TOPICS_COLLECTION);
+	        
+			PrintWriter writer = response.getWriter();
+	    	writer.println(topicsJsonResult);
+	    	writer.close();
+    		
+			rs.close();
+			pstmt.close();
+    		conn.close();
+    		    		    		
+		}catch (SQLException | NamingException e) {
+			System.out.println(e.toString());
+			try {
+				if(pstmt != null)
+					pstmt.close();
+				
+				if(conn != null)
+					conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}			
+    	}   	
 	}
 	
 }

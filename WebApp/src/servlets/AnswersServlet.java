@@ -66,6 +66,7 @@ public class AnswersServlet extends HttpServlet {
 			answer = gson.fromJson(request.getReader(), Answer.class);
 		//Problem with reading json to question
 		} catch(Exception e) {
+			System.out.println(e.toString());
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
@@ -94,6 +95,7 @@ public class AnswersServlet extends HttpServlet {
 			//execute insert command
 			pstmt.executeUpdate();
 			UpdateUserRating(conn, nickname);
+			UpdateQuestionRating(request, response, questionId);
 			
 			conn.commit();
 			pstmt.close();
@@ -269,9 +271,11 @@ public class AnswersServlet extends HttpServlet {
     		pstmt.setInt(1, numOfVotes);
     		pstmt.setInt(2, answerId);
     		
+    		
+    		
     		pstmt.executeUpdate();
     		pstmt.close();
-    		String submittedUser = (String)request.getSession().getAttribute("nickName");
+    		String submittedUser = (String)request.getSession().getAttribute("Nickname");
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.INSERT_VOTE_FOR_ANSWER_STMT);
     		pstmt.setInt(1, answerId);
     		pstmt.setString(2, submittedUser);
@@ -330,6 +334,63 @@ public class AnswersServlet extends HttpServlet {
     	quesStmt.close();
     	ansStmt.close();
     	userStmt.close();
+    }
+    
+    private void UpdateQuestionRating(HttpServletRequest request, HttpServletResponse response, int questionId) throws SQLException, IOException{
+		Connection conn = null;
+    	PreparedStatement  pstmt = null;
+    	JsonObject json = new JsonObject();
+    	try {
+    		
+    		Context context = new InitialContext();
+    		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
+    		conn = ds.getConnection();    		   		        	
+    		
+			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_QUESTION_BY_ID_STMT);
+    		pstmt.setInt(1,questionId);
+    		ResultSet rss = pstmt.executeQuery();
+    		if (rss.next())
+    		{
+    			int questionVotes = rss.getInt(4);
+    			int answersRating = QuestionsServlet.calculateRatingScoreOfQuestion(questionId, questionVotes);
+    			double questionRating = 0.2 * questionVotes + 0.8 * answersRating;
+    			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.UPDATE_VOTE_FOR_QUESTIONS_STMT);
+    			pstmt.setInt(1, questionVotes);
+    			pstmt.setDouble(2, questionRating);
+    			pstmt.setInt(3, questionId);    		
+    			pstmt.executeUpdate();
+    			pstmt.close();
+		
+    			pstmt.executeUpdate(); 
+    		}
+    		rss.close();
+
+    		
+			//build Json Answer
+			json = new JsonObject();
+			json.addProperty("Result", true);
+			String answer = json.toString();
+			
+			PrintWriter writer = response.getWriter();
+        	writer.println(answer);
+        	
+        	writer.close();
+    		conn.commit();			
+    		conn.close();
+    		    		    		
+		}catch (SQLException | NamingException e) {
+			System.out.println(e.toString());
+			try {
+				if(pstmt != null)
+					pstmt.close();
+				
+				if(conn != null)
+					conn.rollback();
+					conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+    	}
     }
 
 }

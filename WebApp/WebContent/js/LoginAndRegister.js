@@ -71,14 +71,14 @@ angular.module('inTableApp',[])
 				 {
 		         method: 'POST',
 		         url: 'http://localhost:8080/WebApp/users',
-					params: {
+					data: {
 						userName: $scope.RegistrationName,
 						password: $scope.RegistrationPassword,
 						nickName: $scope.RegistrationNickname,
 						description: $scope.RegistrationDescription,					
 					},
 		         //params: { username: $scope.U_Name, password: $scope.U_PWD, action: "login" },
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				headers: {'Content-Type': 'application/json'}
 		     })
 		     .success(function (result) 
 		     {
