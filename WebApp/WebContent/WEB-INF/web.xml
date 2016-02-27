@@ -51,26 +51,6 @@
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>GetQuestionsServlet</display-name>
-    <servlet-name>GetQuestionsServlet</servlet-name>
-    <servlet-class>servlets.GetQuestionsServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>GetQuestionsServlet</servlet-name>
-    <url-pattern>/GetQuestionsServlet</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>logOutServlet</display-name>
-    <servlet-name>logOutServlet</servlet-name>
-    <servlet-class>servlets.logOutServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>logOutServlet</servlet-name>
-    <url-pattern>/logOutServlet</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
     <display-name>AnswersServlet</display-name>
     <servlet-name>AnswersServlet</servlet-name>
     <servlet-class>servlets.AnswersServlet</servlet-class>

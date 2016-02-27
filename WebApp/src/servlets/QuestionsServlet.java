@@ -38,6 +38,7 @@ import webapp.model.Answer;
 import webapp.model.Question;
 import webapp.model.QuestionAndAnswerDBAccess;
 import webapp.model.QuestionsResponse;
+import webapp.model.UserAccessDB;
 
 /**
  * Servlet implementation class Questions
@@ -261,7 +262,7 @@ public class QuestionsServlet extends HttpServlet {
 			String id = "";
     		if(!rs.next()) // Question doesn't exist
 			{
-    			System.out.println("here");
+    			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			}
     		else
     		{
@@ -269,7 +270,7 @@ public class QuestionsServlet extends HttpServlet {
     		}
     					
     		InsertTopicsQusrtionRel(conn, topics, id);
-    		UpdateUserRating(conn, nickname);
+    		UserAccessDB.UpdateUserRating(conn, nickname);
 			conn.commit();
 			pstmt.close();
 			
@@ -466,8 +467,9 @@ public class QuestionsServlet extends HttpServlet {
     		pstmt.executeUpdate(); 
     		
     		conn.commit();			
-    		conn.close();
     		
+    		UserAccessDB.UpdateUserRating(conn, submittedUser);
+    		conn.close();
 			//build Json Answer
 			json = new JsonObject();
 			json.addProperty("Result", true);
@@ -584,28 +586,4 @@ public class QuestionsServlet extends HttpServlet {
 		return answersAvgVotes;
     }
             	
-    private void UpdateUserRating(Connection conn, String nickname) throws SQLException{
-    	PreparedStatement userStmt = null, quesStmt = null, ansStmt = null;
-    	ResultSet quesRes = null, ansRes = null;
-    	
-    	quesStmt = conn.prepareStatement(UserConstants.SELECT_AVG_QUESTION_BY_USER_NAME);
-    	quesStmt.setString(1, nickname);
-    	ansStmt = conn.prepareStatement(UserConstants.SELECT_AVG_ANSWER_BY_USER_NAME);
-    	ansStmt.setString(1, nickname);
-    	userStmt = conn.prepareStatement(UserConstants.UPDATE_USER_RATING_STMT);
-    	
-    	quesRes = quesStmt.executeQuery();
-    	ansRes = ansStmt.executeQuery();
-    	
-    	if (quesRes.next() && ansRes.next()) {
-    		double rating = (0.2 * (quesRes.getInt(1)) + (0.8 * (ansRes.getInt(1))));
-    		userStmt.setDouble(1, rating);
-    		userStmt.setString(2, nickname);
-    		userStmt.executeUpdate();
-    	}
-    	
-    	quesStmt.close();
-    	ansStmt.close();
-    	userStmt.close();
-    }
 }
