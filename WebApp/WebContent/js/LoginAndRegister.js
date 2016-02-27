@@ -109,13 +109,13 @@ angular.module('inTableApp',[])
 						userName: $scope.name			
 					},
 					headers: {'password': $scope.password}
-					
+				
 			}).success( function(response) {
-			
+					//alert(response.Result)
 	   	         if (response.Result == true) 
 	   	         {
 	   	           //alert('Resistration was successful');
-	   	        	window.location.assign("MainPage.html")
+	   	        	window.location.assign("MainPage.html");
 	   	         }
 	   	         else 
 	   	         {
