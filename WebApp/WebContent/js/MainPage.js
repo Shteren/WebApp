@@ -41,7 +41,8 @@ angular.module('inTableApp',[])
 			     
 			     .success(function(response) 
 			     {
-			    	 alert("hare2");
+			    	  obj.sentAnswerTxt = obj.answerTxt;
+			    	  obj.answerTxt = null;
 			    
 			     })
 			     .error(function (error) 
