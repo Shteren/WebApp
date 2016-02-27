@@ -149,7 +149,7 @@ public class QuestionAndAnswerDBAccess {
     			int rate = rs.getInt(5);    			
     			String submittedUser =  rs.getString(6);
     			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
-    			topics.clear();
+    			//topics.clear();
     			
     		}  	
     		
@@ -289,17 +289,21 @@ public class QuestionAndAnswerDBAccess {
     			String submittedUser =  rs.getString(6);
     			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
     		}  
-    		
-        	String QuestionsByTopicsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
+    		int numofquestions = 0;
+    		QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numofquestions);
+    		String QuestionsByTopicsJsonResult = gson.toJson(qestionsResponse, QuestionsResponse.class);
+        	//String QuestionsByTopicsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
 	        
 			PrintWriter writer = response.getWriter();
 	    	writer.println(QuestionsByTopicsJsonResult);
 	    	writer.close();
     		
-    		rss.close();
+	    	if(null != rss)
+	    		rss.close();
 			rs.close();
 			pstmt.close();
-			stmt.close();
+			if( null != stmt)
+				stmt.close();
     		conn.close();
     		    		    		
 		}catch (SQLException | NamingException e) {

@@ -41,6 +41,7 @@ angular.module('inTableApp',[])
 		    	 $scope.PreviousButtonFlag = true; // disable previous button
 		    	 
 		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
+		    	 //alert(JSON.stringify(response.questions[0].questionTopics));
 		       /* for( i =0 ; i < response.questions.length ; i++)
 	        	{
 		        	$scope.GetQuestionsResult.push(response.questions[i]);
@@ -234,9 +235,11 @@ angular.module('inTableApp',[])
 	    $scope.tag = [];
 	    $scope.prevOrNextPageNumCounter = 0;
 	    $scope.topicList;
-		$scope.CheckSession();		
 		$scope.GetQuestionsResult =[];
 		$scope.NumOfPages = 0;
+		$scope.CheckSession();
+			
+
 		$scope.GetQuestions();
 		
 		

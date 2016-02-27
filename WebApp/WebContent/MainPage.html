@@ -17,7 +17,7 @@
 			    <div id="navbarCollapse" class="collapse navbar-collapse">
 			        <ul class="nav navbar-nav">
 			            <li class="active"><a href="#">Home</a></li>
-			            <li><a href="#">Browse Questions</a></li>
+			            <li><a href="QuestionsByTopic.html">Browse Questions</a></li>
 			            <li><a href="#">Leader Board</a></li>
 			        </ul>
 			        <ul class="nav navbar-nav navbar-right">
@@ -26,26 +26,30 @@
 			    </div>
 			</nav>
 		</div>
+		<!--  Questions -->
 		<div style="margin:auto; width: 50%;">
 			<form role="form">
 				<div class="form-group">
-			  		<label>Insert your question here:</label>
-			  		<textarea class="form-control" placeholder="Whats bothering you?" data-ng-model="questionTxt" ></textarea> 		  																						 		
+					<div class="row">
+				  		<label>Insert your question here:</label>
+				  		<textarea class="form-control" placeholder="Whats bothering you?" data-ng-model="questionTxt" ></textarea> 		  																						 		
+				  	</div>
 			  	</div>	
 			  	<div class="form-group"  >
-			  		<label>Tag Tag's</label>
-			  		<input class="form-control" type="text" data-ng-change="myFunc()" data-ng-model="topics">
-			  		
-			  		<div class="alert alert-danger" role="alert" data-ng-show="HideShowTagCharacterError">
-  						<a href="#" class="alert-link" >More than 50 Characters</a>
-					</div>
-					<div class="navbar" style="">
-				  		<div data-ng-repeat="t in tag" style="float:left">
+			  		<div class="row">
+			  			<label>Tag Tag's</label>
+			  			<input class="form-control" type="text" data-ng-change="myFunc()" data-ng-model="topics">
+				  		<div data-ng-show="HideShowTagCharacterError">
+  							<label class="label label-danger" >More than 50 Characters</label>
+						</div>
+			  		</div>
+					<div >
+				  		<div data-ng-repeat="t in tag" style="display:inline;">
 				  			<label class="label label-default">{{t}}</label>
 				  		</div>
 			  		</div>
 			  	</div>
-			  	<div class="form-group" style="margin: auto;">
+			  	<div class="form-group">
 			  		<button class="btn btn-primary " data-ng-click="addQuestion()">Question</button>
 			  	</div>
 			</form>
@@ -53,12 +57,15 @@
 		<br>
 		<div class="navbar navbar-default" >
 			<br><br>
-			<div style="margin: auto;width:70%;">
-				<div  data-ng-repeat="x in GetQuestionsResult" class="panel panel-default">
-					<h4> Question by {{x.nickName}}</h4>
-					<table>
-						<tr>
-							<td style="width:15%">
+			<div style="margin:auto;width:80%" data-ng-repeat="x in GetQuestionsResult" >
+				<div class="panel panel-default">
+					<div class="row">
+						<div class="col-sm-12">				
+							<h4> Question by {{x.nickName}}</h4>
+						</div>
+					</div>
+					<div class="row">	
+							<div class="col-sm-1">
 								<div class="btn-group-vertical"  role="group" aria-label="..." style="margin-left:15%;">
 									<button type="button" class="btn btn-default" aria-label="Right Align" data-ng-click="voteUp(x)">
 									<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"> {{up}}</span></button>
@@ -66,30 +73,31 @@
 									<button type="button" class="btn btn-default" aria-label="Right Align" data-ng-click="voteDown(x)">
 									<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"> {{down}}</span></button>
 								</div>
-							</td>
-							<td>&nbsp</td>
-							<td style="width:85%">
-								<div>
-									<label>{{x.questionTxt}}</label>
+							</div>
+							<div class="col-sm-11">
+								<div class="row">
+									<div class="col-sm-9">
+										<label>{{x.questionTxt}}</label>
+									</div>
 								</div>
-								<br>					<!-- Write an answer  -->
-								<div >
-								    <div>
-								        <form class="form-inline" >           
-								                <textarea class="form-control" style="width:60%;resize:vertical" placeholder="So what is your answer Smartass"></textarea>
-								                <button type="submit" class="btn">Send</button>            
-								        </form>
+								<div class="row-fluid">
+									<div class="col-xs-8 form-inline">       
+						                <textarea class="form-control" style="width:80%" placeholder="So what is your answer Smartass"></textarea>
+						                <button type="submit" class="btn">Send</button>            
+								    </div>
+								    <div class="col-xs-4">
+								    	<label>Topics:</label>
+								    	<div data-ng-repeat="t in x.questionTopics" style="display:inline;">
+								    		<label class="label label-default">{{t}}</label>
+								    	</div>
 								    </div>
 								</div>
-							</td>
-						</tr>
-						
-					</table>
+							</div>
+					</div> <!--  end of  second row(question +answer text )-->
 					<br>
-					
 				</div>
-			
 			</div>
+			<br>
 		</div>
 		<div>
 			<nav>
