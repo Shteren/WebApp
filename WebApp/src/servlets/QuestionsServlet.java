@@ -394,8 +394,11 @@ public class QuestionsServlet extends HttpServlet {
     		{
 				String nickName = (request.getSession().getAttribute("Nickname")).toString();
     			if (rs.getString(6).equals(nickName)) {
+        			json = new JsonObject();
+        			json.addProperty("Result", "It's your question");
+        			answer = json.toString();
         			PrintWriter writer = response.getWriter();
-        	    	writer.println("It's your question");
+        	    	writer.println(answer);
         	    	writer.close();
         	    	votes = -1;
     			} else {
@@ -443,8 +446,13 @@ public class QuestionsServlet extends HttpServlet {
     		{
     			// The user already voted
     			rs.close();
+    			//build Json Answer
+    			json = new JsonObject();
+    			json.addProperty("Result", "The user already vote");
+    			answer = json.toString();
+    			
     			PrintWriter writer = response.getWriter();
-    	    	writer.println("The user already vote");
+    	    	writer.println(answer);
     	    	writer.close();
     			return;
     		}
