@@ -24,6 +24,69 @@ angular.module('inTableApp',[])
 	    		 $scope.PreviousButtonFlag = false; // enabled
     		 }
 		}
+		
+		$scope.addAnswer = function(obj)
+		{
+	
+			alert(obj.answerTxt);
+			alert(obj.questionId);
+			 $http({ method: 'POST',
+			        url: 'http://localhost:8080/WebApp/answers',
+					data: {
+						answerTxt: obj.answerTxt ,
+						questionId: obj.questionId
+					},
+					headers: {'Content-Type': 'application/json'}
+			     })
+			     
+			     .success(function(response) 
+			     {
+			    	  obj.sentAnswerTxt = obj.answerTxt;
+			    	  obj.answerTxt = null;
+			    
+			     })
+			     .error(function (error) 
+			     {
+			 
+			     }); 
+		}
+
+	    $scope.voteUp = function(obj){
+	    	alert(obj.questionId);
+			$http({ method: 'PUT',
+		        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId,
+		        data: { questionVote: +1},
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		     })
+		     .success(function(result) 
+		     {
+		    	 obj.questionVote++;
+		    	 //window.location.assign("MainPage.html");
+		    	 
+		    	 
+		     })
+		     .error(function (error) 
+		     {
+		             $scope.status = 'Unable to connect' + error.message;
+		     }); 
+	    }
+	    $scope.voteDown = function(obj){
+	    	alert(obj.questionId);
+			$http({ method: 'PUT',
+		        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId,
+		        data: { questionVote: -1},
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		     })
+		     .success(function(result) 
+		     {
+		    	 obj.questionVote++;
+		    	 //window.location.assign("MainPage.html");
+		     })
+		     .error(function (error) 
+		     {
+		             $scope.status = 'Unable to connect' + error.message;
+		     }); 
+	    }
 
 		$scope.GetQuestions = function()
 		{
