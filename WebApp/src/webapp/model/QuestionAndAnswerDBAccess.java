@@ -148,7 +148,7 @@ public class QuestionAndAnswerDBAccess {
     			int votes = rs.getInt(4);
     			int rate = rs.getInt(5);    			
     			String submittedUser =  rs.getString(6);
-    			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
+    			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, null));
     			//topics.clear();
     			
     		}  	
@@ -213,12 +213,19 @@ public class QuestionAndAnswerDBAccess {
         		{
         			topics.add(rss.getString(1));
         		}
+    	    	if(null != rss) {
+    	    		rss.close();
+    	    	}
+    	    	stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_FIRST_ANSWER_BY_QUESTION_ID_STMT);
+        		stmt.setInt(1,questionId);
+        		rss = stmt.executeQuery();
+        		Answer answer = new Answer(rss.getInt(1), rss.getString(2), rss.getString(3), rss.getInt(4), rss.getInt(5), rss.getString(6));
     			String submittionTime = rs.getString(2);
     			String contentTxt = rs.getString(3);
     			int votes = rs.getInt(4);
     			int rate = rs.getInt(5);    			
     			String submittedUser =  rs.getString(6);
-    			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
+    			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, answer));
     		}  		
     		       	
     		int numofquestions = (getNumberOfLeftPages(currentPage, "all"))/20;
@@ -281,13 +288,19 @@ public class QuestionAndAnswerDBAccess {
         		{
         			topics.add(rss.getString(1));
         		}
-        		
+    	    	if(null != rss) {
+    	    		rss.close();
+    	    	}
+    	    	stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_FIRST_ANSWER_BY_QUESTION_ID_STMT);
+        		stmt.setInt(1,questionId);
+        		rss = stmt.executeQuery();
+        		Answer answer = new Answer(rss.getInt(1), rss.getString(2), rss.getString(3), rss.getInt(4), rss.getInt(5), rss.getString(6));
     			String submittionTime = rs.getString(2);
     			String contentTxt = rs.getString(3);
     			int votes = rs.getInt(4);
     			int rate = rs.getInt(5);    			
     			String submittedUser =  rs.getString(6);
-    			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
+    			QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate,answer));
     		}  
     		int numofquestions = 0;
     		QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numofquestions);
@@ -298,8 +311,7 @@ public class QuestionAndAnswerDBAccess {
 	    	writer.println(QuestionsByTopicsJsonResult);
 	    	writer.close();
     		
-	    	if(null != rss)
-	    		rss.close();
+
 			rs.close();
 			pstmt.close();
 			if( null != stmt)

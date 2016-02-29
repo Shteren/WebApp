@@ -15,8 +15,9 @@ public class Question
 	private String nickName;
 	private int questionVote;
 	private int QuestionRating;
+	private Answer firstAnswer;
 	
-	public Question(int Id, String subtime,String txt,List<String> topicsList, String nick, int vote, int Rate)
+	public Question(int Id, String subtime,String txt,List<String> topicsList, String nick, int vote, int Rate, Answer answer)
 	{
 		questionId = Id;
 		submmitionTime = subtime; 
@@ -25,6 +26,7 @@ public class Question
 		nickName = nick;
 		questionVote = vote;
 		QuestionRating = Rate;
+		firstAnswer = answer;
 	}
 	
 	public int getQuestionId() {
@@ -81,6 +83,14 @@ public class Question
 
 	public void setQuestionRating(int questionRating) {
 		QuestionRating = questionRating;
+	}
+
+	public Answer getFirstAnswer() {
+		return firstAnswer;
+	}
+
+	public void setFirstAnswer(Answer firstAnswer) {
+		this.firstAnswer = firstAnswer;
 	}
 
 

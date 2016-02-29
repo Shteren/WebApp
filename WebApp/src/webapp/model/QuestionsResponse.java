@@ -7,6 +7,7 @@ import java.util.List;
 public class QuestionsResponse {
 	private Collection<Question> questions;
 	int numOfPages;
+	private Answer firstAnswer;
 	
 	public QuestionsResponse(Collection<Question> questions, int numOfPages) {
 		this.questions = questions;
@@ -28,7 +29,5 @@ public class QuestionsResponse {
 	public void setNumOfPages(int numOfPages) {
 		this.numOfPages = numOfPages;
 	}
-	
-	
-	
+		
 }

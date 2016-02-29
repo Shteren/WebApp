@@ -116,7 +116,7 @@ public class UsersServlet extends HttpServlet {
     			int votes = rs.getInt(4);
     			int rate = rs.getInt(5);    			
     			String submittedUser =  rs.getString(6);
-    			five_last_asked_questions.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
+    			five_last_asked_questions.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, null));
     		}
 		}catch (SQLException | NamingException e) {
 			System.out.println(e.toString());
@@ -241,7 +241,7 @@ public class UsersServlet extends HttpServlet {
     			int votes = rs.getInt(4);
     			int rate = rs.getInt(5);    			
     			String submittedUser =  rs.getString(6);
-    			five_last_user_answered_questions.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate));
+    			five_last_user_answered_questions.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, null));
     			int answerId = rs.getInt(7);
     			String answerSubmittionTime = rs.getString(8);
     			String answerContentTxt = rs.getString(9);

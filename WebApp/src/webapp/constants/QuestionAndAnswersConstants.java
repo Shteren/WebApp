@@ -67,6 +67,11 @@ public interface QuestionAndAnswersConstants {
 			+ " where questionId=?"
 			+ " order by numberOfVotes" ;
 	
+	public final String SELECT_FIRST_ANSWER_BY_QUESTION_ID_STMT = "select * from tbl_answer "
+			+ " where questionId=?"
+			+ " order by numberOfVotes"
+			+ " FETCH FIRST 1 ROWS ONLY";
+	
 	public final String SELECT_AVG_ANSWERS_BY_QUESTION_ID_STMT = "select AVG(CAST (numberOfVotes AS DOUBLE PRECISION)) from tbl_answer "
 			+ " where questionId=?";
 	

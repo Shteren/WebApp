@@ -202,7 +202,7 @@ public class QuestionsServlet extends HttpServlet {
 			String submittedUser =  rs.getString(6);
     		if (rs.next())
     		{
-    			question = new Question(Integer.parseInt(questionId), submittionTime ,contentTxt ,topics, submittedUser, votes, rate);
+    			question = new Question(Integer.parseInt(questionId), submittionTime ,contentTxt ,topics, submittedUser, votes, rate, null);
     		}
     		
     		rs.close();
