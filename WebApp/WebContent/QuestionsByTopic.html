@@ -81,10 +81,12 @@
 									<div class ="row-fluid">
 										<div class="col-xs-8"> 
 											<br>
-											<button type="submit" class="btn btn-warning" data-ng-model="showAns" data-ng-click="HideShowAns()">Show more answers</button>
-											<div data-ng-show="showAns">
-												hjgjhgkjgkg
-											</div>
+											
+											{{x.firstAnswer.answerTxt}}
+											<button type="submit" class="btn btn-warning" data-ng-model="showAns" data-ng-click="GetQuestionsAns(x)">Show more answers</button>
+											<div data-ng-repeat="t in GetAnswerResults" style="display:inline;" data-ng-show="showAns">
+				  								<label class="label label-default">{{t}}</label>
+				  							</div>
 										</div>
 									</div>
 								</div>

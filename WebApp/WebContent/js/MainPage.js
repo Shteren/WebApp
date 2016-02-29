@@ -28,8 +28,7 @@ angular.module('inTableApp',[])
 		$scope.addAnswer = function(obj)
 		{
 	
-			alert(obj.answerTxt);
-			alert(obj.questionId);
+			
 			 $http({ method: 'POST',
 			        url: 'http://localhost:8080/WebApp/answers',
 					data: {
@@ -52,7 +51,7 @@ angular.module('inTableApp',[])
 		}
 
 	    $scope.voteUp = function(obj){
-	    	alert(obj.questionId);
+	    	
 			$http({ method: 'PUT',
 		        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId,
 		        data: { questionVote: +1},
@@ -60,7 +59,9 @@ angular.module('inTableApp',[])
 		     })
 		     .success(function(result) 
 		     {
-		    	 obj.questionVote++;
+		    	 alert(result.questionVote);
+		    	 //obj.questionVote=result.questionVote;
+		    	 alert(result.Result);
 		    	 //window.location.assign("MainPage.html");
 		    	 
 		    	 
@@ -71,7 +72,7 @@ angular.module('inTableApp',[])
 		     }); 
 	    }
 	    $scope.voteDown = function(obj){
-	    	alert(obj.questionId);
+	    	
 			$http({ method: 'PUT',
 		        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId,
 		        data: { questionVote: -1},
@@ -79,7 +80,9 @@ angular.module('inTableApp',[])
 		     })
 		     .success(function(result) 
 		     {
-		    	 obj.questionVote++;
+		    	 alert(result.Result);
+		    	 
+		    	 
 		    	 //window.location.assign("MainPage.html");
 		     })
 		     .error(function (error) 
@@ -252,11 +255,10 @@ angular.module('inTableApp',[])
 		$scope.logOut=function(){
 				     
 			$http({ method: 'POST',
-		        url: 'http://localhost:8080/WebApp/logOutServlet',
-		        params:null,
-		        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		        url: 'http://localhost:8080/WebApp/logout',
+		        headers: {'Content-Type': 'application/json'}
 		     })
-		     .success(function(result) 
+		     .success(function(response) 
 		     {
 		    	 window.location.assign("index.html");
 		     })
