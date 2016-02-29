@@ -60,8 +60,9 @@ angular.module('inTableApp',[])
 		     })
 		     .success(function(result) 
 		     {
-		    	 alert("updated vote");
 		    	 obj.questionVote++;
+		    	 //window.location.assign("MainPage.html");
+		    	 
 		    	 
 		     })
 		     .error(function (error) 
@@ -78,8 +79,8 @@ angular.module('inTableApp',[])
 		     })
 		     .success(function(result) 
 		     {
-		    	 alert("updated vote");
 		    	 obj.questionVote++;
+		    	 //window.location.assign("MainPage.html");
 		     })
 		     .error(function (error) 
 		     {
