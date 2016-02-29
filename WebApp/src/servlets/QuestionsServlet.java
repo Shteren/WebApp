@@ -393,7 +393,7 @@ public class QuestionsServlet extends HttpServlet {
     		} else
     		{
 				String nickName = (request.getSession().getAttribute("Nickname")).toString();
-    			if (rs.getString(6) == nickName) {
+    			if (rs.getString(6).equals(nickName)) {
         			PrintWriter writer = response.getWriter();
         	    	writer.println("It's your question");
         	    	writer.close();
@@ -448,36 +448,39 @@ public class QuestionsServlet extends HttpServlet {
     	    	writer.close();
     			return;
     		}
-			
-    		int answersRating = calculateRatingScoreOfQuestion(questionId, numOfVotes);
-    		double questionRating = 0.2 * numOfVotes + 0.8 * answersRating;
-    		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.UPDATE_VOTE_FOR_QUESTIONS_STMT);
-    		pstmt.setInt(1, numOfVotes);
-    		pstmt.setDouble(2, questionRating);
-    		pstmt.setInt(3, questionId);
-    		
-    		pstmt.executeUpdate();
-    		pstmt.close();
-    		String submittedUser = (String)request.getSession().getAttribute("Nickname");
-    		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.INSERT_VOTE_FOR_QUESTIONS_STMT);
-    		pstmt.setInt(1, questionId);
-    		pstmt.setString(2, submittedUser);
-    		pstmt.setInt(3, numOfVotes);
-    		
-    		pstmt.executeUpdate(); 
-    		
-    		conn.commit();			
-    		
-    		UserAccessDB.UpdateUserRating(conn, submittedUser);
-    		conn.close();
-			//build Json Answer
-			json = new JsonObject();
-			json.addProperty("Result", true);
-			answer = json.toString();
-			
-			PrintWriter writer = response.getWriter();
-        	writer.println(answer);
-        	writer.close();
+    		else
+    		{
+        		int answersRating = calculateRatingScoreOfQuestion(questionId, numOfVotes);
+        		double questionRating = 0.2 * numOfVotes + 0.8 * answersRating;
+        		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.UPDATE_VOTE_FOR_QUESTIONS_STMT);
+        		pstmt.setInt(1, numOfVotes);
+        		pstmt.setDouble(2, questionRating);
+        		pstmt.setInt(3, questionId);
+        		
+        		pstmt.executeUpdate();
+        		pstmt.close();
+        		String submittedUser = (String)request.getSession().getAttribute("Nickname");
+        		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.INSERT_VOTE_FOR_QUESTIONS_STMT);
+        		pstmt.setInt(1, questionId);
+        		pstmt.setString(2, submittedUser);
+        		pstmt.setInt(3, numOfVotes);
+        		
+        		pstmt.executeUpdate(); 
+        		
+        		conn.commit();			
+        		
+        		UserAccessDB.UpdateUserRating(conn, submittedUser);
+        		conn.close();
+    			//build Json Answer
+    			json = new JsonObject();
+    			json.addProperty("Result", true);
+    			answer = json.toString();
+    			
+    			PrintWriter writer = response.getWriter();
+            	writer.println(answer);
+            	writer.close();
+    		}
+
     		
     		    		    		
 		}catch (SQLException | NamingException e) {
