@@ -53,21 +53,24 @@ angular.module('inTableApp',[])
 	    $scope.voteUp = function(obj){
 	    	
 			$http({ method: 'PUT',
-		        url: 'http://localhost:8080/WebApp/questions/',
+		        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId,
 		        data: { questionVote: +1},
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		     })
 		     .success(function(result) 
 		     {
-		    	 alert(result.questionVote);
-		    	 //obj.questionVote=result.questionVote;
-		    	 alert(result.Result);
-		    	 //window.location.assign("MainPage.html");
+		    	 
+		    	 if ((result.Result == "It's your question")||(result.Result == "The user already vote")){
+		    		 alert(result.Result); 
+		    	 }else{
+		    		obj.questionVote++; 
+		    	 }
 		    	 
 		    	 
 		     })
 		     .error(function (error) 
 		     {
+		    	 alert("voteUp")
 		             $scope.status = 'Unable to connect' + error.message;
 		     }); 
 	    }
@@ -81,16 +84,29 @@ angular.module('inTableApp',[])
 		     .success(function(result) 
 		     {
 		    	 alert(result.Result);
-		    	 
-		    	 
-		    	 //window.location.assign("MainPage.html");
+		    	 if ((result.Result == "It's your question")||(result.Result == "The user already vote")){
+		    		 alert(result.Result); 
+		    	 }else{
+		    		obj.questionVote; 
+		    	 }
 		     })
 		     .error(function (error) 
 		     {
 		             $scope.status = 'Unable to connect' + error.message;
 		     }); 
 	    }
-
+	    $scope.timeFormat = function(obj)
+	    {
+	    	
+	    	obj.time = obj.submmitionTime.split(" ");
+	    	var date = obj.time[0].split("-");
+	    	var temp = date[0];
+	    	date[0] = date[2];
+	    	date[2] = temp;
+	    	obj.time[0] = date[0].concat("/", date[1],"/", date[2], " ", obj.time[1]);
+	    	obj.time = obj.time[0];
+	    	
+	    };
 		$scope.GetQuestions = function()
 		{
 			$http({ method: 'GET',
