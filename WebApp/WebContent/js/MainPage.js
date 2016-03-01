@@ -83,11 +83,11 @@ angular.module('inTableApp',[])
 		     })
 		     .success(function(result) 
 		     {
-		    	 alert(result.Result);
+		    	
 		    	 if ((result.Result == "It's your question")||(result.Result == "The user already vote")){
 		    		 alert(result.Result); 
 		    	 }else{
-		    		obj.questionVote; 
+		    		obj.questionVote--; 
 		    	 }
 		     })
 		     .error(function (error) 
