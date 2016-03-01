@@ -84,7 +84,7 @@
 											
 											{{x.firstAnswer.answerTxt}}
 											<button type="submit" class="btn btn-warning" data-ng-model="x.showAns" data-ng-click="GetQuestionsAns(x)">Show more answers</button>
-											<div data-ng-repeat="t in GetAnswerResults" style="display:inline;" data-ng-show="x.showAns">
+											<div data-ng-repeat="t in x.GetAnswerResults" style="display:inline;" data-ng-show="x.showAns">
 				  								<label class="label label-default">{{t}}</label>
 				  							</div>
 										</div>
