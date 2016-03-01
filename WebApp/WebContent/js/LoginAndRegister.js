@@ -124,7 +124,7 @@ angular.module('inTableApp',[])
 				
 			 });
 		}
-		
+	
 		
 		$scope.switchLoginRegister = function()
 		{
