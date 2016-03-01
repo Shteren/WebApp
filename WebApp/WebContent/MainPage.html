@@ -32,7 +32,10 @@
 				<div class="form-group">
 					<div class="row">
 				  		<label>Insert your question here:</label>
-				  		<textarea class="form-control" placeholder="Whats bothering you?" data-ng-model="questionTxt" ></textarea> 		  																						 		
+				  		<textarea style="resize:none" class="form-control" placeholder="Whats bothering you?" data-ng-model="questionTxt" data-ng-change="QuestionLenWarn()" ></textarea> 
+				  		<div data-ng-show="HideShowQuestionCharacterError">
+  							<label class="label label-danger" >Question should be up to 300 characters</label>
+						</div>		  																						 		
 				  	</div>
 			  	</div>	
 			  	<div class="form-group"  >
@@ -82,7 +85,7 @@
 								</div>
 								<div class="row-fluid">
 									<div class="col-xs-8 form-inline">       
-						                <textarea class="form-control" style="width:80%" placeholder="So what is your answer Smartass" data-ng-model="x.answerTxt"></textarea>
+						                <textarea class="form-control" style="width:80%;resize:none" placeholder="So what is your answer Smartass"  data-ng-model="x.answerTxt"></textarea>
 						                <button type="submit" class="btn" data-ng-click="addAnswer(x)">Send</button>            
 								    </div>
 								    <div class="col-xs-4">

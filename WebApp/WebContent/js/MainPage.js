@@ -53,7 +53,7 @@ angular.module('inTableApp',[])
 	    $scope.voteUp = function(obj){
 	    	
 			$http({ method: 'PUT',
-		        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId,
+		        url: 'http://localhost:8080/WebApp/questions/',
 		        data: { questionVote: +1},
 				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		     })
@@ -291,20 +291,27 @@ angular.module('inTableApp',[])
 	        }
 	    };
 		
-
+	    $scope.QuestionLenWarn = function()
+	    {
+	    	if ( ($scope.questionTxt.length)>300)
+	    	{
+	    		$scope.HideShowQuestionCharacterError = true;
+	    		return;
+	    	}
+	    	$scope.HideShowQuestionCharacterError = false;
+	    }
 		
 		// code start from here when page is loading
 	    $scope.NextButtonFlag = false;
 	    $scope.PreviousButtonFlag = false;
 	    $scope.HideShowTagCharacterError = false;
+	    $scope.HideShowQuestionCharacterError=false;
 	    $scope.tag = [];
 	    $scope.prevOrNextPageNumCounter = 0;
 	    $scope.topicList;
 		$scope.GetQuestionsResult =[];
 		$scope.NumOfPages = 0;
 		$scope.CheckSession();
-			
-
 		$scope.GetQuestions();
 		
 		
