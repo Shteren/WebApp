@@ -300,6 +300,17 @@ angular.module('inTableApp',[])
 	    	}
 	    	$scope.HideShowQuestionCharacterError = false;
 	    }
+	    $scope.QuestionLenWarn = function(obj)
+	    {
+
+	    	if ( (obj.answerTxt.length)>300)
+	    	{
+	    		obj.ansLenShowErr = true;
+	    		return;
+	    	}
+	    	obj.ansLenShowErr = false;
+	    	
+	    }
 		
 		// code start from here when page is loading
 	    $scope.NextButtonFlag = false;

@@ -44,7 +44,7 @@
 			<div>
 				<br><br>
 				<div style="margin:auto;width:80%" data-ng-repeat="x in GetQuestionsResult">	
-					<div class="panel panel-default">
+					<div class="panel panel-default" data-ng-init="falseShow(x)">
 						<div class="row">
 							<div class="col-sm-12">				
 								<h4> Question by {{x.nickName}}</h4>
@@ -83,8 +83,8 @@
 											<br>
 											
 											{{x.firstAnswer.answerTxt}}
-											<button type="submit" class="btn btn-warning" data-ng-model="showAns" data-ng-click="GetQuestionsAns(x)">Show more answers</button>
-											<div data-ng-repeat="t in GetAnswerResults" style="display:inline;" data-ng-show="showAns">
+											<button type="submit" class="btn btn-warning" data-ng-model="x.showAns" data-ng-click="GetQuestionsAns(x)">Show more answers</button>
+											<div data-ng-repeat="t in GetAnswerResults" style="display:inline;" data-ng-show="x.showAns">
 				  								<label class="label label-default">{{t}}</label>
 				  							</div>
 										</div>
