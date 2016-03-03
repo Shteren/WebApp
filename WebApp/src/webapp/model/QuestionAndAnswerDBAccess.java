@@ -344,5 +344,56 @@ public class QuestionAndAnswerDBAccess {
     	}
 	}
 	
+    public static void searchForQuestionAnswers(HttpServletRequest request, HttpServletResponse response,int questionId) throws IOException 
+    {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		JsonObject json = new JsonObject();
+		String answer;
+		Collection<Answer> answersResults = new ArrayList<Answer>(); 
+		try 
+		{
+        	//obtain CustomerDB data source from Tomcat's context
+    		Context context = new InitialContext();
+    		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
+    		conn = ds.getConnection();    		   		
+    		/** prepare the statement of select all question answers **/
+    		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_ANSWERS_BY_QUESTION_ID_STMT);
+    		pstmt.setInt(1,questionId);
+    		
+    		ResultSet rs = pstmt.executeQuery();
+    		while( rs.next() )
+    		{
+    			int answerId = rs.getInt(1);
+    			String submittionTime = rs.getString(2);
+    			String contentTxt = rs.getString(3);
+    			String submittedUser =  rs.getString(6);
+    			int votes = rs.getInt(4);
+    			answersResults.add(new Answer(answerId,submittionTime ,contentTxt, votes, questionId, submittedUser));
+    		}  	
+    		
+    		Gson gson = new Gson();
+        	String answersJsonResult = gson.toJson(answersResults, QuestionAndAnswersConstants.ANSWERS_COLLECTION);       	
+			PrintWriter writer = response.getWriter();
+	    	writer.println(answersJsonResult);
+	    	
+	    	writer.close();    		
+			rs.close();
+			pstmt.close();
+    		conn.close();
+    		    		    		
+		}catch (SQLException | NamingException e) {
+			System.out.println(e.toString());
+			try {
+				if(pstmt != null)
+					pstmt.close();
+				
+				if(conn != null)
+					conn.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}			
+    	}		
+	}
 	
 }

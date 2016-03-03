@@ -29,6 +29,7 @@ import webapp.constants.QuestionAndAnswersConstants;
 import webapp.constants.UserConstants;
 import webapp.model.Answer;
 import webapp.model.Question;
+import webapp.model.QuestionAndAnswerDBAccess;
 import webapp.model.UserAccessDB;
 
 /**
@@ -101,19 +102,15 @@ public class AnswersServlet extends HttpServlet {
 			conn.commit();
 			pstmt.close();
 			
-			conn.close();
+			
 			
 			////// Success //////
 			
-			//build Json Answer
-			JsonObject json = new JsonObject();
-			json.addProperty("Result", true);
-			String Answer = json.toString();
+			//build Json Answers
+			QuestionAndAnswerDBAccess.searchForQuestionAnswers(request, response, questionId);
 			
-			PrintWriter writer = response.getWriter();
-        	writer.println(Answer);
-        	writer.close();
-			
+        	conn.close();
+        	
 		} catch (SQLException | NamingException e) {
 			System.out.println(e.toString());
 			try {
