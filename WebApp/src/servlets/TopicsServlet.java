@@ -7,45 +7,34 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
 import webapp.constants.DBConstants;
 import webapp.constants.QuestionAndAnswersConstants;
-import webapp.constants.UserConstants;
-import webapp.model.Question;
-import webapp.model.QuestionsResponse;
-import webapp.model.User;
-import webapp.model.UsersResponse;
+
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+
 
 /**
  * Servlet implementation of topic resource
  */
 public class TopicsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private Gson gson;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
     public TopicsServlet() {
         super();
-        gson = new GsonBuilder().create();
-
     }
     
     /**
@@ -76,10 +65,7 @@ public class TopicsServlet extends HttpServlet {
     private void selectTopicsByCurrentPage(int currentPage, HttpServletResponse response) throws IOException {
     	
 		Connection conn = null;
-		PreparedStatement pstmt = null, stmt = null;
-		JsonObject json = new JsonObject();
-		String Answer;
-		Collection<String> topicsResults = new ArrayList<String>(); 
+		PreparedStatement pstmt = null;
 		try 
 		{
         	//obtain CustomerDB data source from Tomcat's context
@@ -87,7 +73,7 @@ public class TopicsServlet extends HttpServlet {
     		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
     		conn = ds.getConnection();  
     		Gson gson = new Gson();
-    		ResultSet rss = null;
+
     		/** prepare the statement of select 20 topics by current page **/
     		int fromQuestion = currentPage * 20;
     		ArrayList<String> topics = new ArrayList<>();

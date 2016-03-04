@@ -134,7 +134,12 @@ public class QuestionsServlet extends HttpServlet {
 			question = gson.fromJson(request.getReader(), Question.class);
 			numOfVotes = question.getQuestionVotes();
 						// return from DB the current num of votes
-			numOfVotes += checkIfQuestionIdInDBandSendVoteNumber(request, response, questionId);
+			int numOfExistingVote = checkIfQuestionIdInDBandSendVoteNumber(request, response, questionId);
+			if(numOfExistingVote == Integer.MIN_VALUE){
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+			numOfVotes += numOfExistingVote;
 			// 
 			if(numOfVotes == -1) {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -463,7 +468,7 @@ public class QuestionsServlet extends HttpServlet {
 		PreparedStatement pstmt = null;
 		JsonObject json = new JsonObject();
 		String answer;
-		int votes = -1;
+		int votes = Integer.MIN_VALUE;
 		try 
 		{
         	//obtain CustomerDB data source from Tomcat's context
@@ -477,7 +482,7 @@ public class QuestionsServlet extends HttpServlet {
     		ResultSet rs = pstmt.executeQuery();
     		if( !rs.next() )
     		{
-    			votes = -1;
+    			votes = Integer.MIN_VALUE;
     		} else
     		{
 				String nickName = (request.getSession().getAttribute("Nickname")).toString();

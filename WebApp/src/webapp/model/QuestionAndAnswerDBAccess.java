@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import webapp.constants.DBConstants;
 import webapp.constants.QuestionAndAnswersConstants;
 import webapp.utils.DBUtils;
@@ -30,8 +28,6 @@ public class QuestionAndAnswerDBAccess {
 	{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		JsonObject json = new JsonObject();
-		String Answer;
 		int numberOfQuestions = 0;
 		try 
 		{
@@ -138,8 +134,6 @@ public class QuestionAndAnswerDBAccess {
 	public static void selectExistingQuestionsByCurrentPage(int currentPage, HttpServletResponse response) throws IOException {
 		Connection conn = null;
 		PreparedStatement pstmt = null, stmt = null;
-		JsonObject json = new JsonObject();
-		String Answer;
 		Collection<Question> QuestionResults = new ArrayList<Question>(); 
 		try 
 		{
@@ -216,8 +210,6 @@ public class QuestionAndAnswerDBAccess {
 	public static void selectQuestionsByTopic(String topicName, int currentPage, HttpServletResponse response) throws IOException {
 		Connection conn = null;
 		PreparedStatement pstmt = null, stmt = null;
-		JsonObject json = new JsonObject();
-		String Answer;
 		Collection<Question> QuestionResults = new ArrayList<Question>(); 
 		try 
 		{
@@ -292,8 +284,6 @@ public class QuestionAndAnswerDBAccess {
 	{
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		JsonObject json = new JsonObject();
-		String answer;
 		Collection<Answer> answersResults = new ArrayList<Answer>(); 
 		try 
 		{

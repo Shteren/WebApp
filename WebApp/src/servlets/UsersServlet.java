@@ -25,15 +25,12 @@ import webapp.constants.QuestionAndAnswersConstants;
 import webapp.constants.UserConstants;
 import webapp.model.Answer;
 import webapp.model.Question;
-import webapp.model.QuestionsResponse;
 import webapp.model.User;
 import webapp.model.UsersResponse;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.util.QEncoderStream;
 
 /**
  * Servlet implementation class RegisterServlet
@@ -100,7 +97,6 @@ public class UsersServlet extends HttpServlet {
     		rs = pstmt.executeQuery();
     		
     		while ( rs.next() ) {
-    			Question question;
     			int questionId = rs.getInt(1);
         		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
         		stmt.setInt(1,questionId);
@@ -136,13 +132,13 @@ public class UsersServlet extends HttpServlet {
 	private void searchForTopRatedUsers(HttpServletResponse response) throws IOException{
 		
 		Connection conn = null;
-		PreparedStatement pstmt = null, stmt = null;
+		PreparedStatement pstmt = null;
 		Collection<User> usersResults = new ArrayList<User>(); 
 		try 
 		{
         	//obtain CustomerDB data source from Tomcat's context
     		Context context = new InitialContext();
-    		ResultSet rs = null, rss = null;
+    		ResultSet rs = null;
 			BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
     		conn = ds.getConnection();    		   		
     		/** prepare the statement of top rated users **/
@@ -187,8 +183,6 @@ public class UsersServlet extends HttpServlet {
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null, stmt = null;
-		JsonObject json = new JsonObject();
-		String Answer;	
 		Collection<User> usersResults = new ArrayList<User>(); 
 		Collection<Question> five_last_asked_questions = null;
 		Collection<Question> five_last_user_answered_questions = new ArrayList<Question>();
@@ -203,8 +197,6 @@ public class UsersServlet extends HttpServlet {
 			pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_NAME_STMT);
 			pstmt.setString(1, userNickName);
     		ResultSet rs = pstmt.executeQuery();
-    		
-    		User user;
     		
 			String userName = rs.getString(1);
 			String usernickName = rs.getString(3);
@@ -225,7 +217,6 @@ public class UsersServlet extends HttpServlet {
     		rs = pstmt.executeQuery();
     		
     		while ( rs.next() ) {
-    			Question question;
     			int questionId = rs.getInt(1);
         		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
         		stmt.setInt(1,questionId);
@@ -278,7 +269,7 @@ public class UsersServlet extends HttpServlet {
 	
 	Collection<String> findUserExperties(Connection conn, String userNickName) throws SQLException {
 		
-		PreparedStatement pstmt = null, stmt = null;
+		PreparedStatement pstmt = null;
 		Collection<String> experties = new ArrayList<String>();
 		
 		pstmt = conn.prepareStatement(UserConstants.SELECT_USER_EXPERTIES_STMT);
@@ -299,7 +290,6 @@ public class UsersServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		//obtain CustomerDB data source from Tomcat's context
 		BasicDataSource ds = null;
 		Connection conn = null;
@@ -363,7 +353,6 @@ public class UsersServlet extends HttpServlet {
 					
 					
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			
