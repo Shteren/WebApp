@@ -16,21 +16,15 @@ import webapp.constants.DBConstants;
 
 public class DBUtils {
 	
-	public static ResultSet excuteQuery(final String query) throws NamingException, SQLException{
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+	public static void closeResultAndStatment (ResultSet rs , PreparedStatement stmt) throws SQLException
+	{
+		if (rs != null) {
+			rs.close();
+		}
 		
-    	//obtain CustomerDB data source from Tomcat's context
-		Context context = new InitialContext();
-		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-		conn = ds.getConnection();    		   		
-		/** prepare the statement  **/
-		pstmt = conn.prepareStatement(query);
-		rs = pstmt.executeQuery();
-		
-		return rs;
-
+		if (stmt != null) {
+			stmt.close();
+		}
 			
 	}
 }

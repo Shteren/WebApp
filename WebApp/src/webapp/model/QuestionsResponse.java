@@ -6,7 +6,7 @@ import java.util.List;
 //Mor you are stupido
 public class QuestionsResponse {
 	private Collection<Question> questions;
-	int numOfPages;
+	private int numOfPages;
 	private Answer firstAnswer;
 	
 	public QuestionsResponse(Collection<Question> questions, int numOfPages) {

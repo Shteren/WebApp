@@ -8,8 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.List;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -28,9 +26,8 @@ import webapp.constants.DBConstants;
 import webapp.constants.QuestionAndAnswersConstants;
 import webapp.constants.UserConstants;
 import webapp.model.Answer;
-import webapp.model.Question;
-import webapp.model.QuestionAndAnswerDBAccess;
 import webapp.model.UserAccessDB;
+import webapp.utils.DBUtils;
 
 /**
  * Servlet implementation class AnswersServlet
@@ -43,98 +40,31 @@ public class AnswersServlet extends HttpServlet {
      */
     public AnswersServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");
+		Gson gson = new Gson();
 		if(request.getPathInfo() != null){
 			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 			return;
 		}
-		Gson gson = new Gson();
-		Answer answer;
+
+		Answer answer = null;
 		try {
+			// get answer from incoming json 
 			answer = gson.fromJson(request.getReader(), Answer.class);
 		//Problem with reading json to question
 		} catch(Exception e) {
-			System.out.println(e.toString());
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
-		BasicDataSource ds = null;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		try {
-			Context context = new InitialContext();
-			ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-			conn = ds.getConnection(); // get connection
-			HttpSession session = request.getSession();
-			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.INSERT_ANSWER_STMT);
-			
-			// get the parameters from incoming json
-			Timestamp submiition =  new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
-			String contentTxt = answer.getAnswerTxt();
-			int questionId = answer.getQuestionId();
-			String nickname = (String)session.getAttribute("Nickname");
-			
-			// insert parameters into SQL Insert
-			pstmt.setString(1,submiition.toString());
-			pstmt.setString(2,contentTxt);
-			pstmt.setInt(3, questionId);
-			pstmt.setString(4,nickname);
-			
-			//execute insert command
-			pstmt.executeUpdate();
-			UserAccessDB.UpdateUserRating(conn, nickname);
-			UpdateQuestionRating(request, response, questionId);
-			
-			conn.commit();
-			pstmt.close();
-			
-			
-			
-			////// Success //////
-			
-			//build Json Answers
-			QuestionAndAnswerDBAccess.searchForQuestionAnswers(request, response, questionId);
-			
-        	conn.close();
-        	
-		} catch (SQLException | NamingException e) {
-			System.out.println(e.toString());
-			try {
-				if(pstmt != null)
-					pstmt.close();
-				
-				if(conn != null){
-					conn.rollback();
-					conn.close();
-				}
-				
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			
-			//build Json Answer
-			JsonObject json = new JsonObject();
-			json.addProperty("Result", false);
-			String Answer = json.toString();
-			
-			PrintWriter writer = response.getWriter();
-        	writer.println(Answer);
-        	writer.close();
-		}		
+		// method that insert new answer to DB
+		insertNewAnswer(request, response, answer);
+
 			
 	}
 
@@ -184,13 +114,94 @@ public class AnswersServlet extends HttpServlet {
 		}
 	}
 	
+	private void insertNewAnswer(HttpServletRequest request, HttpServletResponse response, Answer answer) throws IOException
+	{
+		BasicDataSource ds = null;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			Context context = new InitialContext();
+			ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
+			conn = ds.getConnection(); // get connection
+			HttpSession session = request.getSession();
+			// prepare statement for insert new answer to DB 
+			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.INSERT_ANSWER_STMT);
+			
+			// get the parameters from incoming json
+			Timestamp submiition =  new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+			String contentTxt = answer.getAnswerTxt();
+			int questionId = answer.getQuestionId();
+			String nickname = (String)session.getAttribute("Nickname");
+			
+			// insert parameters into statement
+			pstmt.setString(1,submiition.toString());
+			pstmt.setString(2,contentTxt);
+			pstmt.setInt(3, questionId);
+			pstmt.setString(4,nickname);
+			
+			//execute insert command
+			pstmt.executeUpdate();
+			// update user rating after adding new answer to DB
+			UserAccessDB.UpdateUserRating(conn, nickname);
+			// update rating of question after adding new answer to DB
+			UpdateQuestionRating(conn, request, response, questionId);
+			
+			conn.commit();		
+			
+			////// Success //////
+			JsonObject json = new JsonObject();
+			json.addProperty("Result", false);
+			String Answer = json.toString();
+			
+			PrintWriter writer = response.getWriter();
+        	writer.println(Answer);
+        	writer.close();
+        	
+        	DBUtils.closeResultAndStatment(null, pstmt);
+        	conn.close();
+        	
+		} catch (SQLException | NamingException e) {
+			System.out.println(e.toString());
+			try {
+				if(pstmt != null)
+					pstmt.close();
+				
+				if(conn != null){
+					conn.rollback();
+					conn.close();
+				}
+				
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			
+			//build Json Answer of error
+			JsonObject json = new JsonObject();
+			json.addProperty("Result", false);
+			String Answer = json.toString();
+			
+			PrintWriter writer = response.getWriter();
+        	writer.println(Answer);
+        	writer.close();
+		}		
+		
+	}
 	
+    /**
+     * 
+     * @param request
+     * @param response
+     * @param answerId
+     * @return current number of votes of answer
+     * @throws IOException
+     * 
+     * this method check if specific answer exist in DB and return the current votes for it.
+     */
     private int checkIfAnswerIdInDBandSendVoteNumber(HttpServletRequest request, HttpServletResponse response, int answerId) throws IOException
     {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		JsonObject json = new JsonObject();
-		String answer;
 		int votes = -1;
 		try 
 		{
@@ -198,7 +209,7 @@ public class AnswersServlet extends HttpServlet {
     		Context context = new InitialContext();
     		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
     		conn = ds.getConnection();    		   		
-    		/** prepare the statement of check if questions id is in DB **/
+    		/** prepare the statement of check if answer id is in DB **/
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_ANSWER_BY_ID_STMT);
     		pstmt.setInt(1,answerId);
     		
@@ -208,19 +219,20 @@ public class AnswersServlet extends HttpServlet {
     			votes = -1;
     		} else
     		{
+    			// user tring to vote to his answer
 				String nickName = (request.getSession().getAttribute("Nickname")).toString();
     			if (rs.getString(6) == nickName) {
         			PrintWriter writer = response.getWriter();
-        	    	writer.println("It's your question");
+        	    	writer.println("It's your answer");
         	    	writer.close();
     			}    				
     			else {
+    				// user can vote to answer
     				votes = rs.getInt(4);
     			}
     		}
     		
-			rs.close();
-			pstmt.close();
+    		DBUtils.closeResultAndStatment(rs, pstmt);
     		conn.close();
     		    		    		
 		}catch (SQLException | NamingException e) {
@@ -238,6 +250,17 @@ public class AnswersServlet extends HttpServlet {
 		return votes;
     }
     
+    /**
+     * 
+     * @param request
+     * @param response
+     * @param answerId
+     * @param numOfVotes
+     * @throws IOException
+     * 
+     * this method update vote of answer after client vote for it , and insert to relation table of votes and answers
+     * the user that vote - for handling voting twice 
+     */
     private void updateVoteOfAnswer(HttpServletRequest request,HttpServletResponse response,int answerId,int numOfVotes) throws IOException
     {
 		Connection conn = null;
@@ -250,7 +273,7 @@ public class AnswersServlet extends HttpServlet {
     		Context context = new InitialContext();
     		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
     		conn = ds.getConnection();    		   		
-    		/** prepare the statement of update vote and rating in tbl_question and tbl_vote_question in DB **/
+    		/** prepare the statement of update vote and rating in tbl_answer and tbl_vote_answer in DB **/
        		pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_VOTE_ANSWER_STMT);
     		String userNickName = (String)(request.getSession().getAttribute("Nickname"));
     		pstmt.setString(1, userNickName);
@@ -263,14 +286,15 @@ public class AnswersServlet extends HttpServlet {
     	    	writer.println("The user already vote");
     	    	writer.close();
     		}
+    		// update votes of answer
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.UPDATE_VOTE_FOR_ANSWER_STMT);
     		pstmt.setInt(1, numOfVotes);
     		pstmt.setInt(2, answerId);
-    		
-    		
-    		
+   		    		
     		pstmt.executeUpdate();
-    		pstmt.close();
+    		conn.commit();			
+
+    		// insert user to relation table of votes and answers
     		String submittedUser = (String)request.getSession().getAttribute("Nickname");
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.INSERT_VOTE_FOR_ANSWER_STMT);
     		pstmt.setInt(1, answerId);
@@ -279,10 +303,16 @@ public class AnswersServlet extends HttpServlet {
     		
     		pstmt.executeUpdate();  
     		
-    		conn.commit();			
-    		conn.close();
+    		conn.commit();	
     		
-			//build Json Answer
+			// update rating of question after update votes of answer
+    		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_QUESTION_BY_ANSWER_ID_STMT);
+    		pstmt.setInt(1, answerId);
+    		rs = pstmt.executeQuery();
+    		if ( rs.next() ) {
+    			UpdateQuestionRating(conn, request, response, rs.getInt(5));
+    		}
+			// success
 			json = new JsonObject();
 			json.addProperty("Result", true);
 			answer = json.toString();
@@ -291,6 +321,8 @@ public class AnswersServlet extends HttpServlet {
         	writer.println(answer);
         	writer.close();
     		
+        	DBUtils.closeResultAndStatment(rs, pstmt);        	
+    		conn.close();
     		    		    		
 		}catch (SQLException | NamingException e) {
 			System.out.println(e.toString());
@@ -307,37 +339,38 @@ public class AnswersServlet extends HttpServlet {
     	}
     }
     
-
-    
-    private void UpdateQuestionRating(HttpServletRequest request, HttpServletResponse response, int questionId) throws SQLException, IOException{
-		Connection conn = null;
+    /**
+     * 
+     * @param request
+     * @param response
+     * @param questionId
+     * @throws SQLException
+     * @throws IOException
+     * 
+     * this method updating question rating after changing the votes of answer
+     */
+    private void UpdateQuestionRating(Connection conn, HttpServletRequest request, HttpServletResponse response, int questionId) throws SQLException, IOException{
     	PreparedStatement  pstmt = null;
     	JsonObject json = new JsonObject();
-    	try {
-    		
-    		Context context = new InitialContext();
-    		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-    		conn = ds.getConnection();    		   		        	
-    		
+    	try {   		   		        	
+    		// get data of the question that was answered
 			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_QUESTION_BY_ID_STMT);
     		pstmt.setInt(1,questionId);
     		ResultSet rss = pstmt.executeQuery();
+    		
     		if (rss.next())
     		{
     			int questionVotes = rss.getInt(4);
-    			int answersRating = QuestionsServlet.calculateRatingScoreOfQuestion(questionId, questionVotes);
+    			int answersRating = QuestionsServlet.scoreOfAnswer(conn, questionId, questionVotes);
     			double questionRating = 0.2 * questionVotes + 0.8 * answersRating;
     			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.UPDATE_VOTE_FOR_QUESTIONS_STMT);
     			pstmt.setInt(1, questionVotes);
     			pstmt.setDouble(2, questionRating);
-    			pstmt.setInt(3, questionId);    		
-    			pstmt.executeUpdate();
-    			pstmt.close();
-		
+    			pstmt.setInt(3, questionId); 
+    			
     			pstmt.executeUpdate(); 
+        		conn.commit();	
     		}
-    		rss.close();
-
     		
 			//build Json Answer
 			json = new JsonObject();
@@ -345,14 +378,13 @@ public class AnswersServlet extends HttpServlet {
 			String answer = json.toString();
 			
 			PrintWriter writer = response.getWriter();
-        	writer.println(answer);
-        	
+        	writer.println(answer);        	
         	writer.close();
-    		conn.commit();			
+        	
+        	DBUtils.closeResultAndStatment(rss, pstmt);
     		conn.close();
     		    		    		
-		}catch (SQLException | NamingException e) {
-			System.out.println(e.toString());
+		}catch (SQLException e) {
 			try {
 				if(pstmt != null)
 					pstmt.close();
