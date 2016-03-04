@@ -92,11 +92,12 @@ public class AnswersServlet extends HttpServlet {
 		try {
 			answer = gson.fromJson(request.getReader(), Answer.class);
 			numOfVotes = answer.getRating();
-			numOfVotes += checkIfAnswerIdInDBandSendVoteNumber(request, response, answerId);
-			if(numOfVotes == -1){
+			int numOfExistingVote = checkIfAnswerIdInDBandSendVoteNumber(request, response, answerId);	
+			if(numOfExistingVote == Integer.MIN_VALUE){
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				return;
 			}
+			numOfVotes += numOfExistingVote;
 		//Problem with reading json to user
 		} catch(Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -105,8 +106,6 @@ public class AnswersServlet extends HttpServlet {
 		
 		try {
 			updateVoteOfAnswer(request, response, answerId, numOfVotes);
-	        //gson.toJson(Answer, response.getWriter());
-	        response.setStatus(HttpServletResponse.SC_OK);
 			
 		} catch (Exception e) {
 			//log.error("Exception in process, e);
@@ -202,7 +201,7 @@ public class AnswersServlet extends HttpServlet {
     {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		int votes = -1;
+		int votes = Integer.MIN_VALUE;
 		try 
 		{
         	//obtain CustomerDB data source from Tomcat's context
@@ -216,7 +215,7 @@ public class AnswersServlet extends HttpServlet {
     		ResultSet rs = pstmt.executeQuery();
     		if( !rs.next() )
     		{
-    			votes = -1;
+    			votes = Integer.MIN_VALUE;
     		} else
     		{
     			// user tring to vote to his answer
@@ -225,6 +224,7 @@ public class AnswersServlet extends HttpServlet {
         			PrintWriter writer = response.getWriter();
         	    	writer.println("It's your answer");
         	    	writer.close();
+        	    	
     			}    				
     			else {
     				// user can vote to answer
@@ -284,6 +284,7 @@ public class AnswersServlet extends HttpServlet {
     			PrintWriter writer = response.getWriter();
     	    	writer.println("The user already vote");
     	    	writer.close();
+    	    	return;
     		}
     		// update votes of answer
     		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.UPDATE_VOTE_FOR_ANSWER_STMT);
@@ -317,6 +318,7 @@ public class AnswersServlet extends HttpServlet {
 			answer = json.toString();
 			
 			PrintWriter writer = response.getWriter();
+			response.setStatus(HttpServletResponse.SC_OK);
         	writer.println(answer);
         	writer.close();
     		

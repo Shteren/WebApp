@@ -31,11 +31,11 @@ public interface DBConstants {
 			+ "topicName varchar(100),"
 			+ "primary key(questionId,topicName))";
 	public final String CREATE_REL_USER_QUESTIONS_VOTES_TABLE = "CREATE TABLE tbl_rel_user_question_vote (questionId INT REFERENCES tbl_question(questionId),"
-			+ "username varchar(10) REFERENCES tbl_user(username),"
+			+ "username varchar(20) REFERENCES tbl_user(nickname),"
 			+ "primary key(questionId,username),"
 			+ "vote SMALLINT)";
 	public final String CREATE_REL_USER_ANSWERS_VOTES_TABLE = "CREATE TABLE tbl_rel_user_answer_vote (answerId INT REFERENCES tbl_answer(answerId),"
-			+ "username varchar(10) REFERENCES tbl_user(username),"
+			+ "username varchar(20) REFERENCES tbl_user(nickname),"
 			+ "primary key(answerId,username),"	
 			+ "vote SMALLINT)";
 	public final String INSERT_USER_STMT = "INSERT INTO tbl_user (username,password,nickname,description,photoUrl) VALUES(?,?,?,?,'a')";
