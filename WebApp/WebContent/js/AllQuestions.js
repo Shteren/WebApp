@@ -1,12 +1,8 @@
-/**
- * 
- */
-
-angular.module('inTopicQuestion',[])
-	.controller('TopicQuestionController',['$scope','$http', function($scope, $http) {
+angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope','$http', function($scope, $http) {
 		$scope.CheckNextButton = function()
 		{
-			if( $scope.NumOfPages == $scope.prevOrNextPageNumCounter )
+			alert($scope.NumOfPages);
+			if( $scope.NumOfPages == $scope.prevOrNextPageNumCounter+1 )
 	   		 {
 		    		 $scope.NextButtonFlag = true; // disabled
 	   		 }
@@ -27,43 +23,40 @@ angular.module('inTopicQuestion',[])
 	    		 $scope.PreviousButtonFlag = false; // enabled
     		 }
 		}
-		$scope.switchAnswerShowFlag = function()
-		{
-			$scope.AnswerShowFlag = !$scope.AnswerShowFlag;
-		};
 		
-		$scope.GetQuestionsByTopic = function()
+		$scope.GetAllQuestions = function()
 		{
-			if(null == $scope.topic)
-			{
-				alert("Can't find Blank topic");
-				return;
-			}
+			alert($scope.prevOrNextPageNumCounter);
 			$http({ method: 'GET',
 		        url: 'http://localhost:8080/WebApp/questions',
-		    	params:{
-		    		topicName:$scope.topic,
-		    		currentPage: "0"
-		    	}
+				params: { 	currentPage: $scope.prevOrNextPageNumCounter, 
+							newOrAll: "all"},
+				
 		     })
 		     .success(function(response) 
 		     {
-		    	 if(null == response || 0 == response.length)
-		    	 {
-		    		 alert("Not Found");
-		    		 return;
-		    	 }
+		    	 alert(response.numOfPages);
 		    	 $scope.NumOfPages = response.numOfPages ;
 		    	 $scope.CheckNextButton();
 		    	 $scope.CheckPreviousButton();
-		    	 //$scope.PreviousButtonFlag = true; // disable previous button
+		    	 
+		    	 $scope.PreviousButtonFlag = true; // disable previous button
+		    	 
 		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
+		    	 //alert(JSON.stringify(response.questions[0].questionTopics));
+		       /* for( i =0 ; i < response.questions.length ; i++)
+	        	{
+		        	$scope.GetQuestionsResult.push(response.questions[i]);
+		        	//alert(response[i]);
+	        	}
+	        	*/
 		     })
 		     .error(function (error) 
 		     {
 		             $scope.status = 'Unable to connect' + error.message;
 		     });  
 		}
+		
 		
 		$scope.GetQuestionsAns = function(obj)
 		{
@@ -82,11 +75,6 @@ angular.module('inTopicQuestion',[])
 			    		 alert("Not Found");
 			    		 return;
 			    	 }
-			    	 //$scope.NumOfPages = response.numOfPages ;
-			    	 //$scope.CheckNextButton();
-			    	 //$scope.CheckPreviousButton();
-			    	 //$scope.PreviousButtonFlag = true; // disable previous button
-			    	 //$scope.GetAnswerResults = angular.copy(response);
 			    	 obj.GetAnswerResults = response.slice(1, response.length);;
 			     })
 			     .error(function (error) 
@@ -101,11 +89,7 @@ angular.module('inTopicQuestion',[])
 			obj.showAns = false;
 			
 		}
-		//$scope.HideShowAns = function()
-		//{	
-			
-		//	$scope.showAns = !$scope.showAns;
-		//};
+		
 		$scope.CheckSession = function()
 		{
 			$http({ method: 'GET',
@@ -116,7 +100,6 @@ angular.module('inTopicQuestion',[])
 		     {
 		         if (response.Result == false) 
 		         {
-		           //alert('Resistration was successful');
 		        	window.location.assign("index.html");
 		         }
 		         else
@@ -206,14 +189,87 @@ angular.module('inTopicQuestion',[])
 	    	obj.time = obj.time[0];
 	    	return obj.time
 	    };
+		$scope.nextClick=function()
+		{
+			$scope.prevOrNextPageNumCounter ++;
+			//alert($scope.prevOrNextPageNumCounter);
+			$http({ method: 'GET',
+		        url: 'http://localhost:8080/WebApp/questions',
+				params:{
+					//prevOrNext: "prev",
+					currentPage: $scope.prevOrNextPageNumCounter, 
+					newOrAll: "all"},
+					
+			
+		     })
+		     .success(function(response) 
+		     {
+		    	 $scope.NumOfPages = response.numOfPages ;
+		    	 $scope.CheckNextButton();
+		    	 $scope.CheckPreviousButton();
+
+		    	 
+		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
+		    	 
+		    	 scroll(0,0);
+			        /*for( i =0 ; i < response.length ; i++)
+		        	{
+			        	$scope.GetQuestionsResult.push(response[i]);
+			        	//alert(response[i]);
+		        	}*/
+		     })
+		     .error(function (error) 
+		     {
+		             $scope.status = 'Unable to connect' + error.message;
+		     });
+		}
+		
+		$scope.previousClick = function()
+		{
+			$scope.prevOrNextPageNumCounter--;
+			//alert($scope.prevOrNextPageNumCounter);
+			$http({ method: 'GET',
+		        url: 'http://localhost:8080/WebApp/questions',
+				params:{
+					//prevOrNext: "prev",
+					currentPage: $scope.prevOrNextPageNumCounter, 
+					newOrAll: "all"},
+					
+				
+		     })
+		     .success(function(response) 
+		     {
+		    	 $scope.NumOfPages = response.numOfPages ;
+		    	 
+		    	 $scope.CheckNextButton();
+		    	 $scope.CheckPreviousButton();
+		    	 
+		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
+		    	 
+		    	 scroll(0,0);
+			        /*for( i =0 ; i < response.length ; i++)
+		        	{
+			        	$scope.GetQuestionsResult.push(response[i]);
+			        	//alert(response[i]);
+		        	}*/
+		     })
+		     .error(function (error) 
+		     {
+		             $scope.status = 'Unable to connect' + error.message;
+		     });
+		}
 		
 		// Code start from here
-		$scope.CheckSession();
 		$scope.showAns = false;
 	    $scope.NextButtonFlag = true;
 	    $scope.PreviousButtonFlag = true;
 		$scope.AnswerShowFlag = false;
 		$scope.prevOrNextPageNumCounter = 0;
 		$scope.GetQuestionsResult = [];
+		
+	    $scope.CheckSession();
+	    $scope.GetAllQuestions();
+		
+
 		
 }]);

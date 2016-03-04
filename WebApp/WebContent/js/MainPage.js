@@ -105,7 +105,7 @@ angular.module('inTableApp',[])
 	    	date[2] = temp;
 	    	obj.time[0] = date[0].concat("/", date[1],"/", date[2], " ", obj.time[1]);
 	    	obj.time = obj.time[0];
-	    	
+	    	return obj.time;
 	    };
 		$scope.GetQuestions = function()
 		{

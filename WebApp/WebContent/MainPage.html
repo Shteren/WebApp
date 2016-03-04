@@ -19,6 +19,7 @@
 			            <li class="active"><a href="#">Home</a></li>
 			            <li><a href="QuestionsByTopic.html">Browse Questions</a></li>
 			            <li><a href="#">Leader Board</a></li>
+			            <li><a href="AllQuestions.html">All Questions</a></li>
 			        </ul>
 			        <ul class="nav navbar-nav navbar-right">
 			            <li><a href="" data-ng-click="logOut()">Logout</a></li>
@@ -111,7 +112,7 @@
 							<div class="panel panel-default" style="width:90%;">
 							<div class="panel-heading">submitted by you...{{NickName}} on {{}}</div>
 							<div class="panel-defult">
-								<label>   {{x.sentAnswerTxt}}</label>
+								<label>   {{x.firstAnswer.answerTxt}}</label>
 							</div>
 						</div>
 					</div>
