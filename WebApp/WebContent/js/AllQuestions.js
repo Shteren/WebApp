@@ -1,7 +1,7 @@
 angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope','$http', function($scope, $http) {
 		$scope.CheckNextButton = function()
 		{
-			alert($scope.NumOfPages);
+
 			if( $scope.NumOfPages == $scope.prevOrNextPageNumCounter+1 )
 	   		 {
 		    		 $scope.NextButtonFlag = true; // disabled
@@ -26,7 +26,7 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		
 		$scope.GetAllQuestions = function()
 		{
-			alert($scope.prevOrNextPageNumCounter);
+	
 			$http({ method: 'GET',
 		        url: 'http://localhost:8080/WebApp/questions',
 				params: { 	currentPage: $scope.prevOrNextPageNumCounter, 
@@ -35,7 +35,7 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		     })
 		     .success(function(response) 
 		     {
-		    	 alert(response.numOfPages);
+
 		    	 $scope.NumOfPages = response.numOfPages ;
 		    	 $scope.CheckNextButton();
 		    	 $scope.CheckPreviousButton();
@@ -43,6 +43,7 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		    	 $scope.PreviousButtonFlag = true; // disable previous button
 		    	 
 		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
+		    	 
 		    	 //alert(JSON.stringify(response.questions[0].questionTopics));
 		       /* for( i =0 ; i < response.questions.length ; i++)
 	        	{
@@ -58,24 +59,30 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		}
 		
 		
-		$scope.GetQuestionsAns = function(obj)
+		$scope.GetQuestionsAns = function(obj ,show)
 		{
-			if (obj.showAns == true){
+			if (((obj.showAns == true) && (show == true) ) ||(show == false)){
 				$scope.falseShow(obj)
-			}else
+				
+			}else{
+				$scope.trueShow(obj)
+			}
 			{
 				$http({ method: 'GET',
 			        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId +'/answers',
 			     })
 			     .success(function(response) 
 			     {
-			    	 obj.showAns = true;
 			    	 if(null == response || 0 == response.length)
 			    	 {
 			    		 alert("Not Found");
 			    		 return;
 			    	 }
-			    	 obj.GetAnswerResults = response.slice(1, response.length);;
+			
+			    	 obj.numberOfAnswers = response.length;
+			    	 $scope.ShowButton(obj);
+			    	 obj.firstAns = response.slice(0, 1);
+			    	 obj.GetAnswerResults = response.slice(1, response.length);
 			     })
 			     .error(function (error) 
 			     {
@@ -87,6 +94,11 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		$scope.falseShow = function(obj)
 		{
 			obj.showAns = false;
+			
+		}
+		$scope.trueShow = function(obj)
+		{
+			obj.showAns = true;
 			
 		}
 		
@@ -130,6 +142,19 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		     {
 		             $scope.status = 'Unable to connect' + error.message;
 		     }); 
+			
+		}
+		$scope.ShowButton = function(obj)
+		{
+
+			if (obj.numberOfAnswers > 1)
+			{
+				obj.showButton = true;
+			}
+			else
+			{
+				obj.showButton = false;
+			}
 			
 		}
 		$scope.voteUp = function(obj){
