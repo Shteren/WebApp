@@ -43,14 +43,6 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		    	 $scope.PreviousButtonFlag = true; // disable previous button
 		    	 
 		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
-		    	 
-		    	 //alert(JSON.stringify(response.questions[0].questionTopics));
-		       /* for( i =0 ; i < response.questions.length ; i++)
-	        	{
-		        	$scope.GetQuestionsResult.push(response.questions[i]);
-		        	//alert(response[i]);
-	        	}
-	        	*/
 		     })
 		     .error(function (error) 
 		     {
@@ -181,6 +173,51 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		             $scope.status = 'Unable to connect' + error.message;
 		     }); 
 	    }
+	    $scope.voteAnswerDown = function(obj){
+	    	
+			$http({ method: 'PUT',
+		        url: 'http://localhost:8080/WebApp/answers/'+obj.questionId,
+		        data: { answerVote: -1},
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		     })
+		     .success(function(result) 
+		     {
+		    	 if ((result.Result == "It's your question")||(result.Result == "The user already vote")){
+		    		 alert(result.Result); 
+		    	 }else{
+		    		obj.answerVote--; 
+		    	 }
+		     })
+		     .error(function (error) 
+		     {
+		    	 alert("voteDown");
+		             $scope.status = 'Unable to connect' + error.message;
+		     }); 
+	    }
+		$scope.voteAnswerUp = function(obj){
+	    	
+			$http({ method: 'PUT',
+		        url: 'http://localhost:8080/WebApp/answers/'+obj.questionId,
+		        data: { answerVote: +1},
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		     })
+		     .success(function(result) 
+		     {
+		    	 
+		    	 if ((result.Result == "It's your question")||(result.Result == "The user already vote")){
+		    		 alert(result.Result); 
+		    	 }else{
+		    		obj.answerVote++; 
+		    	 }
+		    	 
+		    	 
+		     })
+		     .error(function (error) 
+		     {
+		    	 alert("voteUp")
+		             $scope.status = 'Unable to connect' + error.message;
+		     }); 
+	    }
 	    $scope.voteDown = function(obj){
 	    	
 			$http({ method: 'PUT',
@@ -217,11 +254,11 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		$scope.nextClick=function()
 		{
 			$scope.prevOrNextPageNumCounter ++;
-			//alert($scope.prevOrNextPageNumCounter);
+
 			$http({ method: 'GET',
 		        url: 'http://localhost:8080/WebApp/questions',
 				params:{
-					//prevOrNext: "prev",
+			
 					currentPage: $scope.prevOrNextPageNumCounter, 
 					newOrAll: "all"},
 					
@@ -237,11 +274,7 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
 		    	 
 		    	 scroll(0,0);
-			        /*for( i =0 ; i < response.length ; i++)
-		        	{
-			        	$scope.GetQuestionsResult.push(response[i]);
-			        	//alert(response[i]);
-		        	}*/
+			
 		     })
 		     .error(function (error) 
 		     {
@@ -252,11 +285,10 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		$scope.previousClick = function()
 		{
 			$scope.prevOrNextPageNumCounter--;
-			//alert($scope.prevOrNextPageNumCounter);
+		
 			$http({ method: 'GET',
 		        url: 'http://localhost:8080/WebApp/questions',
 				params:{
-					//prevOrNext: "prev",
 					currentPage: $scope.prevOrNextPageNumCounter, 
 					newOrAll: "all"},
 					
@@ -272,11 +304,7 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
 		    	 
 		    	 scroll(0,0);
-			        /*for( i =0 ; i < response.length ; i++)
-		        	{
-			        	$scope.GetQuestionsResult.push(response[i]);
-			        	//alert(response[i]);
-		        	}*/
+			   
 		     })
 		     .error(function (error) 
 		     {
