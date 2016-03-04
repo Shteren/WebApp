@@ -281,7 +281,6 @@ public class AnswersServlet extends HttpServlet {
     		if ( rs.next() )
     		{
     			// The user already voted
-    			rs.close();
     			PrintWriter writer = response.getWriter();
     	    	writer.println("The user already vote");
     	    	writer.close();
