@@ -35,10 +35,8 @@ public interface QuestionAndAnswersConstants {
 			+ " FROM tbl_question JOIN tbl_answer"
 			+ " on tbl_question.QUESTIONID = tbl_answer.QUESTIONID)";
 	
-	public final String COUNT_EXISTING_QUESTIONS_STMT = "SELECT COUNT (*) FROM TBL_QUESTION"
-			+ " WHERE QUESTIONID IN (SELECT tbl_question.QUESTIONID"
-			+ " FROM tbl_question JOIN tbl_answer"
-			+ " on tbl_question.QUESTIONID = tbl_answer.QUESTIONID)";
+	public final String COUNT_EXISTING_QUESTIONS_STMT = "SELECT COUNT (*) FROM TBL_QUESTION";
+
 	//public final String SELECT_LAST_QUESTION_STMT = "SELECT * FROM TBL_QUESTION" 
 		//	+ " ORDER BY SUBMITIONTIME DESC"  
 			//+ " LIMIT 1";
@@ -47,6 +45,8 @@ public interface QuestionAndAnswersConstants {
 	public final String SELECT_QUESTION_BY_ID_STMT = "SELECT * FROM TBL_QUESTION WHERE QUESTIONID=?";
 	
 	public final String SELECT_ANSWER_BY_ID_STMT = "SELECT * FROM TBL_ANSWER WHERE ANSWERID=?";
+	
+	public final String SELECT_QUESTION_BY_ANSWER_ID_STMT = "SELECT QUESTIONID FROM TBL_ANSWER WHERE ANSWERID=?";
 	
 	public final String SELECT_EXISTING_QUESTIONS_STMT = "SELECT * FROM TBL_QUESTION"
 			+ " WHERE QUESTIONID IN (SELECT tbl_question.QUESTIONID"
