@@ -382,7 +382,7 @@ public class AnswersServlet extends HttpServlet {
         	writer.close();
         	
         	DBUtils.closeResultAndStatment(rss, pstmt);
-    		conn.close();
+
     		    		    		
 		}catch (SQLException e) {
 			try {

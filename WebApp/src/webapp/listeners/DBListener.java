@@ -69,7 +69,6 @@ public class DBListener implements ServletContextListener, ServletContextAttribu
     			stmt.executeUpdate(DBConstants.CREATE_USERS_TABLE);
     			stmt.executeUpdate(DBConstants.CREATE_QUESTIONS_TABLE);
     			stmt.executeUpdate(DBConstants.CREATE_ANSWERS_TABLE);
-    			stmt.executeUpdate(DBConstants.CREATE_TOPIC_TABLE);
     			stmt.executeUpdate(DBConstants.CREATE_REL_QUESTIONS_TOPICS_TABLE);
     			stmt.executeUpdate(DBConstants.CREATE_REL_USER_QUESTIONS_VOTES_TABLE);
     			stmt.executeUpdate(DBConstants.CREATE_REL_USER_ANSWERS_VOTES_TABLE);

@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 
 import webapp.constants.DBConstants;
 import webapp.constants.QuestionAndAnswersConstants;
+import webapp.utils.DBUtils;
 
 public class QuestionAndAnswerDBAccess {
 	
@@ -50,10 +51,7 @@ public class QuestionAndAnswerDBAccess {
 			rs.next();
 			numberOfQuestions = rs.getInt(1);
 			
-			rs.close();
-			//rss.close();
-			pstmt.close();
-			//stmt.close();
+	    	DBUtils.closeResultAndStatment(rs, pstmt);
 			conn.close();
 			
 		}catch (SQLException | NamingException e) {
@@ -119,10 +117,8 @@ public class QuestionAndAnswerDBAccess {
 	    	writer.println(newlyQuestionsJsonResult);
 	    	writer.close();
 	    	
-			rss.close();   		
-			rs.close();
-			pstmt.close();
-			stmt.close();
+	    	DBUtils.closeResultAndStatment(rs, pstmt);
+	    	DBUtils.closeResultAndStatment(rss, stmt);
 			conn.close();
 			    		    		
 		}catch (SQLException | NamingException e) {
@@ -199,11 +195,8 @@ public class QuestionAndAnswerDBAccess {
 	    	writer.println(allQuestionsJsonResult);
 	    	writer.close();
 	    	
-			rss.close();
-			stmt.close();
-			rs.close();
-			pstmt.close();
-			stmt.close();
+	    	DBUtils.closeResultAndStatment(rs, pstmt);
+	    	DBUtils.closeResultAndStatment(rss, stmt);
 			conn.close();
 			    		    		
 		}catch (SQLException | NamingException e) {
@@ -261,9 +254,6 @@ public class QuestionAndAnswerDBAccess {
 	    		if (rss.next()) {
 	    			answer = new Answer(rss.getInt(1), rss.getString(2), rss.getString(3), rss.getInt(4), rss.getInt(5), rss.getString(6));
 	    		}
-		    	if(null != rss) {
-		    		rss.close();
-		    	}
 				String submittionTime = rs.getString(2);
 				String contentTxt = rs.getString(3);
 				int votes = rs.getInt(4);
@@ -280,11 +270,8 @@ public class QuestionAndAnswerDBAccess {
 	    	writer.println(QuestionsByTopicsJsonResult);
 	    	writer.close();
 			
-	
-			rs.close();
-			pstmt.close();
-			if( null != stmt)
-				stmt.close();
+	    	DBUtils.closeResultAndStatment(rs, pstmt);
+	    	DBUtils.closeResultAndStatment(rss, stmt);
 			conn.close();
 			    		    		
 		}catch (SQLException | NamingException e) {
@@ -334,9 +321,9 @@ public class QuestionAndAnswerDBAccess {
 			PrintWriter writer = response.getWriter();
 	    	writer.println(answersJsonResult);
 	    	
-	    	writer.close();    		
-			rs.close();
-			pstmt.close();
+	    	writer.close();  
+	    	
+	    	DBUtils.closeResultAndStatment(rs, pstmt);
 			conn.close();
 			    		    		
 		}catch (SQLException | NamingException e) {

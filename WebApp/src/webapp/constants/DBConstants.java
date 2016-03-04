@@ -27,9 +27,8 @@ public interface DBConstants {
 			+"numberOfVotes INT DEFAULT 0,"
 			+"questionId INT REFERENCES tbl_question(questionId),"
 			+ "submmitedUsername varchar(20) REFERENCES tbl_user(nickname))";
-	public final String CREATE_TOPIC_TABLE = "CREATE TABLE tbl_topic (topicName varchar(100) primary key)";
 	public final String CREATE_REL_QUESTIONS_TOPICS_TABLE = "CREATE TABLE tbl_rel_question_topic (questionId INT REFERENCES tbl_question(questionId),"
-			+ "topicName varchar(100) REFERENCES tbl_topic(topicName),"
+			+ "topicName varchar(100),"
 			+ "primary key(questionId,topicName))";
 	public final String CREATE_REL_USER_QUESTIONS_VOTES_TABLE = "CREATE TABLE tbl_rel_user_question_vote (questionId INT REFERENCES tbl_question(questionId),"
 			+ "username varchar(10) REFERENCES tbl_user(username),"
