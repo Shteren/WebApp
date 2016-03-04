@@ -86,13 +86,13 @@ public class AnswersServlet extends HttpServlet {
 			return;
 		}
 		Gson gson = new Gson();
-		String answerId = requestPathParts[1];
+		int answerId = Integer.parseInt(requestPathParts[1]);
 		Answer answer;
 		int numOfVotes=0;
 		try {
 			answer = gson.fromJson(request.getReader(), Answer.class);
 			numOfVotes = answer.getRating();
-			numOfVotes += checkIfAnswerIdInDBandSendVoteNumber(request, response, Integer.parseInt(answerId));
+			numOfVotes += checkIfAnswerIdInDBandSendVoteNumber(request, response, answerId);
 			if(numOfVotes == -1){
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				return;
@@ -104,7 +104,7 @@ public class AnswersServlet extends HttpServlet {
 		}
 		
 		try {
-			updateVoteOfAnswer(request, response, Integer.parseInt(answerId), numOfVotes);
+			updateVoteOfAnswer(request, response, answerId, numOfVotes);
 	        //gson.toJson(Answer, response.getWriter());
 	        response.setStatus(HttpServletResponse.SC_OK);
 			
@@ -221,7 +221,7 @@ public class AnswersServlet extends HttpServlet {
     		{
     			// user tring to vote to his answer
 				String nickName = (request.getSession().getAttribute("Nickname")).toString();
-    			if (rs.getString(6) == nickName) {
+    			if (rs.getString(6).equals(nickName)) {
         			PrintWriter writer = response.getWriter();
         	    	writer.println("It's your answer");
         	    	writer.close();
@@ -310,7 +310,7 @@ public class AnswersServlet extends HttpServlet {
     		pstmt.setInt(1, answerId);
     		rs = pstmt.executeQuery();
     		if ( rs.next() ) {
-    			UpdateQuestionRating(conn, request, response, rs.getInt(5));
+    			UpdateQuestionRating(conn, request, response, rs.getInt(1));
     		}
 			// success
 			json = new JsonObject();

@@ -173,7 +173,7 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		             $scope.status = 'Unable to connect' + error.message;
 		     }); 
 	    }
-	    $scope.voteAnswerDown = function(obj){
+	    $scope.voteAnsDown = function(obj){
 	    	
 			$http({ method: 'PUT',
 		        url: 'http://localhost:8080/WebApp/answers/'+obj.questionId,
@@ -194,17 +194,17 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		             $scope.status = 'Unable to connect' + error.message;
 		     }); 
 	    }
-		$scope.voteAnswerUp = function(obj){
+		$scope.voteAnsUp = function(obj){
 	    	
 			$http({ method: 'PUT',
-		        url: 'http://localhost:8080/WebApp/answers/'+obj.questionId,
+		        url: 'http://localhost:8080/WebApp/answers/'+obj.answerId,
 		        data: { answerVote: +1},
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				headers: {'Content-Type': 'application/json'}
 		     })
 		     .success(function(result) 
 		     {
 		    	 
-		    	 if ((result.Result == "It's your question")||(result.Result == "The user already vote")){
+		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already vote")){
 		    		 alert(result.Result); 
 		    	 }else{
 		    		obj.answerVote++; 
