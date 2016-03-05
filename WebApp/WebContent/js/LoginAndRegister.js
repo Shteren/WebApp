@@ -67,6 +67,7 @@ angular.module('inTableApp',[])
 				}
 			}
 			
+			
 			$http(
 				 {
 		         method: 'POST',
@@ -75,7 +76,8 @@ angular.module('inTableApp',[])
 						userName: $scope.RegistrationName,
 						password: $scope.RegistrationPassword,
 						nickName: $scope.RegistrationNickname,
-						description: $scope.RegistrationDescription,					
+						description: $scope.RegistrationDescription,
+						photoUrl: $scope.RegistrationPhoto,
 					},
 		         //params: { username: $scope.U_Name, password: $scope.U_PWD, action: "login" },
 				headers: {'Content-Type': 'application/json'}

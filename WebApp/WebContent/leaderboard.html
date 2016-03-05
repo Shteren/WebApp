@@ -28,24 +28,35 @@
 			</nav>
 		</div>
 	</div>
+	<div class="row">
+	<div class="col-sm-2"></div>
+	<div class="col-sm-8">
 	<table class="table">  
-        <thead>  
+  		<thead >  
           <tr>  
-            <th>pic</th>  
-            <th>Nickname</th>   
-            <th>rating</th>  
-            <th>expertise</th>
+            <th bgcolor="#4dffb8">pic</th>  
+            <th bgcolor="#4dffb8">Nickname</th>   
+            <th bgcolor="#4dffb8">rating</th>  
+            <th bgcolor="#4dffb8">expertise</th>
  
           </tr>  
-        </thead>  
+        </thead> 
         <tbody> 
-          <tr data-ng-repeat="x in GetUsersResult">  
-            <td><img src={{x.user.photoUrl}} alt="..." class="img-rounded"></td>  
+       
+          <tr data-ng-repeat="x in GetUsersResult" >  
+           <th scope = "row"> <img src={{x.user.photoUrl}} alt="..." class="img-rounded"></th>
             <td>{{x.user.nickName}} </td>    
             <td>{{x.user.userRating}}</td>
-            <td data-ng-repeat="t in x.user.experties" >{{t}}</td>  
-          </tr>  
+            <td>
+            	<div data-ng-repeat="t in x.user.experties" >
+            		<label class="label label-default">{{t}}</label>
+            	</div>
+            </td>  
+          </tr> 
+          
         </tbody>  
       </table> 
-	
+	</div>
+	</div>
+	<div class="col-sm-2"></div>
 </body>
