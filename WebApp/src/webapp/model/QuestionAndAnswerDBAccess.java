@@ -180,9 +180,13 @@ public class QuestionAndAnswerDBAccess {
 				String submittedUser =  rs.getString(6);
 				QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, answer));
 			}  		
-			       	
-			int numofquestions = (getNumberOfLeftPages(currentPage, "all"))/20;
-			QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numofquestions);
+			int numOfQuestions = 0;
+			if (((getNumberOfLeftPages(currentPage, "all"))%20) == 0) {
+				numOfQuestions = ((getNumberOfLeftPages(currentPage, "all")) / 20) - 1;
+			} else {
+				numOfQuestions = ((getNumberOfLeftPages(currentPage, "all")) / 20);
+			}
+			QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numOfQuestions);
 			String allQuestionsJsonResult = gson.toJson(qestionsResponse, QuestionsResponse.class);
 	        
 			PrintWriter writer = response.getWriter();
