@@ -50,10 +50,8 @@ public interface UserConstants {
 	public final String SELECT_USER_BY_VOTE_ANSWER_STMT = "select * from tbl_rel_user_answer_vote where username=? and answerid=?";
 	
 	public final String SELECT_USER_EXPERTIES_STMT = "SELECT tbl_rel_question_topic.topicName, sum(tbl_answer.numberOfVotes)"
-			+ " FROM tbl_answer JOIN tbl_question"
-			+ " on tbl_answer.QUESTIONID = tbl_question.QUESTIONID"
-			+ " JOIN tbl_rel_question_topic"
-			+ " on tbl_question.QUESTIONID = tbl_rel_question_topic.QUESTIONID"
+			+ " FROM tbl_answer JOIN tbl_rel_question_topic"
+			+ " on tbl_answer.QUESTIONID = tbl_rel_question_topic.QUESTIONID"
 			+ " WHERE tbl_answer.submmitedUsername=?"
 			+ " GROUP BY tbl_rel_question_topic.topicName"
 			+ " ORDER BY sum(tbl_answer.numberOfVotes) DESC"

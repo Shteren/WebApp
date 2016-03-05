@@ -317,12 +317,15 @@ public class UsersServlet extends HttpServlet {
 		pstmt.setString(1, userNickName);
 		
 		ResultSet rs = pstmt.executeQuery();
-		if ( !rs.next() ) //there is no topics to user's answers
-			return null;
+		//if ( !rs.next() ) //there is no topics to user's answers
+		//	return null;
 		while ( rs.next() ) {
 			experties.add(rs.getString(1));
 		}		
 		rs.close();
+		
+		if(experties.size() == 0)
+			return null;
 		return experties;
 	}
 	
