@@ -134,7 +134,7 @@ public class UsersServlet extends HttpServlet {
 		Connection conn = null;
 		PreparedStatement pstmt = null, stmt = null;
 		User userResult = null;
-		Collection<UsersResponse> topRatedUser = null;
+		Collection<UsersResponse> topRatedUser = new ArrayList<UsersResponse>();
 		Collection<Question> five_last_asked_questions = null;
 		Collection<Question> five_last_user_answered_questions = null;
 		Collection<Answer> five_last_user_answers = null;
