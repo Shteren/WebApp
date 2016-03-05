@@ -49,9 +49,6 @@ public interface QuestionAndAnswersConstants {
 	public final String SELECT_QUESTION_BY_ANSWER_ID_STMT = "SELECT QUESTIONID FROM TBL_ANSWER WHERE ANSWERID=?";
 	
 	public final String SELECT_EXISTING_QUESTIONS_STMT = "SELECT * FROM TBL_QUESTION"
-			+ " WHERE QUESTIONID IN (SELECT tbl_question.QUESTIONID"
-			+ " FROM tbl_question JOIN tbl_answer"
-			+ " on tbl_question.QUESTIONID = tbl_answer.QUESTIONID)"
 			+ " ORDER BY QUESTIONRATING DESC"
 			+ " OFFSET ? ROWS FETCH NEXT 20 ROWS ONLY"; 
 	
