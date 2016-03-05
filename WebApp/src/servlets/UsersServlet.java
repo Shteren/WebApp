@@ -132,13 +132,17 @@ public class UsersServlet extends HttpServlet {
 	private void searchForTopRatedUsers(HttpServletResponse response) throws IOException{
 		
 		Connection conn = null;
-		PreparedStatement pstmt = null;
+		PreparedStatement pstmt = null, stmt = null;
 		User userResult = null;
+		Collection<UsersResponse> topRatedUser = null;
+		Collection<Question> five_last_asked_questions = null;
+		Collection<Question> five_last_user_answered_questions = null;
+		Collection<Answer> five_last_user_answers = null;
 		try 
 		{
         	//obtain CustomerDB data source from Tomcat's context
     		Context context = new InitialContext();
-    		ResultSet rs = null;
+    		ResultSet rs = null, answeredRS = null;
 			BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
     		conn = ds.getConnection();    		   		
     		/** prepare the statement of top rated users **/
@@ -152,13 +156,49 @@ public class UsersServlet extends HttpServlet {
     			String photoUrl = rs.getString(5);
     			int rating =  rs.getInt(6);
     			Collection<String> experties = findUserExperties(conn, nickName);
-    			userResult = new User(userName, null , nickName, description , rating, photoUrl, experties);    			
+    			userResult = new User(userName, null , nickName, description , rating, photoUrl, experties); 
+    			five_last_asked_questions = searchForUserAskedQuestions(nickName);
+    			
+        		pstmt = conn.prepareStatement(UserConstants.SELECT_LAST_5_QUESTION_USER_ANSWERED_STMT);
+        		pstmt.setString(1, nickName);
+        		answeredRS = pstmt.executeQuery();
+        		five_last_user_answered_questions = new ArrayList<Question>();
+        		five_last_user_answers = new ArrayList<Answer>();
+        		while ( answeredRS.next() ) {
+        			int questionId = rs.getInt(1);
+            		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
+            		stmt.setInt(1,questionId);
+            		ResultSet topicsRS = stmt.executeQuery();
+            		ArrayList<String> topics = new ArrayList<>();
+            		while (topicsRS.next())
+            		{
+            			topics.add(topicsRS.getString(1));
+            		}
+            		topicsRS.close();
+        			String submittionTime = rs.getString(2);
+        			String contentTxt = rs.getString(3);
+        			int votes = rs.getInt(4);
+        			int rate = rs.getInt(5);    			
+        			String submittedUser =  rs.getString(6);
+        			five_last_user_answered_questions.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, null));
+        			int answerId = rs.getInt(7);
+        			String answerSubmittionTime = rs.getString(8);
+        			String answerContentTxt = rs.getString(9);
+        			String answerSubmittedUser =  rs.getString(12);
+        			int answerVotes = rs.getInt(10);
+        			five_last_user_answers.add(new Answer(answerId,answerSubmittionTime ,answerContentTxt, answerVotes, questionId, answerSubmittedUser));
+        			
+        		}
+        		
+        		topRatedUser.add(new UsersResponse(userResult, five_last_asked_questions, five_last_user_answered_questions, five_last_user_answers));
+        		
     		}  
-    		UsersResponse userResponse = new UsersResponse(userResult, null, null, null);
-    		String topRatedUsersJsonResult = gson.toJson(userResponse, UsersResponse.class);    		
+    		
+			Gson gson = new Gson();
+	    	String topRatedJsonResult = gson.toJson(topRatedUser, UserConstants.TOP_RATED_COLLECTION);       	
 			PrintWriter writer = response.getWriter();
-	    	writer.println(topRatedUsersJsonResult);
-	    	writer.close();
+	    	writer.println(topRatedJsonResult);	    	
+	    	writer.close();  
 	    	response.setStatus(HttpServletResponse.SC_OK);
 	    	   		
     		rs.close();
@@ -268,6 +308,7 @@ public class UsersServlet extends HttpServlet {
 	
 	
 	Collection<String> findUserExperties(Connection conn, String userNickName) throws SQLException {
+		
 		
 		PreparedStatement pstmt = null;
 		Collection<String> experties = new ArrayList<String>();

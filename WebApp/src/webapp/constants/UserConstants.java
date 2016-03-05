@@ -1,6 +1,17 @@
 package webapp.constants;
 
+import java.lang.reflect.Type;
+import java.util.Collection;
+
+import com.google.gson.reflect.TypeToken;
+
+import webapp.model.Question;
+import webapp.model.UsersResponse;
+
 public interface UserConstants {
+	
+	public final Type TOP_RATED_COLLECTION = new TypeToken<Collection<UsersResponse>>(){}.getType();
+
 	
 	public final String USERS_TABLE_NAME = "tbl_user";
 	public final String INSERT_USER_STMT = "INSERT INTO "+ USERS_TABLE_NAME+" (username,password,nickname,description,photoUrl) VALUES(?,?,?,?,?)";
@@ -46,6 +57,8 @@ public interface UserConstants {
 			+ " WHERE tbl_answer.submmitedUsername=?"
 			+ " GROUP BY tbl_rel_question_topic.topicName"
 			+ " ORDER BY sum(tbl_answer.numberOfVotes) DESC";
+	
+	
 	
 
 }
