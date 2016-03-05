@@ -35,8 +35,8 @@ public interface UserConstants {
 	
 	public final String UPDATE_USER_RATING_STMT = "update tbl_user set rating=? where nickname=?";
 	
-	public final String SELECT_USER_BY_VOTE_QUESTION_STMT = "select username from tbl_rel_user_question_vote where username=?";
-	public final String SELECT_USER_BY_VOTE_ANSWER_STMT = "select username from tbl_rel_user_answer_vote where username=?";
+	public final String SELECT_USER_BY_VOTE_QUESTION_STMT = "select * from tbl_rel_user_question_vote where username=? and questionid=?";
+	public final String SELECT_USER_BY_VOTE_ANSWER_STMT = "select * from tbl_rel_user_answer_vote where username=? and answerid=?";
 	
 	public final String SELECT_USER_EXPERTIES_STMT = "SELECT tbl_rel_question_topic.topicName, sum(tbl_answer.numberOfVotes)"
 			+ " FROM tbl_answer JOIN tbl_question"

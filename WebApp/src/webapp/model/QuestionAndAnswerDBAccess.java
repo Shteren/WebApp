@@ -34,15 +34,26 @@ public class QuestionAndAnswerDBAccess {
 			Context context = new InitialContext();
 			BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
 			conn = ds.getConnection();
-			if ("new" == state)
+			switch (state)
 			{
-				pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_NEWLY_QUESTIONS_STMT);
-			} else    		
-			{
-				pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_EXISTING_QUESTIONS_STMT);
-			}    		
+				case "new":
+				{
+					pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_NEWLY_QUESTIONS_STMT);
+					break;
+				}
+				case "all":
+				{
+					pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_EXISTING_QUESTIONS_STMT);
+				    break;
+				}
+				case "topic":
+				{
+					pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_QUESTIONS_BY_TOPIC_STMT);
+				    break;
+				}
+			}
+				
 			// get number of questions
-			
 			ResultSet rs = pstmt.executeQuery();
 			rs.next();
 			numberOfQuestions = rs.getInt(1);
@@ -103,9 +114,13 @@ public class QuestionAndAnswerDBAccess {
 				//topics.clear();
 				
 			}  	
-			
-			int numofquestions = (getNumberOfLeftPages(currentPage, "new"))/20;
-			QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numofquestions);   
+			int numOfQuestions = 0;
+			if (((getNumberOfLeftPages(currentPage, "new")) % 20) == 0) {
+				numOfQuestions = ((getNumberOfLeftPages(currentPage, "new")) / 20) - 1;
+			} else {
+				numOfQuestions = ((getNumberOfLeftPages(currentPage, "new")) / 20);
+			}			
+			QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numOfQuestions);   
 			String newlyQuestionsJsonResult = gson.toJson(qestionsResponse, QuestionsResponse.class);
 	
 			
@@ -257,8 +272,13 @@ public class QuestionAndAnswerDBAccess {
 				String submittedUser =  rs.getString(6);
 				QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, answer));
 			}  
-			int numofquestions = 0;
-			QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numofquestions);
+			int numOfQuestions = 0;
+			if (((getNumberOfLeftPages(currentPage, "topic")) % 20) == 0) {
+				numOfQuestions = ((getNumberOfLeftPages(currentPage, "topic")) / 20) - 1;
+			} else {
+				numOfQuestions = ((getNumberOfLeftPages(currentPage, "topic")) / 20);
+			}		
+			QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numOfQuestions);
 			String QuestionsByTopicsJsonResult = gson.toJson(qestionsResponse, QuestionsResponse.class);
 	    	//String QuestionsByTopicsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
 	        

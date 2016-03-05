@@ -277,6 +277,7 @@ public class AnswersServlet extends HttpServlet {
        		pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_VOTE_ANSWER_STMT);
     		String userNickName = (String)(request.getSession().getAttribute("Nickname"));
     		pstmt.setString(1, userNickName);
+    		pstmt.setInt(2, answerId);
     		ResultSet rs = pstmt.executeQuery();
     		if ( rs.next() )
     		{

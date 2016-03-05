@@ -36,10 +36,11 @@ public interface QuestionAndAnswersConstants {
 			+ " on tbl_question.QUESTIONID = tbl_answer.QUESTIONID)";
 	
 	public final String COUNT_EXISTING_QUESTIONS_STMT = "SELECT COUNT (*) FROM TBL_QUESTION";
+	
+	public final String COUNT_QUESTIONS_BY_TOPIC_STMT = "SELECT COUNT (*) FROM tbl_question where"
+			+ " questionId IN (select questionId from tbl_rel_question_topic"
+								+ " WHERE TOPICNAME=?)";
 
-	//public final String SELECT_LAST_QUESTION_STMT = "SELECT * FROM TBL_QUESTION" 
-		//	+ " ORDER BY SUBMITIONTIME DESC"  
-			//+ " LIMIT 1";
 	public final String SELECT_LAST_QUESTION_STMT ="SELECT * FROM TBL_QUESTION ORDER BY submitiontime DESC FETCH FIRST 1 ROWS ONLY";
 	//public final String SELECT_LAST_QUESTION_STMT ="SELECT QUESTIONID FROM TBL_QUESTION ORDER BY submitiontime DESC ";
 	public final String SELECT_QUESTION_BY_ID_STMT = "SELECT * FROM TBL_QUESTION WHERE QUESTIONID=?";
@@ -62,7 +63,7 @@ public interface QuestionAndAnswersConstants {
 	
 	public final String SELECT_ANSWERS_BY_QUESTION_ID_STMT = "select * from tbl_answer "
 			+ " where questionId=?"
-			+ " order by numberOfVotes" ;
+			+ " order by numberOfVotes DESC" ;
 	
 	public final String SELECT_FIRST_ANSWER_BY_QUESTION_ID_STMT = "select * from tbl_answer "
 			+ " where questionId=?"
@@ -76,7 +77,7 @@ public interface QuestionAndAnswersConstants {
 	public final String INSERT_VOTE_FOR_ANSWER_STMT = "INSERT INTO tbl_rel_user_answer_vote VALUES (?,?,?)";
 	
 	public final String UPDATE_VOTE_FOR_QUESTIONS_STMT = "UPDATE tbl_question SET numberOfVotes=?, questionRating=? WHERE QUESTIONID=?";
-	public final String UPDATE_VOTE_FOR_ANSWER_STMT = "UPDATE tbl_answer SET numberOfVotes=? WHERE QUESTIONID=?";
+	public final String UPDATE_VOTE_FOR_ANSWER_STMT = "UPDATE tbl_answer SET numberOfVotes=? WHERE ANSWERID=?";
 	
 	public final String SELECT_TOP_20_TOPICS_STMT = "select sum(tbl_question.questionRating), tbl_rel_question_topic.topicName"
 			+ " from tbl_question join tbl_tbl_rel_question_topic "
