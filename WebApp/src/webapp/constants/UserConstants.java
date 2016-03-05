@@ -14,8 +14,8 @@ public interface UserConstants {
 
 	
 	public final String USERS_TABLE_NAME = "tbl_user";
-	public final String INSERT_USER_STMT = "INSERT INTO "+ USERS_TABLE_NAME+" (username,password,nickname,description,photoUrl) VALUES(?,?,?,?,?)";
-	public final String SELECT_USER_BY_NAME_STMT = "SELECT * FROM "+USERS_TABLE_NAME +" WHERE username=? ";
+	public final String INSERT_USER_STMT = "INSERT INTO TBL_USER(username,password,nickname,description,photoUrl) VALUES(?,?,?,?,?)";
+	public final String SELECT_USER_BY_NAME_STMT = "SELECT * FROM TBL_USER WHERE username=? ";
 	
 	public final String SELECT_LAST_5_ASKED_QUESTION = "select * FROM tbl_question"
 			+ " where submmitedUsername=?"
@@ -51,7 +51,7 @@ public interface UserConstants {
 	
 	public final String SELECT_USER_EXPERTIES_STMT = "SELECT tbl_rel_question_topic.topicName, sum(tbl_answer.numberOfVotes)"
 			+ " FROM tbl_answer JOIN tbl_question"
-			+ " on tbl_answer.QUESTIONID = tbl_question.QUESTIONID)"
+			+ " on tbl_answer.QUESTIONID = tbl_question.QUESTIONID"
 			+ " JOIN tbl_rel_question_topic"
 			+ " on tbl_question.QUESTIONID = tbl_rel_question_topic.QUESTIONID"
 			+ " WHERE tbl_answer.submmitedUsername=?"
