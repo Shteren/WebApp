@@ -4,10 +4,10 @@
 <meta charset="windows-1255">
 <title>Insert title here</title>
 <script src= "js/angular.min.js"></script>
-<script src="js/AllQuestions.js"></script>
+<script src="js/leaderboard.js"></script>
 <link rel="stylesheet" href="css/bootstrap.css">
 </head>
-<body data-ng-app="inAllQuestion" data-ng-controller="AllQuestionsController">
+<body data-ng-app="inLeaderBoard" data-ng-controller="LeaderBoardController">
 	<div class="container">
 		<div class="row">
 			<nav role="navigation" class="navbar navbar-default">
@@ -40,24 +40,16 @@
             <th>5 answared asked</th> 
           </tr>  
         </thead>  
-        <tbody>  
-          <tr>  
-            <td><img src="http://tgchan.org/kusaba/icons/src/0u0plz.png" alt="..." class="img-rounded"></td>  
-            <td>Rammohan </td>  
+        <tbody> 
+          <tr data-ng-repeat="x in GetUsersResult">  
+            <td><img src=x.user.photoUrl alt="..." class="img-rounded"></td>  
+            <td>x.user.nickName </td>  
             <td>Reddy</td>  
-            <td>A+</td>  
-          </tr>  
-          <tr>  
-            <td>002</td>  
-            <td>Smita</td>  
-            <td>Pallod</td>  
-            <td>A</td>  
-          </tr>  
-          <tr>  
-            <td>003</td>  
-            <td>Rabindranath</td>  
-            <td>Sen</td>  
-            <td>A+</td>  
+            <td>A+</td>
+            <td></td> 
+            <td></td>
+            <td></td>
+            <td></td> 
           </tr>  
         </tbody>  
       </table> 
