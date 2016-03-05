@@ -154,7 +154,7 @@ public class UsersServlet extends HttpServlet {
     			String nickName = rs.getString(3);
     			String description = rs.getString(4);
     			String photoUrl = rs.getString(5);
-    			int rating =  rs.getInt(6);
+    			double rating =  rs.getDouble(6);
     			Collection<String> experties = findUserExperties(conn, nickName);
     			userResult = new User(userName, null , nickName, description , rating, photoUrl, experties); 
     			five_last_asked_questions = searchForUserAskedQuestions(nickName);
