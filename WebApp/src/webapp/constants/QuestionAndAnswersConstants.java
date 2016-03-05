@@ -80,8 +80,8 @@ public interface QuestionAndAnswersConstants {
 	public final String UPDATE_VOTE_FOR_ANSWER_STMT = "UPDATE tbl_answer SET numberOfVotes=? WHERE ANSWERID=?";
 	
 	public final String SELECT_TOP_20_TOPICS_STMT = "select sum(tbl_question.questionRating), tbl_rel_question_topic.topicName"
-			+ " from tbl_question join tbl_tbl_rel_question_topic "
-			+ " on tbl_question.questionId = tbl_tbl_rel_question_topic.questionId"
+			+ " from tbl_question join tbl_rel_question_topic "
+			+ " on tbl_question.questionId = tbl_rel_question_topic.questionId"
 			+ " Group by tbl_rel_question_topic.topicName"
 			+ " order by sum(tbl_question.questionRating) DESC"
 			+ " OFFSET ? ROWS FETCH NEXT 20 ROWS ONLY";

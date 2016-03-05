@@ -47,6 +47,9 @@
            <th scope = "row"> <img src={{x.user.photoUrl}} alt="..." class="img-rounded"></th>
             <td>{{x.user.nickName}} </td>    
             <td>{{x.user.userRating}}</td>
+            <td>{{x.five_last_Questions}}</td>
+            <td>{{x.five_last_answered_quetions}}</td>
+            <td>{{x.five_last_user_answered}}</td>
             <td>
             	<div data-ng-repeat="t in x.user.experties" >
             		<label class="label label-default">{{t}}</label>
