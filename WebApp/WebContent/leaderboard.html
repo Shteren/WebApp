@@ -43,7 +43,7 @@
             <td><img src={{x.user.photoUrl}} alt="..." class="img-rounded"></td>  
             <td>{{x.user.nickName}} </td>    
             <td>{{x.user.userRating}}</td>
-            <td>{{x.user.experties}}</td>  
+            <td data-ng-repeat="t in x.user.experties" >{{t}}</td>  
           </tr>  
         </tbody>  
       </table> 
