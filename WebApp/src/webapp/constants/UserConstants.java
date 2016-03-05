@@ -56,7 +56,8 @@ public interface UserConstants {
 			+ " on tbl_question.QUESTIONID = tbl_rel_question_topic.QUESTIONID"
 			+ " WHERE tbl_answer.submmitedUsername=?"
 			+ " GROUP BY tbl_rel_question_topic.topicName"
-			+ " ORDER BY sum(tbl_answer.numberOfVotes) DESC";
+			+ " ORDER BY sum(tbl_answer.numberOfVotes) DESC"
+			+ " fetch first 5 rows only";
 	
 	
 	
