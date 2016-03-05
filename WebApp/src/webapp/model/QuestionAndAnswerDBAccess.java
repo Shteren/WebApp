@@ -333,8 +333,7 @@ public class QuestionAndAnswerDBAccess {
 			Gson gson = new Gson();
 	    	String answersJsonResult = gson.toJson(answersResults, QuestionAndAnswersConstants.ANSWERS_COLLECTION);       	
 			PrintWriter writer = response.getWriter();
-	    	writer.println(answersJsonResult);
-	    	
+	    	writer.println(answersJsonResult);	    	
 	    	writer.close();  
 	    	
 	    	DBUtils.closeResultAndStatment(rs, pstmt);

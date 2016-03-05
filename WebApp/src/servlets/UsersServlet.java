@@ -165,7 +165,7 @@ public class UsersServlet extends HttpServlet {
         		five_last_user_answered_questions = new ArrayList<Question>();
         		five_last_user_answers = new ArrayList<Answer>();
         		while ( answeredRS.next() ) {
-        			int questionId = rs.getInt(1);
+        			int questionId = answeredRS.getInt(1);
             		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
             		stmt.setInt(1,questionId);
             		ResultSet topicsRS = stmt.executeQuery();
@@ -175,17 +175,17 @@ public class UsersServlet extends HttpServlet {
             			topics.add(topicsRS.getString(1));
             		}
             		topicsRS.close();
-        			String submittionTime = rs.getString(2);
-        			String contentTxt = rs.getString(3);
-        			int votes = rs.getInt(4);
-        			int rate = rs.getInt(5);    			
+        			String submittionTime = answeredRS.getString(2);
+        			String contentTxt = answeredRS.getString(3);
+        			int votes = answeredRS.getInt(4);
+        			int rate = answeredRS.getInt(5);    			
         			String submittedUser =  rs.getString(6);
         			five_last_user_answered_questions.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, null));
-        			int answerId = rs.getInt(7);
-        			String answerSubmittionTime = rs.getString(8);
-        			String answerContentTxt = rs.getString(9);
-        			String answerSubmittedUser =  rs.getString(12);
-        			int answerVotes = rs.getInt(10);
+        			int answerId = answeredRS.getInt(7);
+        			String answerSubmittionTime = answeredRS.getString(8);
+        			String answerContentTxt = answeredRS.getString(9);
+        			String answerSubmittedUser =  answeredRS.getString(12);
+        			int answerVotes = answeredRS.getInt(10);
         			five_last_user_answers.add(new Answer(answerId,answerSubmittionTime ,answerContentTxt, answerVotes, questionId, answerSubmittedUser));
         			
         		}
@@ -199,7 +199,7 @@ public class UsersServlet extends HttpServlet {
 			PrintWriter writer = response.getWriter();
 	    	writer.println(topRatedJsonResult);	    	
 	    	writer.close();  
-	    	response.setStatus(HttpServletResponse.SC_OK);
+	    
 	    	   		
     		rs.close();
     		pstmt.close();

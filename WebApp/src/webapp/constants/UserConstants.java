@@ -22,17 +22,17 @@ public interface UserConstants {
 			+ " order by submitionTime"
 			+ " FETCH First 5 ROWS ONLY";
 	
-	public final String SELECT_LAST_5_ANSWERD_ANSWER = "select * FROM tbl_anwer"
+	public final String SELECT_LAST_5_ANSWERD_ANSWER = "select * FROM tbl_answer"
 			+ " where submmitedUsername=?"
 			+ " order by submitionTime"
 			+ " FETCH First 5 ROWS ONLY";
 	
 	public final String SELECT_LAST_5_QUESTION_USER_ANSWERED_STMT = "select * from "
-			+ " tbl_question JOIN tbl_anwer"
-			+ " on tbl_question.questionId = tbl_anwer.questionId"
+			+ " tbl_question JOIN tbl_answer"
+			+ " on tbl_question.questionId = tbl_answer.questionId"
 			+ " where tbl_answer.submmitedUsername=?"
 			+ " order by tbl_answer.submitionTime"
-			+ " FETCH First 5 ROWS ONLY)";
+			+ " FETCH First 5 ROWS ONLY";
 	
 	public final String SELECT_AVG_QUESTION_BY_USER_NAME = "SELECT AVG(questionRating) FROM TBL_QUESTION"
 			+ " WHERE submmitedUsername=?";
