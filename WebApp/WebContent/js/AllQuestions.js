@@ -312,6 +312,52 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		     });
 		}
 		
+		$scope.addAnswer = function(obj)
+		{
+	
+			
+			 $http({ method: 'POST',
+			        url: 'http://localhost:8080/WebApp/answers',
+					data: {
+						answerTxt: obj.answerTxt ,
+						questionId: obj.questionId
+					},
+					headers: {'Content-Type': 'application/json'}
+			     })
+			     
+			     .success(function(response) 
+			     {
+			    	  obj.sentAnswerTxt = obj.answerTxt;
+			    	  obj.answerTxt = null;
+			    
+			     })
+			     .error(function (error) 
+			     {
+			 
+			     }); 
+		}
+		
+		$scope.QuestionLenWarn = function()
+	    {
+	    	if ( ($scope.questionTxt.length)>300)
+	    	{
+	    		$scope.HideShowQuestionCharacterError = true;
+	    		return;
+	    	}
+	    	$scope.HideShowQuestionCharacterError = false;
+	    }
+	    $scope.QuestionLenWarn = function(obj)
+	    {
+
+	    	if ( (obj.answerTxt.length)>300)
+	    	{
+	    		obj.ansLenShowErr = true;
+	    		return;
+	    	}
+	    	obj.ansLenShowErr = false;
+	    	
+	    }
+		
 		// Code start from here
 		$scope.showAns = false;
 	    $scope.NextButtonFlag = true;
