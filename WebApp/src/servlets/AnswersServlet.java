@@ -313,6 +313,9 @@ public class AnswersServlet extends HttpServlet {
     		if ( rs.next() ) {
     			UpdateQuestionRating(conn, request, response, rs.getInt(1));
     		}
+    		
+			// update user rating after changing votes answer to DB
+			UserAccessDB.UpdateUserRating(conn, submittedUser);
 			// success
 			json = new JsonObject();
 			json.addProperty("Result", true);
@@ -360,7 +363,7 @@ public class AnswersServlet extends HttpServlet {
     		pstmt.setInt(1,questionId);
     		ResultSet rss = pstmt.executeQuery();
     		
-    		if (rss.next())
+    		if ( rss.next() )
     		{
     			int questionVotes = rss.getInt(4);
     			int answersRating = QuestionsServlet.scoreOfAnswer(conn, questionId, questionVotes);
@@ -372,6 +375,9 @@ public class AnswersServlet extends HttpServlet {
     			
     			pstmt.executeUpdate(); 
         		conn.commit();	
+        		
+        		String userAskedQuestion = rss.getString(6);
+        		UserAccessDB.UpdateUserRating(conn, userAskedQuestion);
     		}
     		
 			//build Json Answer

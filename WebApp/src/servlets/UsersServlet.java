@@ -133,7 +133,7 @@ public class UsersServlet extends HttpServlet {
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		Collection<User> usersResults = new ArrayList<User>(); 
+		User userResult = null;
 		try 
 		{
         	//obtain CustomerDB data source from Tomcat's context
@@ -152,9 +152,9 @@ public class UsersServlet extends HttpServlet {
     			String photoUrl = rs.getString(5);
     			int rating =  rs.getInt(6);
     			Collection<String> experties = findUserExperties(conn, nickName);
-    			usersResults.add(new User(userName, null , nickName, description , rating, photoUrl, experties));    			
+    			userResult = new User(userName, null , nickName, description , rating, photoUrl, experties);    			
     		}  
-    		UsersResponse userResponse = new UsersResponse(usersResults, null, null, null);
+    		UsersResponse userResponse = new UsersResponse(userResult, null, null, null);
     		String topRatedUsersJsonResult = gson.toJson(userResponse, UsersResponse.class);    		
 			PrintWriter writer = response.getWriter();
 	    	writer.println(topRatedUsersJsonResult);
@@ -183,7 +183,7 @@ public class UsersServlet extends HttpServlet {
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null, stmt = null;
-		Collection<User> usersResults = new ArrayList<User>(); 
+		User userResult = null; 
 		Collection<Question> five_last_asked_questions = null;
 		Collection<Question> five_last_user_answered_questions = new ArrayList<Question>();
 		Collection<Answer> five_last_user_answers = new ArrayList<Answer>();
@@ -207,7 +207,7 @@ public class UsersServlet extends HttpServlet {
 
     		if (rs.next())
     		{
-    			usersResults.add(new User(userName, null, usernickName, description, rating, photoUrl, experties));
+    			userResult = new User(userName, null, usernickName, description, rating, photoUrl, experties);
     		}
     		
     		five_last_asked_questions = searchForUserAskedQuestions(userNickName);
@@ -242,7 +242,7 @@ public class UsersServlet extends HttpServlet {
     			
     		}
     		
-    		UsersResponse userResponse = new UsersResponse(usersResults, five_last_asked_questions, five_last_user_answered_questions, five_last_user_answers);
+    		UsersResponse userResponse = new UsersResponse(userResult, five_last_asked_questions, five_last_user_answered_questions, five_last_user_answers);
     		String UserJsonResult = gson.toJson(userResponse, UsersResponse.class);
 	        
 			PrintWriter writer = response.getWriter();
