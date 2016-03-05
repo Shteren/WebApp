@@ -2,7 +2,7 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		$scope.CheckNextButton = function()
 		{
 
-			if( $scope.NumOfPages == $scope.prevOrNextPageNumCounter+1 )
+			if( $scope.NumOfPages == $scope.prevOrNextPageNumCounter)
 	   		 {
 		    		 $scope.NextButtonFlag = true; // disabled
 	   		 }
@@ -67,10 +67,10 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 			     {
 			    	 if(null == response || 0 == response.length)
 			    	 {
-			    		 alert("Not Found");
+			    		 obj.firstAns=false;
 			    		 return;
 			    	 }
-			
+			    	 obj.firstAns=true;
 			    	 obj.numberOfAnswers = response.length;
 			    	 $scope.ShowButton(obj);
 			    	 obj.firstAns = response.slice(0, 1);
