@@ -309,15 +309,20 @@ public class UsersServlet extends HttpServlet {
 			}
 			pstmt = conn.prepareStatement(UserConstants.INSERT_USER_STMT);
 			// get the parameters from incoming json
-			String Usename = user.getUserName();//request.getParameter("userName");
-			String Password = user.getPassword();//request.getParameter("password");
-			String nickName = user.getNickName();//request.getParameter("nickName");
-			String Desc = user.getDescriptaion();//request.getParameter("description");
+			String Usename = user.getUserName();
+			String Password = user.getPassword();
+			String nickName = user.getNickName();
+			String Desc = user.getDescriptaion();
+			String photoUrl = user.getPhotoUrl();
+			if (photoUrl == null) {
+				photoUrl = "images/defultimg.png";
+			}
 			// insert parameters into SQL Insert
 			pstmt.setString(1,Usename);
 			pstmt.setString(2,Password);
 			pstmt.setString(3,nickName);
 			pstmt.setString(4,Desc);
+			pstmt.setString(5, photoUrl);
 			
 			//execute insert command
 			pstmt.executeUpdate();
