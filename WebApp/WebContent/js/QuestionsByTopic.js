@@ -93,7 +93,6 @@ angular.module('inTopicQuestion',[])
 		    	 $scope.NumOfPages = response.numOfPages ;
 		    	 $scope.CheckNextButton();
 		    	 $scope.CheckPreviousButton();
-		    	 //$scope.PreviousButtonFlag = true; // disable previous button
 		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
 		     })
 		     .error(function (error) 
@@ -251,9 +250,12 @@ angular.module('inTopicQuestion',[])
 					},
 		     })
 		     .success(function (response) 
-		     {
-		   
-		    	 $scope.GetTopicsResult = angular.copy(response);
+		     {;
+		    	 $scope.NumOfTopicPages = response.numOfPages ;
+		    	 alert($scope.NumOfTopicPages);
+		    	 $scope.CheckTopicNextButton();
+		    	 $scope.CheckTopicPreviousButton();
+		    	 $scope.GetTopicsResult = angular.copy(response.topics);
 		        
 		     })
 		     .error(function (error) 
@@ -264,8 +266,93 @@ angular.module('inTopicQuestion',[])
 			return false;
 	    	
 	    }
+	    $scope.CheckTopicNextButton = function()
+		{
+
+			if( $scope.NumOfTopicPages == $scope.prevOrNextTopicPageNumCounter)
+	   		 {
+		    		 $scope.NextTopicButtonFlag = true; // disabled
+	   		 }
+		    	 else
+	   		 {
+		    		 $scope.NextTopicButtonFlag = false; // enabled
+	   		 }
+		}
+		$scope.CheckTopicPreviousButton = function()
+		{
+	    	
+	    	 if( 0 == $scope.prevOrNextTopicPageNumCounter )
+    		 {
+	    		 $scope.PreviousTopicButtonFlag = true; // disabled
+    		 }
+	    	 else
+    		 {
+	    		 $scope.PreviousTopicButtonFlag = false; // enabled
+    		 }
+		}
+		$scope.nextTopicClick=function()
+		{
+			$scope.prevOrNextTopicPageNumCounter ++;
+
+			$http({ method: 'GET',
+		        url: 'http://localhost:8080/WebApp/topics',
+				params:{
+			
+					currentPage: $scope.prevOrNextTopicPageNumCounter},
+					
+			
+		     })
+		     .success(function(response) 
+		     {
+		    	 $scope.NumOfTopicPages = response.numOfPages ;
+		    	 $scope.CheckTopicNextButton();
+		    	 $scope.CheckTopicPreviousButton();
+
+		    	 
+		    	 $scope.GetTopicsResult = angular.copy(response.topics);
+		    	 
+		    	 scroll(0,0);
+			
+		     })
+		     .error(function (error) 
+		     {
+		             $scope.status = 'Unable to connect' + error.message;
+		     });
+		}
+		
+		$scope.previousTopicClick = function()
+		{
+			$scope.prevOrNextTopicPageNumCounter--;
+		
+			$http({ method: 'GET',
+		        url: 'http://localhost:8080/WebApp/topics',
+				params:{
+					currentPage: $scope.prevOrNextTopicPageNumCounter, 
+					newOrAll: "all"},
+					
+				
+		     })
+		     .success(function(response) 
+		     {
+		    	 $scope.NumOfTopicPages = response.numOfPages ;
+		    	 
+		    	 $scope.CheckTopicNextButton();
+		    	 $scope.CheckTopicPreviousButton();
+		    	 
+		    	 $scope.GetTopicsResult = angular.copy(response.topics);
+		    	 
+		    	 scroll(0,0);
+			   
+		     })
+		     .error(function (error) 
+		     {
+		             $scope.status = 'Unable to connect' + error.message;
+		     });
+		}
 		
 		// Code start from here
+	    $scope.NextTopicButtonFlag = true;
+	    $scope.PreviousTopicButtonFlag = true;
 		$scope.CheckSession();
 		$scope.showHideTopicList = true;
 		$scope.topicCurrentPage = 0;
@@ -275,6 +362,7 @@ angular.module('inTopicQuestion',[])
 	    $scope.PreviousButtonFlag = true;
 		$scope.AnswerShowFlag = false;
 		$scope.prevOrNextPageNumCounter = 0;
+		$scope.prevOrNextTopicPageNumCounter = 0;
 		$scope.GetQuestionsResult = [];
 		
 }]);
