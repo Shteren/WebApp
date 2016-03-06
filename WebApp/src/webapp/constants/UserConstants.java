@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import com.google.gson.reflect.TypeToken;
 
-import webapp.model.Question;
 import webapp.model.UsersResponse;
 
 public interface UserConstants {

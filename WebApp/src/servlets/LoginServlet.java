@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 
 import webapp.constants.DBConstants;
 import webapp.constants.UserConstants;
+import webapp.utils.DBUtils;
 
 /**
  * Servlet implementation class LoginServlet
@@ -121,8 +122,8 @@ public class LoginServlet extends HttpServlet {
 	    		answer = json.toString();    			
 	    		
     		}
-			rs.close();
-			pstmt.close();
+    		
+    		DBUtils.closeResultAndStatment(rs, pstmt);
     		conn.close();
     		
 		} catch (SQLException | NamingException e) {

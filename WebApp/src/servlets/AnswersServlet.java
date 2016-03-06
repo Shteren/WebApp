@@ -20,7 +20,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import webapp.constants.DBConstants;
 import webapp.constants.QuestionAndAnswersConstants;
@@ -48,8 +47,9 @@ public class AnswersServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");
 		Gson gson = new Gson();
+		//there is no url from client
 		if(request.getPathInfo() != null){
-			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			DBUtils.buildJsonResult("Url is empty" , response);
 			return;
 		}
 
@@ -59,7 +59,7 @@ public class AnswersServlet extends HttpServlet {
 			answer = gson.fromJson(request.getReader(), Answer.class);
 		//Problem with reading json to question
 		} catch(Exception e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			DBUtils.buildJsonResult("Problem reading incoming Json" , response);
 			return;
 		}
 		// method that insert new answer to DB
@@ -76,40 +76,46 @@ public class AnswersServlet extends HttpServlet {
 		String requestPath = request.getPathInfo();
 		// method put must get uri of answerId
 		if(requestPath == null) {
-			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			DBUtils.buildJsonResult("Uri is empty" , response);
 			return;
 		}
 		String[] requestPathParts = requestPath.split("/");
 		//if uri path is smaller than 2 it is wrong uri so we have to return METHOD_NOT_ALLOWED
 		if(requestPathParts.length != 2) {
-			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			DBUtils.buildJsonResult("Wrong uri" , response);
 			return;
 		}
 		Gson gson = new Gson();
+		// get specific answer id from incoming uri
 		int answerId = Integer.parseInt(requestPathParts[1]);
 		Answer answer;
+		// local variable to sum the new num of votes for update relevant DB tables
 		int numOfVotes=0;
 		try {
+			// get answer from incoming Json
 			answer = gson.fromJson(request.getReader(), Answer.class);
 			numOfVotes = answer.getRating();
+									// return from DB the current num of votes
 			int numOfExistingVote = checkIfAnswerIdInDBandSendVoteNumber(request, response, answerId);	
+			// 
 			if(numOfExistingVote == Integer.MIN_VALUE){
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				DBUtils.buildJsonResult("Answer not existing in DB" , response);
 				return;
 			}
 			numOfVotes += numOfExistingVote;
 		//Problem with reading json to user
 		} catch(Exception e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			DBUtils.buildJsonResult("Problem with incoming Json" , response);
 			return;
 		}
 		
 		try {
+			// update new votes for specific answer
 			updateVoteOfAnswer(request, response, answerId, numOfVotes);
 			
 		} catch (Exception e) {
 			//log.error("Exception in process, e);
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			DBUtils.buildJsonResult("Update votes failed" , response);
 		}
 	}
 	
@@ -149,13 +155,7 @@ public class AnswersServlet extends HttpServlet {
 			conn.commit();		
 			
 			////// Success //////
-			JsonObject json = new JsonObject();
-			json.addProperty("Result", false);
-			String Answer = json.toString();
-			
-			PrintWriter writer = response.getWriter();
-        	writer.println(Answer);
-        	writer.close();
+			DBUtils.buildJsonResult("true" , response);
         	
         	DBUtils.closeResultAndStatment(null, pstmt);
         	conn.close();
@@ -174,15 +174,7 @@ public class AnswersServlet extends HttpServlet {
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-			
-			//build Json Answer of error
-			JsonObject json = new JsonObject();
-			json.addProperty("Result", false);
-			String Answer = json.toString();
-			
-			PrintWriter writer = response.getWriter();
-        	writer.println(Answer);
-        	writer.close();
+			DBUtils.buildJsonResult("false" , response);
 		}		
 		
 	}
@@ -265,8 +257,6 @@ public class AnswersServlet extends HttpServlet {
     {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		JsonObject json = new JsonObject();
-		String answer;
 		try 
 		{
         	//obtain CustomerDB data source from Tomcat's context
@@ -282,9 +272,7 @@ public class AnswersServlet extends HttpServlet {
     		if ( rs.next() )
     		{
     			// The user already voted
-    			PrintWriter writer = response.getWriter();
-    	    	writer.println("The user already vote");
-    	    	writer.close();
+    			DBUtils.buildJsonResult("The user already vote", response);
     	    	return;
     		}
     		// update votes of answer
@@ -317,15 +305,8 @@ public class AnswersServlet extends HttpServlet {
 			// update user rating after changing votes answer to DB
 			UserAccessDB.UpdateUserRating(conn, submittedUser);
 			// success
-			json = new JsonObject();
-			json.addProperty("Result", true);
-			answer = json.toString();
-			
-			PrintWriter writer = response.getWriter();
-			response.setStatus(HttpServletResponse.SC_OK);
-        	writer.println(answer);
-        	writer.close();
-    		
+			DBUtils.buildJsonResult("true", response);
+    		//close resultSet and statements
         	DBUtils.closeResultAndStatment(rs, pstmt);        	
     		conn.close();
     		    		    		
@@ -356,7 +337,6 @@ public class AnswersServlet extends HttpServlet {
      */
     private void UpdateQuestionRating(Connection conn, HttpServletRequest request, HttpServletResponse response, int questionId) throws SQLException, IOException{
     	PreparedStatement  pstmt = null;
-    	JsonObject json = new JsonObject();
     	try {   		   		        	
     		// get data of the question that was answered
 			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_QUESTION_BY_ID_STMT);
@@ -377,17 +357,12 @@ public class AnswersServlet extends HttpServlet {
         		conn.commit();	
         		
         		String userAskedQuestion = rss.getString(6);
+        		// update rating of user that asked the question S
         		UserAccessDB.UpdateUserRating(conn, userAskedQuestion);
     		}
     		
 			//build Json Answer
-			json = new JsonObject();
-			json.addProperty("Result", true);
-			String answer = json.toString();
-			
-			PrintWriter writer = response.getWriter();
-        	writer.println(answer);        	
-        	writer.close();
+    		DBUtils.buildJsonResult("true", response);
         	
         	DBUtils.closeResultAndStatment(rss, pstmt);
 

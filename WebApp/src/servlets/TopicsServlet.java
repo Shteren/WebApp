@@ -19,7 +19,7 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
 import webapp.constants.DBConstants;
 import webapp.constants.QuestionAndAnswersConstants;
-
+import webapp.utils.DBUtils;
 
 import com.google.gson.Gson;
 
@@ -40,15 +40,17 @@ public class TopicsServlet extends HttpServlet {
     /**
      * Should support the api
      * /topics?currentPage
+     * @throws IOException 
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {
 			response.setContentType("application/json");		
 			searchTopics(request, response);
 			return;
 			
 		} catch(Exception e) {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			DBUtils.buildJsonResult("Wrong uri" , response);
+			return;
 		}
 	}
 	
@@ -92,8 +94,7 @@ public class TopicsServlet extends HttpServlet {
 	    	writer.println(topicsJsonResult);
 	    	writer.close();
     		
-			rs.close();
-			pstmt.close();
+	    	DBUtils.closeResultAndStatment(rs, pstmt);
     		conn.close();
     		    		    		
 		}catch (SQLException | NamingException e) {
