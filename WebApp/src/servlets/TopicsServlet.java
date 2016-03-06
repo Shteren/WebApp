@@ -105,10 +105,10 @@ public class TopicsServlet extends HttpServlet {
 			}	
 			
 			TopicResponse topicsResponse = new TopicResponse(topics, numberOfQuestions);
-			String TopicsByTopicsJsonResult = gson.toJson(topicsResponse, TopicResponse.class);
+			String TopicsJsonResult = gson.toJson(topicsResponse, TopicResponse.class);
 	        
 			PrintWriter writer = response.getWriter();
-	    	writer.println(TopicsByTopicsJsonResult);
+	    	writer.println(TopicsJsonResult);
 	    	writer.close();
     		
 	    	DBUtils.closeResultAndStatment(rs, pstmt);
