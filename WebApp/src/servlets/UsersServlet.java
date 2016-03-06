@@ -394,9 +394,6 @@ public class UsersServlet extends HttpServlet {
 			//commit update
 			conn.commit();
 			
-			pstmt.close();
-			conn.close();
-			
 			////// Success ////// 
 			// Set session to be valid
 			HttpSession session = request.getSession();
@@ -407,6 +404,8 @@ public class UsersServlet extends HttpServlet {
 			//build Json Answer
 			DBUtils.buildJsonResult("true", response);
 			
+			pstmt.close();
+			conn.close();
 			
 		} catch (SQLException | NamingException e) {
 				try {

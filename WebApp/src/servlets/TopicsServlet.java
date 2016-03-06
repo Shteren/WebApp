@@ -19,9 +19,12 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
 import webapp.constants.DBConstants;
 import webapp.constants.QuestionAndAnswersConstants;
+import webapp.model.QuestionsResponse;
+import webapp.model.TopicResponse;
 import webapp.utils.DBUtils;
 
 import com.google.gson.Gson;
+import com.sun.xml.internal.messaging.saaj.packaging.mime.util.QEncoderStream;
 
 
 /**
@@ -88,10 +91,24 @@ public class TopicsServlet extends HttpServlet {
         		topics.add(topicName);        		
     		}  
     		
-        	String topicsJsonResult = gson.toJson(topics, QuestionAndAnswersConstants.TOPICS_COLLECTION);
+    		int numberOfQuestions = 0;
+			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_TOPICS_STMT);
+			// get number of questions
+			rs = pstmt.executeQuery();
+			if ( rs.next() ) {
+					numberOfQuestions = rs.getInt(1);
+			}
+			if ((numberOfQuestions % 20) == 0) {
+				numberOfQuestions = (numberOfQuestions / 20) - 1;
+			} else {
+				numberOfQuestions = (numberOfQuestions / 20);
+			}	
+			
+			TopicResponse topicsResponse = new TopicResponse(topics, numberOfQuestions);
+			String TopicsByTopicsJsonResult = gson.toJson(topicsResponse, TopicResponse.class);
 	        
 			PrintWriter writer = response.getWriter();
-	    	writer.println(topicsJsonResult);
+	    	writer.println(TopicsByTopicsJsonResult);
 	    	writer.close();
     		
 	    	DBUtils.closeResultAndStatment(rs, pstmt);

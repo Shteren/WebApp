@@ -86,5 +86,6 @@ public interface QuestionAndAnswersConstants {
 			+ " order by sum(tbl_question.questionRating) DESC"
 			+ " OFFSET ? ROWS FETCH NEXT 20 ROWS ONLY";
 
+	public final String COUNT_TOPICS_STMT = "SELECT COUNT(DISTINCT topicname) FROM tbl_rel_question_topic";
 }
 
