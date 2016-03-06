@@ -27,10 +27,12 @@
 			    </div>
 			</nav>
 		</div>
+		
 		<div class="row">
+		<div data-ng-show="showHideTopicList">
 			<div class="row">
 				<div class="col-xs-5">
-					<label>Please enter topic name or choose from the list below :</label>
+					<label>Please enter topic name or click on a topic from the list below :</label>
 				</div>
 				<div class="col-xs-7 input-group">
 					<form>
@@ -43,10 +45,12 @@
 			<div class="row">
 			<div class="col-xs-2"></div>
 			<div class="col-xs-8">
-				<div data-ng-show="showHideTopicList">
+				
 					
-					<div style="margin:auto;width:80%" data-ng-repeat="x in GetTopicsResult">
-						<label style="margin:auto;" class="label label-default" data-ng-click="GetQuestionsByTopic(x)" >{{x}}</label>
+					<div style="margin:auto;width:80%" data-ng-repeat="topic in GetTopicsResult">
+					<center>
+						<label style="margin:auto;" class="label label-default" data-ng-click="GetQuestionsByTopic(topic)" >{{topic}}</label>
+					</center>
 					</div>
 				</div>
 				
@@ -56,8 +60,11 @@
 			</div>
 		</div>
 		<div data-ng-show="!showHideTopicList">
-		<button type="submit" class="btn btn-warning" data-ng-click="showList()">Show All Topics</button>
-		<br><br>
+		<div class="row">
+		 <div class="col-xs-7"><li class="list-group-item list-group-item-info">you are now looking at questions about <label class="label label-default">{{currenTopic}} </label></li></div>
+		 <div class="col-xs-5"><div style="margin:left"><button  type="submit" class="btn btn-warning" data-ng-click="showList()">Search for another Topics</button></div></div>
+		</div>
+		<br>
 		<div class="row navbar navbar-default" >
 			<div>
 				<br><br>

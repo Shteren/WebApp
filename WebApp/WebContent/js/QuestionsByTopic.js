@@ -53,6 +53,7 @@ angular.module('inTopicQuestion',[])
 		     })
 		     .success(function(response) 
 		     {
+		    	 $scope.currenTopic = $scope.topic;
 		    	 if(null == response || 0 == response.length)
 		    	 {
 		    		 alert("Not Found");
@@ -87,6 +88,7 @@ angular.module('inTopicQuestion',[])
 		    		 alert("Not Found");
 		    		 return;
 		    	 }
+		    	 $scope.currenTopic = obj;
 		    	 $scope.showHideTopicList = false;
 		    	 $scope.NumOfPages = response.numOfPages ;
 		    	 $scope.CheckNextButton();
@@ -117,6 +119,7 @@ angular.module('inTopicQuestion',[])
 			    		 alert("Not Found");
 			    		 return;
 			    	 }
+			    	
 			    	 //$scope.NumOfPages = response.numOfPages ;
 			    	 //$scope.CheckNextButton();
 			    	 //$scope.CheckPreviousButton();
@@ -249,7 +252,7 @@ angular.module('inTopicQuestion',[])
 		     })
 		     .success(function (response) 
 		     {
-		    	 alert(response);
+		   
 		    	 $scope.GetTopicsResult = angular.copy(response);
 		        
 		     })
