@@ -43,15 +43,17 @@
         </thead> 
         <tbody> 
        
-          <tr data-ng-repeat="x in GetUsersResult" >  
+          <tr data-ng-repeat="x in GetUsersResult" > 
+         
            <th scope = "row"> <img src={{x.user.photoUrl}} alt="..." class="img-rounded"></th>
-            <td>{{x.user.nickName}} </td>    
+            <td data-ng-click="goTouserprofile(x)" >{{x.user.nickName}}</td>    
             <td>{{x.user.userRating}}</td>
             <td>
             	<div data-ng-repeat="t in x.user.experties" >
             		<label class="label label-default">{{t}}</label>
             	</div>
-            </td>  
+            </td>
+            
           </tr> 
           
         </tbody>  

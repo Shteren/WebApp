@@ -32,12 +32,18 @@ angular.module('inLeaderBoard',[]).controller('LeaderBoardController',['$scope',
 	        url: 'http://localhost:8080/WebApp/users',
 			params: null,
 	     	}).success(function(response){
-	     		alert(response);
 	    	 $scope.GetUsersResult = angular.copy(response);
 	     }).error(function (error){
 	    	 	alert("hereeee");
 	            $scope.status = 'Unable to connect' + error.message;
 	     }); 
+	}
+	
+	$scope.goTouserprofile = function(obj)
+	{
+		alert(obj.user.nickName);
+		$scope.showUsrProfile = obj;
+		window.location.assign("userProfile.html");
 	}
 	$scope.CheckSession();
 	$scope.GetAllUser();
