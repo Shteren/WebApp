@@ -28,6 +28,7 @@
 			</nav>
 		</div>
 	</div>
+	<div data-ng-show="!showProfile">
 	<div class="row">
 	<div class="col-sm-2"></div>
 	<div class="col-sm-8">
@@ -59,6 +60,37 @@
         </tbody>  
       </table> 
 	</div>
+		<div class="col-sm-2"></div>
 	</div>
-	<div class="col-sm-2"></div>
+	</div>
+	<div data-ng-show="showProfile">
+	<div class = "row">
+	<div class="col-sm-3"></div>
+	<div class="col-sm-6">
+	<div class="row navbar navbar-default" >
+	<div class = "row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-3">
+			<button>My rating:{{currentUser.user.userRating}} </button>
+			<button><img src={{currentUser.user.photoUrl}} alt="..." class="img-rounded"></button>
+			</div>
+		
+		<div class="col-sm-5">
+		<div><h4>Hi, I am {{currentUser.user.nickName}}</h4></div>
+		</div>
+		<div class="col-sm-2"></div>
+</div>
+	<br>
+	<div class="row">
+	<div class="col-sm-3"></div>
+		<div class="col-sm-7"><h5>{{currentUser.user.description}}</h5></div>
+	<div class="col-sm-3"></div>
+	</div>
+	<div class="col-sm-3"></div>
+	</div>
+	</div>
+	</div>
+	
+	<div>{{currentUser}}</div>
+</div>
 </body>

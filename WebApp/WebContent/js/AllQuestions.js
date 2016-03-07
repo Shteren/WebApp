@@ -24,6 +24,19 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
     		 }
 		}
 		
+		// refresh condition 
+		$scope.Newquestions = function ()
+		{
+			if ($scope.answerOpen == 0){
+				$scope.GetAllQuestions();
+			}
+		}
+		
+		//refresh every 2.5 sec
+		setInterval($scope.Newquestions, 4000);
+
+
+		
 		$scope.GetAllQuestions = function()
 		{
 	
@@ -70,6 +83,7 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 			    		 obj.firstAns=false;
 			    		 return;
 			    	 }
+			    	 obj.start0=true; //refresh is enabled , answer box is empty
 			    	 obj.firstAns=true;
 			    	 obj.numberOfAnswers = response.length;
 			    	 $scope.ShowButton(obj);
@@ -348,17 +362,28 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 	    }
 	    $scope.QuestionLenWarn = function(obj)
 	    {
-
 	    	if ( (obj.answerTxt.length)>300)
 	    	{
 	    		obj.ansLenShowErr = true;
 	    		return;
 	    	}
-	    	obj.ansLenShowErr = false;
 	    	
+	    	obj.ansLenShowErr = false;
+	    	if (( (obj.answerTxt.length)==1) & ((obj.start0)==true)){ //if one char and started ro 0
+	    		obj.answerOpen = 1;
+	    		obj.start0=false; //when come back to ne char next time will not add 1
+	    	}else if ( (obj.answerTxt.length)==0){
+	    		obj.answerOpen = -1;
+	    		obj.start0=true; //it is first char again
+	    	}
+	    	else{
+	    		obj.answerOpen = 0;
+	    	}
+	    	$scope.answerOpen += obj.answerOpen;
 	    }
 		
 		// Code start from here
+	    $scope.answerOpen=0;
 		$scope.showAns = false;
 	    $scope.NextButtonFlag = true;
 	    $scope.PreviousButtonFlag = true;

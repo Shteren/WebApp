@@ -41,10 +41,10 @@ angular.module('inLeaderBoard',[]).controller('LeaderBoardController',['$scope',
 	
 	$scope.goTouserprofile = function(obj)
 	{
-		alert(obj.user.nickName);
-		$scope.showUsrProfile = obj;
-		window.location.assign("userProfile.html");
+		$scope.showProfile = true;
+		$scope.currentUser = obj;
 	}
+	$scope.showProfile = false;
 	$scope.CheckSession();
 	$scope.GetAllUser();
 }]);

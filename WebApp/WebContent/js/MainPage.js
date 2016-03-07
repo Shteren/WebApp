@@ -295,7 +295,7 @@ angular.module('inTableApp',[])
 			
 			}
 			$scope.HideShowTagCharacterError = false;
-	        if ($scope.topics[ $scope.topics.length -1 ] == ",")
+	        if ($scope.topics[ $scope.topics.length -1 ] == " ")
 	        {
 	        	
 	         	if ($scope.tag.indexOf($scope.topics.substring(0, $scope.topics.length-1 )) == -1){  //push topic if it does not exist
