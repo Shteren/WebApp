@@ -213,10 +213,8 @@ public class AnswersServlet extends HttpServlet {
     			// user tring to vote to his answer
 				String nickName = (request.getSession().getAttribute("Nickname")).toString();
     			if (rs.getString(6).equals(nickName)) {
-        			PrintWriter writer = response.getWriter();
-        	    	writer.println("It's your answer");
-        	    	writer.close();
-        	    	
+    				DBUtils.buildJsonResult("It's your answer", response);
+        	    	votes = Integer.MIN_VALUE;        	    	
     			}    				
     			else {
     				// user can vote to answer

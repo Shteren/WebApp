@@ -13,10 +13,10 @@ public class Question
 	private List<String> questionTopics;
 	private String nickName;
 	private int questionVote;
-	private int QuestionRating;
+	private double QuestionRating;
 	private Answer firstAnswer;
 	
-	public Question(int Id, String subtime,String txt,List<String> topicsList, String nick, int vote, int Rate, Answer answer)
+	public Question(int Id, String subtime,String txt,List<String> topicsList, String nick, int vote, double Rate, Answer answer)
 	{
 		questionId = Id;
 		submmitionTime = subtime; 
@@ -76,11 +76,11 @@ public class Question
 		this.questionVote = questionVotes;
 	}
 
-	public int getQuestionRating() {
+	public double getQuestionRating() {
 		return QuestionRating;
 	}
 
-	public void setQuestionRating(int questionRating) {
+	public void setQuestionRating(double questionRating) {
 		QuestionRating = questionRating;
 	}
 

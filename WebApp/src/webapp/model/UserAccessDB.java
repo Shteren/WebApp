@@ -23,7 +23,7 @@ public class UserAccessDB {
     	ansRes = ansStmt.executeQuery();
     	
     	if (quesRes.next() && ansRes.next()) {
-    		double rating = (0.2 * (quesRes.getInt(1)) + (0.8 * (ansRes.getInt(1))));
+    		double rating = (0.2 * (quesRes.getDouble(1)) + (0.8 * (ansRes.getInt(1))));
     		userStmt.setDouble(1, rating);
     		userStmt.setString(2, nickname);
     		userStmt.executeUpdate();

@@ -136,7 +136,7 @@ public class UsersServlet extends HttpServlet {
         			String submittionTime = answeredRS.getString(2);
         			String contentTxt = answeredRS.getString(3);
         			int votes = answeredRS.getInt(4);
-        			int rate = answeredRS.getInt(5);    			
+        			double rate = answeredRS.getDouble(5);    			
         			String submittedUser =  rs.getString(6);
         			// build 5 last questions user answered
         			five_last_user_answered_questions.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, null));

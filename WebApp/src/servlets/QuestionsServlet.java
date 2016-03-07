@@ -449,7 +449,7 @@ public class QuestionsServlet extends HttpServlet {
 				String nickName = (request.getSession().getAttribute("Nickname")).toString();
     			if (rs.getString(6).equals(nickName)) {
     				DBUtils.buildJsonResult("It's your question", response);
-        	    	votes = -1;
+        	    	votes = Integer.MIN_VALUE;
     			} else {
     				votes = rs.getInt(4);
     			}   				
@@ -494,12 +494,19 @@ public class QuestionsServlet extends HttpServlet {
     		Context context = new InitialContext();
     		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
     		conn = ds.getConnection();    		   		
+    		pstmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_QUESTION_BY_ID_STMT);
+    		pstmt.setInt(1, questionId);
+    		String votedUserNickName = null;
+    		ResultSet rs = pstmt.executeQuery();
+    		if ( rs.next() ) {
+    			 votedUserNickName = rs.getString(6);
+    		}
     		/** prepare the statement of update vote and rating in tbl_question and tbl_vote_question in DB **/
     		pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_VOTE_QUESTION_STMT);
     		String userNickName = (String)(request.getSession().getAttribute("Nickname"));
     		pstmt.setString(1, userNickName);
     		pstmt.setInt(2, questionId);
-    		ResultSet rs = pstmt.executeQuery();
+    		rs = pstmt.executeQuery();
     		
     		if ( rs.next() )
     		{
@@ -534,7 +541,7 @@ public class QuestionsServlet extends HttpServlet {
         		conn.commit();			
         		
         		// update user rating after update votes of question
-        		UserAccessDB.UpdateUserRating(conn, submittedUser);
+        		UserAccessDB.UpdateUserRating(conn, votedUserNickName);
 
     			//build Json Answer
         		DBUtils.buildJsonResult("true", response);
