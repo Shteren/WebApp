@@ -32,40 +32,41 @@
 	<div class="row">
 	<div class="col-sm-2"></div>
 	<div class="col-sm-8">
-	<table class="table">  
-  		<thead >  
-          <tr>  
-            <th bgcolor="#4dffb8">pic</th>  
-            <th bgcolor="#4dffb8">Nickname</th>   
-            <th bgcolor="#4dffb8">rating</th>  
-            <th bgcolor="#4dffb8">expertise</th>
- 
-          </tr>  
-        </thead> 
-        <tbody> 
-       
-          <tr data-ng-repeat="x in GetUsersResult" > 
-         
-           <th scope = "row"> <img src={{x.user.photoUrl}} alt="..." class="img-rounded"></th>
-            <td data-ng-click="goTouserprofile(x)" >{{x.user.nickName}}</td>    
-            <td>{{x.user.userRating}}</td>
-            <td>
-            	<div data-ng-repeat="t in x.user.experties" >
-            		<label class="label label-default">{{t}}</label>
-            	</div>
-            </td>
-            
-          </tr> 
-          
-        </tbody>  
-      </table> 
+		<table class="table">  
+	  		<thead >  
+	          <tr>  
+	            <th bgcolor="#4dffb8">pic</th>  
+	            <th bgcolor="#4dffb8">Nickname</th>   
+	            <th bgcolor="#4dffb8">rating</th>  
+	            <th bgcolor="#4dffb8">expertise</th>
+	 
+	          </tr>  
+	        </thead> 
+	        <tbody> 
+	          <tr data-ng-repeat="x in GetUsersResult" > 
+	           <th scope = "row"> <img src={{x.user.photoUrl}} alt="..." class="img-rounded"></th>
+	            <td data-ng-click="goTouserprofile(x)" >{{x.user.nickName}}</td>    
+	            <td>{{x.user.userRating}}</td>
+	            <td style = "width:30%">
+	            	<div data-ng-repeat="t in x.user.experties" >
+	            		<label class="label label-default">{{t}}</label>
+	            	</div>
+	            </td>
+	            
+	          </tr> 
+	          
+	        </tbody>  
+	      </table> 
 	</div>
-		<div class="col-sm-2"></div>
+	<div class="col-sm-2"></div>
 	</div>
 	</div>
 	<div data-ng-show="showProfile">
 	<div class = "row">
-	<div class="col-sm-3"></div>
+	<div class="col-sm-2"></div>
+	<div class="col-sm-1">
+		<button type="button" class="btn btn-warning" data-ng-click="bakToLaderBoard()"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></button>
+	</div>
 	<div class="col-sm-6">
 	<div class="row navbar navbar-default" >
 	<div class = "row">

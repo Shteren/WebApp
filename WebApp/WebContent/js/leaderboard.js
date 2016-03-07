@@ -26,6 +26,10 @@ angular.module('inLeaderBoard',[]).controller('LeaderBoardController',['$scope',
 	     });  
 		return false;
 	}
+	$scope.bakToLaderBoard = function(){
+		$scope.showProfile = false;
+		
+	}
 	$scope.GetAllUser = function(){
 	
 		$http({ method: 'GET',
