@@ -6,6 +6,7 @@
 <script src= "js/angular.min.js"></script>
 <script src="js/AllQuestions.js"></script>
 <link rel="stylesheet" href="css/bootstrap.css">
+<link rel="stylesheet" href="css/question.css">
 </head>
 <body data-ng-app="MainApp" data-ng-controller="AllQuestionsController">
 	<div class="container">
@@ -27,13 +28,52 @@
 			    </div>
 			</nav>
 		</div>
-		
-		<div class="row">
-		</div>
-		<br><br>
-		<questions></questions>
-		<!-- div data-ng-show="!showHideTopicList"> -->
+			<div data-ng-show="showHideTopicList">
+	
+			<div class="row">
+				<div class="col-xs-5">
+					<label>Please enter topic name or click on a topic from the list below :</label>
+				</div>
+				<div class="col-xs-7 input-group">
+					<form>
+		      			<input type="text" class="form-control" style="width:40%" placeholder="Search for..." data-ng-model="topic">
+			      		<button class="btn btn-default" type="button" data-ng-click="GetAllQuestions">Search</button>
+				  	</form>
+			  	</div><!-- /.col-lg-7 -->
+			</div><!-- /.row -->
+			<br>
+			<div class="row">
+			<div class="col-xs-2"></div>
+			<div class="col-xs-8">
+				
+					<div class="row navbar navbar-default" >
+					<div style="margin:auto;width:60%" data-ng-repeat="topic in GetTopicsResult">
+					<div style="text-align: center;">
+						<h4><label style="margin:auto;" class="label label-default" data-ng-click= "setTopic(topic)" >{{topic}}</label></h4>
+					</div>
+					</div>
+					</div>
+			</div>
+				<div class="col-xs-2"></div>
+			</div>
 			
+		<div class="row">
+			<nav>
+	  			<ul class="pager">
+	   			 <li ><button  data-ng-disabled="PreviousTopicButtonFlag" data-ng-click="previousTopicClick()" class = "btn btn-info"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></button></li>
+	   			 <li ><button data-ng-disabled="NextTopicButtonFlag" data-ng-click="nextTopicClick()" class = "btn btn-info"><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></button></li>	
+	  			<li>Page {{prevOrNextPageNumCounter+1}} of {{NumOfPages+1}}</li>
+	  			</ul>
+			</nav>
+		</div>
+			
+		
+		</div>
+		
+		
+		<div data-ng-show="!showHideTopicList">
+			<questions></questions>
+		</div>
 		</div>
 		
 </body>

@@ -46,7 +46,7 @@
 	          <tr data-ng-repeat="x in GetUsersResult" > 
 	           <th scope = "row"> <img src={{x.user.photoUrl}} alt="..." class="img-rounded"></th>
 	            <td data-ng-click="goTouserprofile(x)" >{{x.user.nickName}}</td>    
-	            <td>{{x.user.userRating}}</td>
+	            <td>{{x.user.userRating | number:2}}</td>
 	            <td style = "width:30%">
 	            	<div data-ng-repeat="t in x.user.experties" >
 	            		<label class="label label-default">{{t}}</label>
@@ -72,7 +72,7 @@
 	<div class = "row">
 		<div class="col-sm-2"></div>
 		<div class="col-sm-3">
-			<button>My rating:{{currentUser.user.userRating}} </button>
+			<button>My rating:{{currentUser.user.userRating }} </button>
 			<button><img src={{currentUser.user.photoUrl}} alt="..." class="img-rounded"></button>
 			</div>
 		

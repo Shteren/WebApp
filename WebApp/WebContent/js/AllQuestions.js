@@ -259,9 +259,12 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		             $scope.status = 'Unable to connect' + error.message;
 		     }); 
 	    }
+	    
 	    $scope.timeFormat = function(obj)
 	    {
-	    	
+	    	if (obj == null) {
+	    		return;
+	    	}
 	    	obj.time = obj.submmitionTime.split(" ");
 	    	var date = obj.time[0].split("-");
 	    	var temp = date[0];
