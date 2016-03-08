@@ -1,4 +1,5 @@
-angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope','$http', function($scope, $http) {
+
+angular.module('MainApp',[]).controller('AllQuestionsController',['$scope','$http', function($scope, $http) {
 		$scope.CheckNextButton = function()
 		{
 

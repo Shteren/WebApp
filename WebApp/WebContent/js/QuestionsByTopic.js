@@ -2,8 +2,7 @@
  * 
  */
 
-angular.module('inTopicQuestion',[])
-	.controller('TopicQuestionController',['$scope','$http', function($scope, $http) {
+	angular.module('MainApp',[]).controller('TopicQuestionController',['$scope','$http', function($scope, $http) {
 		$scope.CheckNextButton = function()
 		{
 			if( $scope.NumOfPages == $scope.prevOrNextPageNumCounter )
@@ -252,7 +251,7 @@ angular.module('inTopicQuestion',[])
 		     .success(function (response) 
 		     {;
 		    	 $scope.NumOfTopicPages = response.numOfPages ;
-		    	 alert($scope.NumOfTopicPages);
+		    	// alert($scope.NumOfTopicPages);
 		    	 $scope.CheckTopicNextButton();
 		    	 $scope.CheckTopicPreviousButton();
 		    	 $scope.GetTopicsResult = angular.copy(response.topics);

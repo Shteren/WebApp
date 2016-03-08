@@ -1,4 +1,5 @@
-angular.module('inLeaderBoard',[]).controller('LeaderBoardController',['$scope','$http', function($scope, $http)
+
+angular.module('MainApp',[]).controller('LeaderBoardController',['$scope','$http', function($scope, $http)
 {
 
 	$scope.CheckSession = function()

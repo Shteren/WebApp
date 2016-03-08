@@ -1,4 +1,71 @@
-angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope','$http', function($scope, $http) {
+var app = angular.module('MainApp',[]);
+	app.directive('questions', function(){
+		return {
+			templateUrl: "questionstemplate.html",
+		};
+	});
+
+app.controller('AllQuestionsController',['$scope','$http', function($scope, $http) {
+	var url = window.location.pathname.split('/')[2];
+	alert(url);
+	$scope.addQuestion=function(){
+	     if(null == $scope.questionTxt)
+			{
+				alert("Please fill in your question");
+				return;
+			}
+	     if($scope.questionTxt.length > 300)
+			{
+				alert("Your question is too long");
+				return;
+			}
+	    $scope.topicList = $scope.tag;
+	    
+	   
+		$http({ method: 'POST',
+	        url: 'http://localhost:8080/WebApp/questions',
+			data: {
+				questionTxt: $scope.questionTxt,
+				questionTopics: $scope.topicList
+			},
+			headers: {'Content-Type': 'application/json'}
+	     })
+	     .success(function(response) 
+	     {
+	    		$scope.questionTxt = "";
+		    	$scope.tag=[];
+		    	$scope.topics = "";
+		
+		        
+		        $scope.GetQuestions();
+	     })
+	     .error(function (error) 
+	     {
+	             $scope.status = 'Unable to connect' + error.message;
+	     }); 
+	}
+	
+	$scope.tagMaker = function() 
+	{
+		if( ($scope.topics.length) > 50)
+		{
+			$scope.HideShowTagCharacterError = true;
+			//$scope.topics = $scope.topics.substring(0, 50 );
+			return;
+		
+		}
+		$scope.HideShowTagCharacterError = false;
+       if ($scope.topics[ $scope.topics.length -1 ] == ",")
+       {
+    	   alert("topicsMaker");
+        	if ($scope.tag.indexOf($scope.topics.substring(0, $scope.topics.length-1 )) == -1){  //push topic if it does not exist
+      	     
+       		$scope.tag.push( $scope.topics.substring(0, $scope.topics.length-1 ) );
+       	}
+       	
+       	$scope.topics = "";
+       }
+   }
 		$scope.CheckNextButton = function()
 		{
 
@@ -13,7 +80,6 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		}
 		$scope.CheckPreviousButton = function()
 		{
-	    	
 	    	 if( 0 == $scope.prevOrNextPageNumCounter )
     		 {
 	    		 $scope.PreviousButtonFlag = true; // disabled
@@ -31,19 +97,27 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 				$scope.GetAllQuestions();
 			}
 		}
-		
+		if (url=="MainPage.html"){
 		//refresh every 2.5 sec
-		setInterval($scope.Newquestions, 4000);
+		setInterval($scope.Newquestions, 2500);
+		}
 
 
 		
 		$scope.GetAllQuestions = function()
 		{
-	
+			
+			if (url == "AllQuestions.html"){
+				$scope.sendNewOrAll="all";
+			}
+			if (url == "QuestionByTopic.html"){
+				$scope.sendTopic=$scope.topic;
+			}
 			$http({ method: 'GET',
 		        url: 'http://localhost:8080/WebApp/questions',
 				params: { 	currentPage: $scope.prevOrNextPageNumCounter, 
-							newOrAll: "all"},
+							newOrAll: $scope.sendNewOrAll,
+							topicName:$scope.sendTopic},
 				
 		     })
 		     .success(function(response) 
@@ -53,7 +127,7 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		    	 $scope.CheckNextButton();
 		    	 $scope.CheckPreviousButton();
 		    	 
-		    	 $scope.PreviousButtonFlag = true; // disable previous button
+		    	 //$scope.PreviousButtonFlag = true; // disable previous button
 		    	 
 		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
 		     })
@@ -97,6 +171,7 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 			}
 			
 		}
+		//ToDo can we delete it?
 		$scope.falseShow = function(obj)
 		{
 			obj.showAns = false;
@@ -168,7 +243,7 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 			$http({ method: 'PUT',
 		        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId,
 		        data: { questionVote: +1},
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				headers: {'Content-Type': 'application/json'}
 		     })
 		     .success(function(result) 
 		     {
@@ -196,7 +271,7 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		     })
 		     .success(function(result) 
 		     {
-		    	 if ((result.Result == "It's your question")||(result.Result == "The user already vote")){
+		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already vote")){
 		    		 alert(result.Result); 
 		    	 }else{
 		    		obj.answerVote--; 
@@ -267,6 +342,12 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 	    };
 		$scope.nextClick=function()
 		{
+			if (url == "AllQuestions.html"){
+				$scope.sendNewOrAll="all";
+			}
+			if (url == "QuestionByTopic.html"){
+				$scope.sendTopic=$scope.topic;
+			}
 			$scope.prevOrNextPageNumCounter ++;
 
 			$http({ method: 'GET',
@@ -274,7 +355,8 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 				params:{
 			
 					currentPage: $scope.prevOrNextPageNumCounter, 
-					newOrAll: "all"},
+					newOrAll: $scope.sendNewOrAll,
+					topicName: $scope.sendTopic},
 					
 			
 		     })
@@ -298,13 +380,21 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		
 		$scope.previousClick = function()
 		{
+			if (url == "AllQuestions.html"){
+				$scope.sendNewOrAll="all";
+			}
+			if (url == "QuestionByTopic.html"){
+				$scope.sendTopic=$scope.topic;
+			}
 			$scope.prevOrNextPageNumCounter--;
 		
 			$http({ method: 'GET',
 		        url: 'http://localhost:8080/WebApp/questions',
 				params:{
 					currentPage: $scope.prevOrNextPageNumCounter, 
-					newOrAll: "all"},
+					newOrAll: $scope.sendNewOrAll,
+					topicName: $scope.sendTopic
+					},
 					
 				
 		     })
@@ -383,6 +473,8 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 	    }
 		
 		// Code start from here
+	    $scope.HideShowTagCharacterError = false;
+	    $scope.tag = [];
 	    $scope.answerOpen=0;
 		$scope.showAns = false;
 	    $scope.NextButtonFlag = true;
@@ -390,7 +482,9 @@ angular.module('inAllQuestion',[]).controller('AllQuestionsController',['$scope'
 		$scope.AnswerShowFlag = false;
 		$scope.prevOrNextPageNumCounter = 0;
 		$scope.GetQuestionsResult = [];
-		
+		//default values for get questions
+		$scope.sendTopic = null;
+		$scope.sendNewOrAll = "new";
 	    $scope.CheckSession();
 	    $scope.GetAllQuestions();
 		

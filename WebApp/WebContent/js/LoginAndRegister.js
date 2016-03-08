@@ -1,9 +1,8 @@
 /**
  * 
- */
+ */	
 
-angular.module('inTableApp',[])
-	.controller('inTableController',['$scope','$http', function($scope, $http) {
+	angular.module('MainApp',[]).controller('inTableController',['$scope','$http', function($scope, $http) {
 		
 		$scope.CheckSession = function()
 		{
