@@ -72,9 +72,35 @@
 		
 		
 		<div data-ng-show="!showHideTopicList">
+		<div>
+			<button type="button" class="btn btn-default " style="width:30%" data-ng-click="switchAnswerShowFlag()" value="showAnswer">showAnswer</button>
+			<div class="btn-group" role="group" aria-label="...">
+			<button type="button" class="btn btn-default" aria-label="Right Align" >
+			<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"> {{up}}</span></button>
+			<button type="button" class="btn btn-default" aria-label="Right Align" >
+			<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"> {{down}}</span></button>
+			</div>
+		
+    	
+		</div>
+		
+		<div class="panel panel-default" data-ng-show="AnswerShowFlag">
+			<p> dfgfh </p>
+			<div class="btn-group" role="group" aria-label="..." style="float:right">
+				<button type="button" class="btn btn-default" aria-label="Right Align" >
+				<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"> {{up}}</span></button>
+				<button type="button" class="btn btn-default" aria-label="Right Align" >
+				<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"> {{down}}</span></button>
+			</div>
+		
+		
+		</div>
+
+		
 			<questions></questions>
 		</div>
 		</div>
+		
 		
 </body>
 </html>

@@ -655,6 +655,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		$scope.showHideTopicList = true;
 	    $scope.HideShowTagCharacterError = false;	    
 		$scope.prevOrNextPageNumCounter = 0;
+		$scope.prevOrNextTopicPageNumCounter = 0;
 		$scope.GetQuestionsResult = [];
 		$scope.TopicToSearch=null;
 		//default values for get questions		
