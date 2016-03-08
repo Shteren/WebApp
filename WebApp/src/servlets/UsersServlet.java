@@ -26,6 +26,7 @@ import webapp.constants.UserConstants;
 import webapp.model.Answer;
 import webapp.model.Question;
 import webapp.model.User;
+import webapp.model.UserQuestionAndAnswer;
 import webapp.model.UsersResponse;
 import webapp.utils.DBUtils;
 
@@ -87,8 +88,8 @@ public class UsersServlet extends HttpServlet {
 		User userResult = null;
 		Collection<UsersResponse> topRatedUser = new ArrayList<UsersResponse>();
 		Collection<Question> five_last_asked_questions = null;
-		Collection<Question> five_last_user_answered_questions = null;
-		Collection<Answer> five_last_user_answers = null;
+		Collection<UserQuestionAndAnswer> five_last_answered_questions_and_answeres = null;
+		
 		try 
 		{
         	//obtain CustomerDB data source from Tomcat's context
@@ -118,8 +119,7 @@ public class UsersServlet extends HttpServlet {
         		pstmt = conn.prepareStatement(UserConstants.SELECT_LAST_5_QUESTION_USER_ANSWERED_STMT);
         		pstmt.setString(1, nickName);
         		answeredRS = pstmt.executeQuery();
-        		five_last_user_answered_questions = new ArrayList<Question>();
-        		five_last_user_answers = new ArrayList<Answer>();
+        		five_last_answered_questions_and_answeres = new ArrayList<>();
         		while ( answeredRS.next() ) {
         			int questionId = answeredRS.getInt(1);
         			// get topics for each question
@@ -139,18 +139,19 @@ public class UsersServlet extends HttpServlet {
         			double rate = answeredRS.getDouble(5);    			
         			String submittedUser =  rs.getString(6);
         			// build 5 last questions user answered
-        			five_last_user_answered_questions.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, null));
+        			Question question = new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, null);
         			int answerId = answeredRS.getInt(7);
         			String answerSubmittionTime = answeredRS.getString(8);
         			String answerContentTxt = answeredRS.getString(9);
         			String answerSubmittedUser =  answeredRS.getString(12);
         			int answerVotes = answeredRS.getInt(10);
         			// build 5 last answer for those question (in same order)
-        			five_last_user_answers.add(new Answer(answerId,answerSubmittionTime ,answerContentTxt, answerVotes, questionId, answerSubmittedUser));
-        			
+        			Answer answer = new Answer(answerId,answerSubmittionTime ,answerContentTxt, answerVotes, questionId, answerSubmittedUser);
+        			UserQuestionAndAnswer uQandA = new UserQuestionAndAnswer(question, answer);
+        			five_last_answered_questions_and_answeres.add(uQandA);
         		}
         		// add user to the 20 top rated users
-        		topRatedUser.add(new UsersResponse(userResult, five_last_asked_questions, five_last_user_answered_questions, five_last_user_answers));
+        		topRatedUser.add(new UsersResponse(userResult, five_last_asked_questions, five_last_answered_questions_and_answeres));
         		
     		}  
     		
