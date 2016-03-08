@@ -17,7 +17,7 @@
 			    <div id="navbarCollapse" class="collapse navbar-collapse">
 			        <ul class="nav navbar-nav">
 			            <li><a href="MainPage.html">Home</a></li>
-			            <li><a href="#">Browse Questions</a></li>
+			            <li><a href="QuestionsByTopic.html">Browse Questions by topic</a></li>
 			            <li class="active"><a href="leaderboard.html">Leader Board</a></li>
 			            <li><a href="AllQuestions.html">All Questions</a></li>
 			        </ul>
@@ -27,7 +27,7 @@
 			    </div>
 			</nav>
 		</div>
-	</div>
+	
 	<div data-ng-show="!showProfile">
 	<div class="row">
 	<div class="col-sm-2"></div>
@@ -44,9 +44,9 @@
 	        </thead> 
 	        <tbody> 
 	          <tr data-ng-repeat="x in GetUsersResult" > 
-	           <th scope = "row"> <img src={{x.user.photoUrl}} alt="..." class="img-rounded"></th>
-	            <td data-ng-click="goTouserprofile(x)" >{{x.user.nickName}}</td>    
-	            <td>{{x.user.userRating}}</td>
+	           <th scope = "row"> <img data-ng-src="{{x.user.photoUrl}}" alt="..." class="img-rounded"></th>
+	            <td><a href="" data-ng-click="goTouserprofile(x)">{{x.user.nickName}}</a></td>    
+	            <td>{{x.user.userRating | number:2}}</td>
 	            <td style = "width:30%">
 	            	<div data-ng-repeat="t in x.user.experties" >
 	            		<label class="label label-default">{{t}}</label>
@@ -65,56 +65,195 @@
 	<div class = "row">
 		<div class="col-sm-2"></div>
 		<div class="col-sm-1">
-			<button type="button" class="btn btn-warning" data-ng-click="bakToLaderBoard()"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></button>
+			<button type="button" class="btn btn-info" data-ng-click="bakToLaderBoard()"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></button>
 		</div>
 		<div class="col-sm-6">
 			<div class="row navbar navbar-default" >
+			<br>
 				<div class = "row">
-					<div class="col-sm-2"></div>
+					<div class="col-sm-1"></div>
 					<div class="col-sm-3">
-						<button>My rating:{{currentUser.user.userRating}} </button>
-						<button><img src={{currentUser.user.photoUrl}} alt="..." class="img-rounded"></button>
+						<button><img data-ng-src="{{currentUser.user.photoUrl}}" alt="..." class="img-rounded"></button>
 					</div>
-					<div class="col-sm-5">
+					<div class="col-sm-4">
 						<div><h4>Hi, I am {{currentUser.user.nickName}}</h4></div>
 					</div>
-					<div class="col-sm-2"></div>
+					<div class="col-sm-3">
+					<div style="max-height:50px;max-width:100px;"class="alert alert-danger" role="alert">rating:{{currentUser.user.userRating | number:2}}</div>
+					</div>
+					<div class="col-sm-1"></div>
 				</div>
 				<br>
 				<div class="row">
-					<div class="col-sm-3"></div>
-					<div class="col-sm-7"><h5>{{currentUser.user.description}}</h5></div>
-					<div class="col-sm-3"></div>
+					<div class="col-sm-2"></div>
+					<div class="col-sm-7">
+					<div class="alert alert-success" role="alert" data-ng-show="checkDes(currentUser.user.description)">
+						<h5 style="text-align: center;">{{currentUser.user.description}}</h5>
+					</div>
+					</div>
+					<div class="col-sm-4"></div>
 				</div>
 				<div class="col-sm-3"></div>
 			</div>
 		</div>
+	</div>
+	<div class="row">
+	
+	<br>
+	<div class="col-sm-4"></div>
+	<div class="col-sm-4">
+	<div class="alert alert-info"  role="alert" >
+	<div style="text-align: center;">5 last asked questions</div>
+	</div>
+	</div>
+	<div class="col-sm-4"></div>
+	<br>
 	</div>
 	<div data-ng-repeat="x in currentUser.five_last_Questions">
 	<div class="row">
 		<div class="col-sm-2"></div>
 		<div class="col-sm-8">
 		<div class="row navbar navbar-default" >
-			<div>
+			
 				<br><br>
-				<div>
-					submmited on {{x.submmitionTime}}
+				<div class="row">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-7">
+						<div class="alert alert-success" role="alert">submitted on {{timeFormat(x)}}</div>
+					</div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-2">
+					<div class="alert alert-danger" role="alert">rating: {{x.QuestionRating| number:2}}</div>
+					</div>
+					<div class="col-sm-1"></div>
 				</div>
-				<div>
-					text: {{x.questionTxt}}
+				<div class="row">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-8">
+					<div class="panel panel-danger">
+					<div class="panel-heading">your question</div>
+					
+						{{x.questionTxt}}
+					</div>
+					
+					</div>
+					
+					<div class="col-sm-2"></div>
 				</div>
-				<div>
-					topic: {{x.questionTopics}}
+				<div class="row">
+				<div class="col-sm-3"></div>
+				<div class="col-sm-8">	
+				<div data-ng-show="isEmpt(x.questionTopics)">
+				<div class="alert alert-success" role="alert">
+				topics : 
+				<div data-ng-repeat="t in x.questionTopics" style="display:inline">
+				
+				<label class="label label-default">{{t}}</label>
+					</div>
 				</div>
-				<div>
-					rating: {{x.QuestionRating}}
+				</div>
+				</div>
+				<div class="col-sm-1"></div>
 				</div>
 				
+				
+				
 			</div>
+	
 		</div>
-		</div>
+		
 		<div class="col-sm-2"></div>
 	</div>
 	</div>
+	
+	
+		<div class="row">
+	
+	<br>
+	<div class="col-sm-4"></div>
+	<div class="col-sm-4">
+	<div class="alert alert-info"  role="alert" >
+	<div style="text-align: center;">5 last answered questions and their answers</div>
+	</div>
+	</div>
+	<div class="col-sm-4"></div>
+	<br>
+	</div>
+	<div data-ng-repeat="x in currentUser.five_last_answered_questions_and_answeres">
+	<div class="row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-8">
+		<div class="row navbar navbar-default" >
+			
+				<br><br>
+				<div class="row">
+					<div class="col-sm-1"></div>
+					<div class="col-sm-7">
+						<div class="alert alert-success" role="alert">submitted on {{timeFormat(x.question)}}</div>
+					</div>
+					<div class="col-sm-1"></div>
+					<div class="col-sm-2">
+					<div class="alert alert-danger" role="alert">rating: {{x.question.QuestionRating| number:2}}</div>
+					</div>
+					<div class="col-sm-1"></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-8">
+					<div class="panel panel-danger">
+					<div class="panel-heading">your question</div>
+					
+						{{x.question.questionTxt}}
+					</div>
+					
+					</div>
+					
+					<div class="col-sm-2"></div>
+				</div>
+				<div class="row">
+				<div class="col-sm-3"></div>
+				<div class="col-sm-8">	
+				<div data-ng-show="isEmpt(x.questionTopics)">
+				<div class="alert alert-success" role="alert">
+				topics : 
+				<div data-ng-repeat="t in x.question.questionTopics" style="display:inline">
+				
+				<label class="label label-default">{{t}}</label>
+					</div>
+				</div>
+				</div>
+				</div>
+				<div class="col-sm-1"></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-8">
+					<div class="panel panel-danger">
+					<div class="panel-heading">your answer</div>
+					
+						{{x.answer.answerTxt}}
+					</div>
+					
+					</div>
+					
+					<div class="col-sm-2"></div>
+				</div>
+				 
+				
+				
+			</div>
+	
+		</div>
+		
+		<div class="col-sm-2"></div>
+	</div>
+	</div>
+	
+	
+	
+	</div>
+	
+	
+	
 	</div>
 </body>
