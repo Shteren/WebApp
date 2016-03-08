@@ -3,33 +3,7 @@
  */
 
 	angular.module('MainApp',[]).controller('TopicQuestionController',['$scope','$http', function($scope, $http) {
-		$scope.CheckNextButton = function()
-		{
-			if( $scope.NumOfPages == $scope.prevOrNextPageNumCounter )
-	   		 {
-		    		 $scope.NextButtonFlag = true; // disabled
-	   		 }
-		    	 else
-	   		 {
-		    		 $scope.NextButtonFlag = false; // enabled
-	   		 }
-		}
-		$scope.CheckPreviousButton = function()
-		{
-	    	
-	    	 if( 0 == $scope.prevOrNextPageNumCounter )
-    		 {
-	    		 $scope.PreviousButtonFlag = true; // disabled
-    		 }
-	    	 else
-    		 {
-	    		 $scope.PreviousButtonFlag = false; // enabled
-    		 }
-		}
-		$scope.switchAnswerShowFlag = function()
-		{
-			$scope.AnswerShowFlag = !$scope.AnswerShowFlag;
-		};
+		
 		
 		$scope.showList = function()
 		{

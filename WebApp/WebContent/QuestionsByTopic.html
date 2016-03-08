@@ -62,7 +62,7 @@
 	  			<ul class="pager">
 	   			 <li ><button  data-ng-disabled="PreviousTopicButtonFlag" data-ng-click="previousTopicClick()" class = "btn btn-info"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></button></li>
 	   			 <li ><button data-ng-disabled="NextTopicButtonFlag" data-ng-click="nextTopicClick()" class = "btn btn-info"><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></button></li>	
-	  			<li>Page {{prevOrNextPageNumCounter+1}} of {{NumOfPages+1}}</li>
+	  			<li>Page {{prevOrNextTopicPageNumCounter+1}} of {{NumOfTopicPages+1}}</li>
 	  			</ul>
 			</nav>
 		</div>
@@ -72,31 +72,11 @@
 		
 		
 		<div data-ng-show="!showHideTopicList">
-		<div>
-			<button type="button" class="btn btn-default " style="width:30%" data-ng-click="switchAnswerShowFlag()" value="showAnswer">showAnswer</button>
-			<div class="btn-group" role="group" aria-label="...">
-			<button type="button" class="btn btn-default" aria-label="Right Align" >
-			<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"> {{up}}</span></button>
-			<button type="button" class="btn btn-default" aria-label="Right Align" >
-			<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"> {{down}}</span></button>
-			</div>
-		
-    	
-		</div>
-		
-		<div class="panel panel-default" data-ng-show="AnswerShowFlag">
-			<p> dfgfh </p>
-			<div class="btn-group" role="group" aria-label="..." style="float:right">
-				<button type="button" class="btn btn-default" aria-label="Right Align" >
-				<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"> {{up}}</span></button>
-				<button type="button" class="btn btn-default" aria-label="Right Align" >
-				<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"> {{down}}</span></button>
-			</div>
-		
-		
-		</div>
-
-		
+				<div class="row">
+		 			<div class="col-xs-7"><li class="list-group-item list-group-item-info">you are now looking at questions about <label class="label label-default">{{topic}} </label></li></div>
+		 			<div class="col-xs-5"><div style="margin:left"><button  type="submit" class="btn btn-warning" data-ng-click="showList()">Search for another Topics</button></div></div>
+				</div>
+		<br>
 			<questions></questions>
 		</div>
 		</div>
