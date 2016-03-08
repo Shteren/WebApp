@@ -7,10 +7,7 @@ var app = angular.module('MainApp',[]);
 
 app.controller('AllQuestionsController',['$scope','$http', function($scope, $http) {
 	var url = window.location.pathname.split('/')[2];
-
-
 	
-
 		$scope.CheckNextButton = function()
 		{
 
@@ -197,9 +194,9 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	    $scope.voteAnsDown = function(obj){
 	    	
 			$http({ method: 'PUT',
-		        url: 'http://localhost:8080/WebApp/answers/'+obj.questionId,
+		        url: 'http://localhost:8080/WebApp/answers/'+obj.answerId,
 		        data: { answerVote: -1},
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+				headers: {'Content-Type': 'application/json'}
 		     })
 		     .success(function(result) 
 		     {
@@ -388,8 +385,12 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	    	}
 	    	$scope.HideShowQuestionCharacterError = false;
 	    }
-	    $scope.QuestionLenWarn = function(obj)
+		
+	    $scope.AnswerLenWarn = function(obj)
 	    {
+	    	if (null == obj) {
+	    		return;
+	    	}
 	    	if ( (obj.answerTxt.length)>300)
 	    	{
 	    		obj.ansLenShowErr = true;
@@ -469,7 +470,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	   		    	$scope.topics = "";
 	   		
 	   		        
-	   		        $scope.GetQuestions();
+	   		    	$scope.GetAllQuestions();
 	   	     })
 	   	     .error(function (error) 
 	   	     {
