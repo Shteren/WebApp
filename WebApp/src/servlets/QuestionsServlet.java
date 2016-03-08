@@ -182,12 +182,14 @@ public class QuestionsServlet extends HttpServlet {
 			newOrAll = "new";
 		}
 		
+		if (null == currentPage)
+		{
+			currentPage = "0";
+		}
+		
 		if (null == topicName)
 		{
-			if (null == currentPage)
-			{
-				currentPage = "0";
-			}
+
 			// select the suitable query to be execute
 			switch(newOrAll)
 			{
