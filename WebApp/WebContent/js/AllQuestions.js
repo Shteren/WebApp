@@ -13,8 +13,8 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 
 		$scope.CheckNextButton = function()
 		{
-			alert($scope.NumOfPages);
-			alert($scope.prevOrNextPageNumCounter);
+
+
 			if( $scope.NumOfPages == $scope.prevOrNextPageNumCounter)
 	   		 {
 		    		 $scope.NextButtonFlag = true; // disabled
