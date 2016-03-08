@@ -7,9 +7,15 @@
 }
 
 .ansArea{
-	
 	resize:none;
 	
+}
+
+.leftAlign {
+	text-align: left!important;
+	margin-left: 0px;
+
+
 }
 
 .toicDisp{
