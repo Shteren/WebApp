@@ -113,7 +113,7 @@
 				
 			}).success( function(response) {
 					//alert(response.Result)
-	   	         if (response.Result == "true") 
+	   	         if (response.Result == true) 
 	   	         {
 	   	           //alert('Resistration was successful');
 	   	        	window.location.assign("MainPage.html");
