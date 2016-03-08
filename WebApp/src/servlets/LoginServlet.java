@@ -86,10 +86,8 @@ public class LoginServlet extends HttpServlet {
     		conn = ds.getConnection();
     		
     		pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_NAME_STMT);
-    		//Statement stmt = conn.createStatement();
-    		//String Username = request.getParameter("userName");
+
     		pstmt.setString(1, userName);
-    		//String query = "SELECT * FROM tbl_user where username = '" + request.getParameter("userName") + "'";
     		
     		ResultSet rs = pstmt.executeQuery();
     		// 
