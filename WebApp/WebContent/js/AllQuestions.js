@@ -58,7 +58,6 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    	 $scope.NumOfPages = response.numOfPages ;
 		    	 $scope.CheckNextButton();
 		    	 $scope.CheckPreviousButton();
-		    	 
 		    	 //$scope.PreviousButtonFlag = true; // disable previous button
 		    	 
 		    	 $scope.GetQuestionsResult = angular.copy(response.questions);

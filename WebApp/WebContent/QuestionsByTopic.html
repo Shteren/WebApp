@@ -28,83 +28,13 @@
 			</nav>
 		</div>
 		
-		
-		<div data-ng-show="showHideTopicList">
-	
-			<div class="row">
-				<div class="col-xs-5">
-					<label>Please enter topic name or click on a topic from the list below :</label>
-				</div>
-				<div class="col-xs-7 input-group">
-					<form>
-		      			<input type="text" class="form-control" style="width:40%" placeholder="Search for..." data-ng-model="topic">
-			      		<button class="btn btn-default" type="button" data-ng-click="GetAllQuestions">Search</button>
-				  	</form>
-			  	</div><!-- /.col-lg-7 -->
-			</div><!-- /.row -->
-			<br>
-			<div class="row">
-			<div class="col-xs-2"></div>
-			<div class="col-xs-8">
-				
-					<div class="row navbar navbar-default" >
-					<div style="margin:auto;width:60%" data-ng-repeat="topic in GetTopicsResult">
-					<div style="text-align: center;">
-						<h4><label style="margin:auto;" class="label label-default" data-ng-click= "setTopic(topic)" >{{topic}}</label></h4>
-					</div>
-					</div>
-					</div>
-			</div>
-				<div class="col-xs-2"></div>
-			</div>
-			
 		<div class="row">
-			<nav>
-	  			<ul class="pager">
-	   			 <li ><button  data-ng-disabled="PreviousTopicButtonFlag" data-ng-click="previousTopicClick()" class = "btn btn-info"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></button></li>
-	   			 <li ><button data-ng-disabled="NextTopicButtonFlag" data-ng-click="nextTopicClick()" class = "btn btn-info"><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></button></li>	
-	  			<li>Page {{prevOrNextPageNumCounter+1}} of {{NumOfPages+1}}</li>
-	  			</ul>
-			</nav>
 		</div>
+		<br><br>
+		<questions></questions>
+		<!-- div data-ng-show="!showHideTopicList"> -->
 			
-		
-		</div>
 		</div>
 		
-		<div data-ng-show="!showHideTopicList">
-			<questions></questions>
-		</div>
-	
-		<!-- <div >
-		<div class="panel panel-default">
-			<p> dfgfh </p>
-		</div>
-		<div>
-			<button type="button" class="btn btn-default " style="width:30%" data-ng-click="switchAnswerShowFlag()" value="showAnswer">showAnswer</button>
-			<div class="btn-group" role="group" aria-label="...">
-			<button type="button" class="btn btn-default" aria-label="Right Align" >
-			<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"> {{up}}</span></button>
-			<button type="button" class="btn btn-default" aria-label="Right Align" >
-			<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"> {{down}}</span></button>
-			</div>
-		
-    	
-		</div>
-		
-		<div class="panel panel-default" data-ng-show="AnswerShowFlag">
-			<p> dfgfh </p>
-			<div class="btn-group" role="group" aria-label="..." style="float:right">
-				<button type="button" class="btn btn-default" aria-label="Right Align" >
-				<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"> {{up}}</span></button>
-				<button type="button" class="btn btn-default" aria-label="Right Align" >
-				<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"> {{down}}</span></button>
-			</div>
-		</div>
-		
-		</div>
-		</div> 
-
-	 -->
 </body>
 </html>
