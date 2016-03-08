@@ -396,20 +396,15 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	    		return;
 	    	}
 	    	
-	    	obj.ansLenShowErr = false;
-	    	if (( (obj.answerTxt.length)==1) & ((obj.start0)==true)){ //if one char and started ro 0
-	    		obj.answerOpen = 1;
-	    		obj.start0=false; //when come back to ne char next time will not add 1
-	    	}else if ( (obj.answerTxt.length)==0){
-	    		obj.answerOpen = -1;
-	    		obj.start0=true; //it is first char again
-	    	}
-	    	else{
-	    		obj.answerOpen = 0;
-	    	}
-	    	$scope.answerOpen += obj.answerOpen;
+	    
 	    }
 	    
+	    $scope.focusTxt = function(){
+	    	$scope.answerOpen = true;
+	    }
+	    $scope.blurTxt = function(){
+	    	$scope.answerOpen = false;
+	    }
 	    
 	    $scope.selectPage = function() 
 	    {
@@ -426,7 +421,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		// refresh condition 
 		$scope.Newquestions = function ()
 		{
-			if ($scope.answerOpen == 0){
+			if ($scope.answerOpen == false){
 				$scope.GetAllQuestions();
 			}
 		}

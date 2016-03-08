@@ -46,7 +46,7 @@
 	          <tr data-ng-repeat="x in GetUsersResult" > 
 	           <th scope = "row"> <img src={{x.user.photoUrl}} alt="..." class="img-rounded"></th>
 	            <td data-ng-click="goTouserprofile(x)" >{{x.user.nickName}}</td>    
-	            <td>{{x.user.userRating | number:2}}</td>
+	            <td>{{x.user.userRating}}</td>
 	            <td style = "width:30%">
 	            	<div data-ng-repeat="t in x.user.experties" >
 	            		<label class="label label-default">{{t}}</label>
@@ -63,103 +63,58 @@
 	</div>
 	<div data-ng-show="showProfile">
 	<div class = "row">
-	<div class="col-sm-2"></div>
-	<div class="col-sm-1">
-		<button type="button" class="btn btn-warning" data-ng-click="bakToLaderBoard()"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></button>
-	</div>
-	<div class="col-sm-6">
-	<div class="row navbar navbar-default" >
-	<div class = "row">
 		<div class="col-sm-2"></div>
-		<div class="col-sm-3">
-			<button>My rating:{{currentUser.user.userRating }} </button>
-			<button><img src={{currentUser.user.photoUrl}} alt="..." class="img-rounded"></button>
-			</div>
-		
-		<div class="col-sm-5">
-		<div><h4>Hi, I am {{currentUser.user.nickName}}</h4></div>
+		<div class="col-sm-1">
+			<button type="button" class="btn btn-warning" data-ng-click="bakToLaderBoard()"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></button>
 		</div>
-		<div class="col-sm-2"></div>
-</div>
-	<br>
+		<div class="col-sm-6">
+			<div class="row navbar navbar-default" >
+				<div class = "row">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-3">
+						<button>My rating:{{currentUser.user.userRating}} </button>
+						<button><img src={{currentUser.user.photoUrl}} alt="..." class="img-rounded"></button>
+					</div>
+					<div class="col-sm-5">
+						<div><h4>Hi, I am {{currentUser.user.nickName}}</h4></div>
+					</div>
+					<div class="col-sm-2"></div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-sm-3"></div>
+					<div class="col-sm-7"><h5>{{currentUser.user.description}}</h5></div>
+					<div class="col-sm-3"></div>
+				</div>
+				<div class="col-sm-3"></div>
+			</div>
+		</div>
+	</div>
+	<div data-ng-repeat="x in currentUser.five_last_Questions">
 	<div class="row">
-	<div class="col-sm-3"></div>
-		<div class="col-sm-7"><h5>{{currentUser.user.description}}</h5></div>
-	<div class="col-sm-3"></div>
-	</div>
-	<div class="col-sm-3"></div>
-	</div>
-	</div>
-	</div>
-	<div class="row navbar navbar-default" >
+		<div class="col-sm-2"></div>
+		<div class="col-sm-8">
+		<div class="row navbar navbar-default" >
 			<div>
 				<br><br>
-				<div class = "mainNavBar"  data-ng-repeat="x in GetQuestionsResult">	
-					
-					<div class="panel panel-default" data-ng-init="falseShow(x)">
-						<div class="row">
-							<div class="col-sm-12">				
-								<h4> Question by you on {{timeFormat(x)}} </h4>
-							</div>
-						</div>
-						<div class="row">	
-								<div class="col-sm-1">
-								</div>
-								<div class="col-sm-11">
-									<div class="row-fluid">
-										<div class="col-sm-9">
-											<label>{{x.questionTxt}}</label>
-										</div>
-									</div>
-									<div class="row-fluid">
-										<div class="col-xs-8">  
-										<div class="row">
-											<div class = "col-xs-8">     
+				<div>
+					submmited on {{x.submmitionTime}}
+				</div>
+				<div>
+					text: {{x.questionTxt}}
+				</div>
+				<div>
+					topic: {{x.questionTopics}}
+				</div>
+				<div>
+					rating: {{x.QuestionRating}}
+				</div>
 				
-						                	</div>
-						               		<div class="col-xs-4 leftAlign">           
-								    		</div>
-								    		</div>
-								    	</div>
-									    <div class="col-xs-4">
-									    	<label>Topics:</label>
-									    	<div data-ng-repeat="t in x.questionTopics" class= "toicDisp">
-									    		<label class="label label-default">{{t}}</label>
-									    	</div>
-									    </div>
-									</div>
-									<div class ="row-fluid">
-									<div class="col-xs-8"> 
-										<br>
-									</div>
-									<div class = "col-xs-4" >
-										<br>
-									
-									</div>
-								  </div>
-
-								</div>
-								</div>
-								</div>
-								<div class = "row-fluid">
-								</div>	
-						</div> <!--  end of  second row(question +answer text )-->
-						<br>
-							<div class ="row-fluid">
-							<label></label>
-							</div>
-							<div class ="row" >
-								<div class = "col-xs-1"></div>
-								<div class = "col-xs-1">
-								</div>
-								<div class="col-xs-7" > 
-								</div>
-								<div class="col-xs-3"> 
-								</div>
-							</div>
-						</div>
-				<br><br>
-		</div><!-- End of questions display -->
-	<div>{{currentUser}}</div>
-</div>
+			</div>
+		</div>
+		</div>
+		<div class="col-sm-2"></div>
+	</div>
+	</div>
+	</div>
 </body>
