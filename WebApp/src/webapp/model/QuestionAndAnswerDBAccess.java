@@ -46,11 +46,6 @@ public class QuestionAndAnswerDBAccess {
 					pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_EXISTING_QUESTIONS_STMT);
 				    break;
 				}
-				case "topic":
-				{
-					pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_QUESTIONS_BY_TOPIC_STMT);
-				    break;
-				}
 			}
 				
 			// get number of questions
@@ -273,10 +268,17 @@ public class QuestionAndAnswerDBAccess {
 				QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, answer));
 			}  
 			int numOfQuestions = 0;
-			if (((getNumberOfLeftPages(currentPage, "topic")) % 20) == 0) {
-				numOfQuestions = ((getNumberOfLeftPages(currentPage, "topic")) / 20) - 1;
+			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_QUESTIONS_BY_TOPIC_STMT);
+			pstmt.setString(1, topicName);
+			rs = pstmt.executeQuery();
+			if ( rs.next() )
+			{
+				numOfQuestions = rs.getInt(1);
+			}
+			if ((numOfQuestions % 20) == 0) {
+				numOfQuestions = (numOfQuestions / 20) - 1;
 			} else {
-				numOfQuestions = ((getNumberOfLeftPages(currentPage, "topic")) / 20);
+				numOfQuestions = (numOfQuestions / 20);
 			}		
 			QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numOfQuestions);
 			String QuestionsByTopicsJsonResult = gson.toJson(qestionsResponse, QuestionsResponse.class);
