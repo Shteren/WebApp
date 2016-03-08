@@ -76,6 +76,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		
 		$scope.GetQuestionsAns = function(obj ,show)
 		{
+			
 			if (((obj.showAns == true) && (show == true) ) ||(show == false)){
 				$scope.falseShow(obj)
 				
@@ -189,6 +190,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    	 }else{
 		    		obj.questionVote++; 
 		    	 }
+		    	 $scope.GetAllQuestions();
 		    	 
 		    	 
 		     })
@@ -198,10 +200,10 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		             $scope.status = 'Unable to connect' + error.message;
 		     }); 
 	    }
-	    $scope.voteAnsDown = function(obj){
+	    $scope.voteAnsDown = function(answer, question){
 	    	
 			$http({ method: 'PUT',
-		        url: 'http://localhost:8080/WebApp/answers/'+obj.answerId,
+		        url: 'http://localhost:8080/WebApp/answers/'+answer.answerId,
 		        data: { answerVote: -1},
 				headers: {'Content-Type': 'application/json'}
 		     })
@@ -210,8 +212,9 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already vote")){
 		    		 alert(result.Result); 
 		    	 }else{
-		    		obj.answerVote--; 
+		    		 answer.answerVote--; 
 		    	 }
+		    	 $scope.GetQuestionsAns(question ,true);
 		     })
 		     .error(function (error) 
 		     {
@@ -219,10 +222,10 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		             $scope.status = 'Unable to connect' + error.message;
 		     }); 
 	    }
-		$scope.voteAnsUp = function(obj){
+		$scope.voteAnsUp = function(answer, question){
 	    	
 			$http({ method: 'PUT',
-		        url: 'http://localhost:8080/WebApp/answers/'+obj.answerId,
+		        url: 'http://localhost:8080/WebApp/answers/'+answer.answerId,
 		        data: { answerVote: +1},
 				headers: {'Content-Type': 'application/json'}
 		     })
@@ -232,8 +235,10 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already vote")){
 		    		 alert(result.Result); 
 		    	 }else{
-		    		obj.answerVote++; 
+		    		 answer.answerVote++; 
 		    	 }
+		    	 
+		    	 $scope.GetQuestionsAns(question ,true);
 		    	 
 		    	 
 		     })
@@ -257,6 +262,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    	 }else{
 		    		obj.questionVote--; 
 		    	 }
+		    	 $scope.GetAllQuestions();
 		     })
 		     .error(function (error) 
 		     {
@@ -498,7 +504,6 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		$scope.HideShowTagCharacterError = false;
           if ($scope.topics[ $scope.topics.length -1 ] == ",")
           {
-       	   alert("topicsMaker");
            	if ($scope.tag.indexOf($scope.topics.substring(0, $scope.topics.length-1 )) == -1){  //push topic if it does not exist
          	     
           		$scope.tag.push( $scope.topics.substring(0, $scope.topics.length-1 ) );
