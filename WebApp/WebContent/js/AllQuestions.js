@@ -54,6 +54,13 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     {
 
 		    	 $scope.NumOfPages = response.numOfPages ;
+		    	 
+		    	 if ($scope.NumOfPages == -1) {
+		    		 $scope.showPrevNext = false;
+		    	 } else {
+		    		 $scope.showPrevNext = true;
+		    	 }
+		    		 
 		    	 $scope.CheckNextButton();
 		    	 $scope.CheckPreviousButton();
 		    	 //$scope.PreviousButtonFlag = true; // disable previous button
@@ -658,6 +665,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		//default values for get questions		
 		$scope.sendNewOrAll = "new";
 	    $scope.CheckSession();
+	    $scope.showPrevNext = true;
 	    //$scope.GetAllQuestions();
 		
 		
