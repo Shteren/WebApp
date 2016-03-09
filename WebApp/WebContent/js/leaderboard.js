@@ -46,6 +46,23 @@ angular.module('MainApp',[]).controller('LeaderBoardController',['$scope','$http
 		$scope.showProfile = false;
 		
 	}
+	
+	$scope.logOut=function(){
+	     
+		$http({ method: 'POST',
+	        url: 'http://localhost:8080/WebApp/logout',
+	        headers: {'Content-Type': 'application/json'}
+	     })
+	     .success(function(response) 
+	     {
+	    	 window.location.assign("index.html");
+	     })
+	     .error(function (error) 
+	     {
+	             $scope.status = 'Unable to connect' + error.message;
+	     }); 
+		
+	}
 	$scope.GetAllUser = function(){
 	
 		$http({ method: 'GET',
