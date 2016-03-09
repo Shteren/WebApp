@@ -76,7 +76,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		
 		$scope.GetQuestionsAns = function(obj ,show)
 		{
-			
+		
 			if (((obj.showAns == true) && (show == true) ) ||(show == false)){
 				$scope.falseShow(obj)
 				
@@ -94,7 +94,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 			    		 obj.firstAns=false;
 			    		 return;
 			    	 }
-			    	 obj.start0=true; //refresh is enabled , answer box is empty
+			    	 
 			    	 obj.firstAns=true;
 			    	 obj.numberOfAnswers = response.length;
 			    	 $scope.ShowButton(obj);
@@ -212,9 +212,13 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already vote")){
 		    		 alert(result.Result); 
 		    	 }else{
+		    		 if (question.showAns==true){
+		    			 question.showAns=false;
+		    		 } 
 		    		 answer.answerVote--; 
+		    		 $scope.GetQuestionsAns(question ,true);
 		    	 }
-		    	 $scope.GetQuestionsAns(question ,true);
+		    	 
 		     })
 		     .error(function (error) 
 		     {
@@ -236,9 +240,14 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    		 alert(result.Result); 
 		    	 }else{
 		    		 answer.answerVote++; 
+		    		 if (question.showAns==true){
+		    			 question.showAns=false;
+		    		 } 
+		    		 $scope.GetQuestionsAns(question ,true);
+		    		 alert("whhhatt");
 		    	 }
 		    	 
-		    	 $scope.GetQuestionsAns(question ,true);
+		    	 
 		    	 
 		    	 
 		     })
