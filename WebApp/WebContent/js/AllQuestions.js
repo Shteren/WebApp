@@ -421,6 +421,9 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	    	{
 	    		obj.ansLenShowErr = true;
 	    		return;
+	    	}else{
+	    		obj.ansLenShowErr = false;
+	    		return;
 	    	}
 	    	
 	    

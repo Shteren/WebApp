@@ -29,13 +29,16 @@
 									<div class="row-fluid">
 										<div class="col-xs-8">  
 										<div class="row">
-											<div class = "col-xs-8">     
+											<div class = "col-xs-8" class="btn-group-vertical">     
 						                		<textarea class="form-control ansArea"   data-ng-focus="focusTxt()" data-ng-blur="blurTxt()" data-ng-change="AnswerLenWarn(x)" placeholder="So what is your answer Smartass"  data-ng-model="x.answerTxt"></textarea>
+						                		<div data-ng-show="x.ansLenShowErr">
+  													<label class="label label-danger" >answer should be up to 300 characters</label>
+												</div>
 						                	</div>
 						               		<div class="col-xs-4 leftAlign">
 						                		<button type="submit" class="btn" data-ng-click="addAnswer(x)">Send</button>            
 								    		</div>
-								    		</div>
+								    	</div>
 								    	</div>
 									    <div class="col-xs-4">
 									    	<label>Topics:</label>

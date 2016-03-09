@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="css/question.css">
 </head>
 <body data-ng-app="MainApp" data-ng-controller="AllQuestionsController">
-	<div class="container">
+	<div class="container" style="word-wrap: break-word;">
 		<div class="row">
 			<nav role="navigation" class="navbar navbar-default">
 			    <div class="navbar-header">
@@ -73,7 +73,10 @@
 		
 		<div data-ng-show="!showHideTopicList">
 				<div class="row">
-		 			<div class="col-xs-7"><li class="list-group-item list-group-item-info">you are now looking at questions about <label class="label label-default">{{topic}} </label></li></div>
+		 			<div class="col-xs-7">
+		 			<ul>
+		 			<li class="list-group-item list-group-item-info">you are now looking at questions about <label class="label label-default">{{topic}} </label></li></ul>
+		 			</div>
 		 			<div class="col-xs-5"><div style="margin:left"><button  type="submit" class="btn btn-warning" data-ng-click="showList()">Search for another Topics</button></div></div>
 				</div>
 		<br>
