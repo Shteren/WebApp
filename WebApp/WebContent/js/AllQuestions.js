@@ -215,10 +215,13 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already vote")){
 		    		 alert(result.Result); 
 		    	 }else{
+		    		 if (null == question) {
+		    			 return;
+		    		 }
+		    		 answer.answerVote--; 
 		    		 if (question.showAns==true){
 		    			 question.showAns=false;
 		    		 } 
-		    		 answer.answerVote--; 
 		    		 $scope.GetQuestionsAns(question ,true);
 		    	 }
 		    	 
@@ -242,6 +245,9 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already vote")){
 		    		 alert(result.Result); 
 		    	 }else{
+		    		 if (null == question) {
+		    			 return;
+		    		 }
 		    		 answer.answerVote++; 
 		    		 if (question.showAns==true){
 		    			 question.showAns=false;
