@@ -177,6 +177,7 @@
 		$scope.nickNameError=""; //error init
 		$scope.descriptionErrorFlag = false; //show or not error
 		$scope.descriptionError=""; //error init
+		$scope.LoginShowFlag=true;
 		$scope.CheckSession();//check if someone is already logged in
 		
 
