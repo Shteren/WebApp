@@ -7,16 +7,19 @@
 <script src="js/LoginAndRegister.js"></script>
 <link rel="stylesheet" href="css/bootstrap.css">
 </head>
-<body>
-<div  data-ng-app="MainApp" data-ng-controller="inTableController">
+<body style="background-image:url('images/background3.jpg');">
+<div  data-ng-app="MainApp" data-ng-controller="inTableController" >
 		<!-- Register Form -->
 		<div style="margin-top:10%;margin-left:30%;width:50%;word-wrap: break-word;" >
 			<div class = "panel panel-primary">
 			<div style="margin-left: 30%;width:45%"  data-ng-show="!LoginShowFlag">
 				<form role="form">
-					<div class="form-group">
+					<div class="form-group btn-group-vertical">
 					  <label>User Name:</label>
-					  <input class="form-control" placeholder="User Name" type="text" data-ng-model="RegistrationName" name="username" >
+					  <input class="form-control" placeholder="User Name" type="text" data-ng-model="RegistrationName" name="username" data-ng-change="RegistrationNameToLong()">
+					  <div data-ng-show="!longRegistrationName">
+						<label class="label label-danger" >User name should be less then 10 characters</label>
+					  </div>
 				  	</div>
 				  	<div class="form-group">
 				  		<label>Password:</label>

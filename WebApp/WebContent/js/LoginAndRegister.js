@@ -84,7 +84,7 @@
 		     .success(function (result) 
 		     {
 		    	 //alert(result);
-		         if (result.Result == "true") 
+		         if (result.Result == true) 
 		         {
 		           //alert('Resistration was successful');
 		        	window.location.assign("MainPage.html")

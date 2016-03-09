@@ -1,5 +1,5 @@
 <div data-ng-show = showPrevNext>
-	<div class="row navbar navbar-default" >
+	<div class="row navbar navbar-default" style="background-color: #ffe6ff">
 			<div>
 				<br><br>
 				<div class = "mainNavBar"  data-ng-repeat="x in GetQuestionsResult">	
@@ -76,7 +76,7 @@
 								</div>
 								<div class = "row-fluid">
 									<div data-ng-model="x.showButton" data-ng-show="x.showButton" class = "showAnsButton"> 
-										<button type="submit" class="btn btn-warning" data-ng-model="x.showAns" data-ng-click="GetQuestionsAns(x, true)">Show more answers</button>
+										<button type="submit" class="btn btn-info" data-ng-model="x.showAns" data-ng-click="GetQuestionsAns(x, true)">Show more answers</button>
 										<br>
 									</div>
 								</div>	
