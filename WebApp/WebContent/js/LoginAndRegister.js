@@ -159,7 +159,7 @@
 					$scope.nickNameErrorFlag = false;
 				}
 		};
-		$scope.checkRegistrationNickname = function(){
+		$scope.checkRegistrationDesc = function(){
 			//function is checking registration description requirements and sets flag and error string accordingly  
 				if ($scope.RegistrationDescription.length > 50){
 					$scope.descriptionError="Max characters in desription is 50";
