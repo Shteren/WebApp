@@ -373,25 +373,38 @@ public class UsersServlet extends HttpServlet {
 				DBUtils.buildJsonResult("Problem reading incoming Json" , response);
 				return;
 			}
-			pstmt = conn.prepareStatement(UserConstants.INSERT_USER_STMT);
 			// get the parameters from incoming json
-			String Usename = user.getUserName();
+			String username = user.getUserName();
 			String Password = user.getPassword();
 			String nickName = user.getNickName();
 			String Desc = user.getDescriptaion();
 			String photoUrl = user.getPhotoUrl();
-			if (photoUrl == null) {
-				photoUrl = "images/defultimg.jpg";
-			}
-			// insert parameters into SQL Insert
-			pstmt.setString(1,Usename);
-			pstmt.setString(2,Password);
-			pstmt.setString(3,nickName);
-			pstmt.setString(4,Desc);
-			pstmt.setString(5, photoUrl);
 			
-			//execute insert command
-			pstmt.executeUpdate();
+			pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_NAME_STMT);
+			pstmt.setString(1, username);
+			ResultSet rs = pstmt.executeQuery();
+			if ( !rs.next() )
+			{
+				pstmt = conn.prepareStatement(UserConstants.INSERT_USER_STMT);
+				if (photoUrl == null) {
+					photoUrl = "images/defultimg.jpg";
+				}
+				// insert parameters into SQL Insert
+				pstmt.setString(1,username);
+				pstmt.setString(2,Password);
+				pstmt.setString(3,nickName);
+				pstmt.setString(4,Desc);
+				pstmt.setString(5, photoUrl);
+				
+				//execute insert command
+				pstmt.executeUpdate();
+			} else {
+				//build Json Answer
+				DBUtils.buildJsonResult("Please change your username", response);
+				DBUtils.closeResultAndStatment(rs, pstmt);
+				return;
+			}
+
 			//commit update
 			conn.commit();
 			
@@ -399,13 +412,13 @@ public class UsersServlet extends HttpServlet {
 			// Set session to be valid
 			HttpSession session = request.getSession();
 			session.setMaxInactiveInterval(3600); // seconds 
-			session.setAttribute("Username", Usename);
+			session.setAttribute("Username", username);
 			session.setAttribute("Nickname", nickName);	
 			
 			//build Json Answer
 			DBUtils.buildJsonResult("true", response);
+			DBUtils.closeResultAndStatment(rs, pstmt);
 			
-			pstmt.close();
 			conn.close();
 			
 		} catch (SQLException | NamingException e) {
@@ -428,7 +441,7 @@ public class UsersServlet extends HttpServlet {
 			session.invalidate();
 			
 			//build Json Answer
-			DBUtils.buildJsonResult("false", response);
+			DBUtils.buildJsonResult("Please change your nickname", response);
 		}
 	}
 }
