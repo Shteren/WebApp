@@ -381,7 +381,7 @@ public class UsersServlet extends HttpServlet {
 			String Desc = user.getDescriptaion();
 			String photoUrl = user.getPhotoUrl();
 			if (photoUrl == null) {
-				photoUrl = "images/defultimg.png";
+				photoUrl = "images/defultimg.jpg";
 			}
 			// insert parameters into SQL Insert
 			pstmt.setString(1,Usename);
