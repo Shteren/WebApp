@@ -85,15 +85,14 @@
 		     .success(function (result) 
 		     {
 		    	 //alert(result);
-		         if (result.Result == true) 
+		         if (result.Result == "true") 
 		         {
-		           //alert('Resistration was successful');
-		        	window.location.assign("MainPage.html")
+		        	 window.location.assign("MainPage.html")
+		         }else{
+		           alert(result.Result);
 		         }
-		         else 
-		         {
-		        	 alert('Username or Nickname are already registered');
-		         }
+		         
+		       
 		     })
 		     .error(function (error) 
 		     {
