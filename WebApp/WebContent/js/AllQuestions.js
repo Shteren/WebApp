@@ -54,7 +54,10 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     {
 
 		    	 $scope.NumOfPages = response.numOfPages ;
-		    	 
+		    	 if ($scope.NumOfPages < $scope.prevOrNextPageNumCounter ){
+		    		 $scope.prevOrNextPageNumCounter--;
+		    		 $scope.GetAllQuestions(); 
+		    	 } 
 		    	 if ($scope.NumOfPages == -1) {
 		    		 $scope.showPrevNext = false;
 		    	 } else {
@@ -244,7 +247,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    			 question.showAns=false;
 		    		 } 
 		    		 $scope.GetQuestionsAns(question ,true);
-		    		 alert("whhhatt");
+		    		
 		    	 }
 		    	 
 		    	 
@@ -387,8 +390,9 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 			     {
 			    	  obj.sentAnswerTxt = obj.answerTxt;
 			    	  obj.answerTxt = null;
-			    	  $scope.GetQuestionsAns(obj);
-			    	  obj.showAns = false;
+			    	  alert(obj.showAns);
+			    	  $scope.GetQuestionsAns(obj,false);
+			    	
 			    	  
 			    
 			     })
