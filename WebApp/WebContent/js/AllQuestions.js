@@ -390,7 +390,6 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 			     {
 			    	  obj.sentAnswerTxt = obj.answerTxt;
 			    	  obj.answerTxt = null;
-			    	  alert(obj.showAns);
 			    	  $scope.GetQuestionsAns(obj,false);
 			    	
 			    	  
@@ -552,7 +551,6 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     .success(function (response) 
 		     {;
 		    	 $scope.NumOfTopicPages = response.numOfPages ;
-		    	// alert($scope.NumOfTopicPages);
 		    	 $scope.CheckTopicNextButton();
 		    	 $scope.CheckTopicPreviousButton();
 		    	 $scope.GetTopicsResult = angular.copy(response.topics);
@@ -560,7 +558,6 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     })
 		     .error(function (error) 
 		     {
-		    	 alert("here");
 		             $scope.status = 'Unable to connect' + error.message;
 		     });  
 			return false;

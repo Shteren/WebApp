@@ -8,22 +8,22 @@
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/question.css">
 </head>
-<body data-ng-app="MainApp" data-ng-controller="AllQuestionsController">
-	<div class="container" style="word-wrap: break-word;">
+<body data-ng-app="MainApp" data-ng-controller="AllQuestionsController" style="background-image:url('images/background5 .jpg');">
+	<div class="container" style="word-wrap: break-word;" >
 		<div class="row">
-			<nav role="navigation" class="navbar navbar-default">
+			<nav role="navigation" class="navbar navbar-default" style="background-color: #ffe6ff">
 			    <div class="navbar-header">
 			        <a href="#" class="navbar-brand">Hello {{NickName}}</a>
 			    </div>
 			    <div id="navbarCollapse" class="collapse navbar-collapse">
 			        <ul class="nav navbar-nav">
-			            <li class="active"><a href="MainPage.html">Home</a></li>
+			            <li class="active" ><a href="MainPage.html" style="background-color: #b3d9ff">Home</a></li>
 			            <li><a href="AllQuestions.html">All Questions</a></li>
 			            <li><a href="QuestionsByTopic.html">Browse Questions by topic</a></li>
 			            <li><a href="leaderboard.html">Leader Board</a></li>
 			        </ul>
 			        <ul class="nav navbar-nav navbar-right">
-			            <li><a href="" data-ng-click="logOut()">Logout</a></li>
+			            <li><a href="" data-ng-click="logOut()"><span class="glyphicon glyphicon-log-out Logout" aria-hidden="true"></span> Logout</a></li>
 			        </ul>
 			    </div>
 			</nav>

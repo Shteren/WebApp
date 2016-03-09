@@ -7,10 +7,10 @@
 <script src="js/leaderboard.js"></script>
 <link rel="stylesheet" href="css/bootstrap.css">
 </head>
-<body data-ng-app="MainApp" data-ng-controller="LeaderBoardController">
+<body data-ng-app="MainApp" data-ng-controller="LeaderBoardController" style="background-image:url('images/background5 .jpg');">
 	<div class="container word-wrap: break-word;">
 		<div class="row">
-			<nav role="navigation" class="navbar navbar-default">
+			<nav role="navigation" class="navbar navbar-default" style="background-color: #ffe6ff">
 			    <div class="navbar-header">
 			        <a href="#" class="navbar-brand">Hello {{NickName}}</a>
 			    </div>
@@ -19,10 +19,10 @@
 			            <li><a href="MainPage.html">Home</a></li>
 			            <li><a href="AllQuestions.html">All Questions</a></li>
 			            <li><a href="QuestionsByTopic.html">Browse Questions by topic</a></li>
-			            <li class="active"><a href="leaderboard.html">Leader Board</a></li> 
+			            <li class="active"><a href="leaderboard.html" style="background-color: #b3d9ff">Leader Board</a></li> 
 			        </ul>
 			        <ul class="nav navbar-nav navbar-right">
-			            <li><a href="" data-ng-click="logOut()">Logout</a></li>
+			            <li><a href="" data-ng-click="logOut()"><span class="glyphicon glyphicon-log-out Logout" aria-hidden="true"></span> Logout</a></li>
 			        </ul>
 			    </div>
 			</nav>
@@ -32,13 +32,15 @@
 	<div class="row">
 	<div class="col-sm-2"></div>
 	<div class="col-sm-8">
+	<div >
+	<div >
 		<table class="table">  
 	  		<thead >  
 	          <tr>  
-	            <th bgcolor="#4dffb8">pic</th>  
-	            <th bgcolor="#4dffb8">Nickname</th>   
-	            <th bgcolor="#4dffb8">rating</th>  
-	            <th bgcolor="#4dffb8">expertise</th>
+	            <th bgcolor="#b3d9ff">pic</th>  
+	            <th bgcolor="#b3d9ff">Nickname</th>   
+	            <th bgcolor="#b3d9ff">rating</th>  
+	            <th bgcolor="#b3d9ff">expertise</th>
 	 
 	          </tr>  
 	        </thead> 
@@ -58,6 +60,8 @@
 	        </tbody>  
 	      </table> 
 	</div>
+	</div>
+	</div>
 	<div class="col-sm-2"></div>
 	</div>
 	</div>
@@ -68,18 +72,18 @@
 			<button type="button" class="btn btn-info" data-ng-click="bakToLaderBoard()"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span></button>
 		</div>
 		<div class="col-sm-6">
-			<div class="row navbar navbar-default" >
+			<div class="row navbar navbar-default" style="background-color: #ffe6ff">
 			<br>
 				<div class = "row">
 					<div class="col-sm-1"></div>
 					<div class="col-sm-3">
-						<button><img data-ng-src="{{currentUser.user.photoUrl}}" alt="..." class="img-rounded"></button>
+						<img data-ng-src="{{currentUser.user.photoUrl}}" alt="..." class="img-rounded">
 					</div>
 					<div class="col-sm-4">
 						<div><h4>Hi, I am {{currentUser.user.nickName}}</h4></div>
 					</div>
 					<div class="col-sm-3">
-					<div style="max-height:50px;max-width:100px;"class="alert alert-danger" role="alert">rating:{{currentUser.user.userRating | number:2}}</div>
+					<div style="max-height:50px;max-width:100px;"class="alert alert-info" role="alert">rating:{{currentUser.user.userRating | number:2}}</div>
 					</div>
 					<div class="col-sm-1"></div>
 				</div>
@@ -87,7 +91,7 @@
 				<div class="row">
 					<div class="col-sm-2"></div>
 					<div class="col-sm-7">
-					<div class="alert alert-success" role="alert" data-ng-show="checkDes(currentUser.user.description)">
+					<div class="alert alert-info" role="alert" data-ng-show="checkDes(currentUser.user.description)">
 						<h5 style="text-align: center;">{{currentUser.user.description}}</h5>
 					</div>
 					</div>
@@ -103,7 +107,7 @@
 	<div class="col-sm-4"></div>
 	<div class="col-sm-4">
 	<div class="alert alert-info"  role="alert" >
-	<div style="text-align: center;">5 last asked questions</div>
+	<div style="text-align: center;"><h4>5 last asked questions</h4></div>
 	</div>
 	</div>
 	<div class="col-sm-4"></div>
@@ -113,24 +117,24 @@
 	<div class="row">
 		<div class="col-sm-2"></div>
 		<div class="col-sm-8">
-		<div class="row navbar navbar-default" >
+		<div class="row navbar navbar-default"  style="background-color: #ffe6ff">
 			
 				<br><br>
 				<div class="row">
 					<div class="col-sm-1"></div>
 					<div class="col-sm-7">
-						<div class="alert alert-success" role="alert">submitted on {{timeFormat(x)}}</div>
+						<div class="alert alert-info" role="alert">submitted on {{timeFormat(x)}}</div>
 					</div>
 					<div class="col-sm-1"></div>
 					<div class="col-sm-2">
-					<div class="alert alert-danger" role="alert">rating: {{x.QuestionRating| number:2}}</div>
+					<div class="alert alert-info" role="alert">rating: {{x.QuestionRating| number:2}}</div>
 					</div>
 					<div class="col-sm-1"></div>
 				</div>
 				<div class="row">
 					<div class="col-sm-2"></div>
 					<div class="col-sm-8">
-					<div class="panel panel-danger">
+					<div class="panel panel-info">
 					<div class="panel-heading">your question</div>
 					
 						{{x.questionTxt}}
@@ -144,8 +148,8 @@
 				<div class="col-sm-3"></div>
 				<div class="col-sm-8">	
 				<div data-ng-show="isEmpt(x.questionTopics)">
-				<div class="alert alert-success" role="alert">
-				topics : 
+				<div class="alert alert-info" role="alert">
+				<span class="glyphicon glyphicon-tags" aria-hidden="true"></span>
 				<div data-ng-repeat="t in x.questionTopics" style="display:inline">
 				
 				<label class="label label-default">{{t}}</label>
@@ -183,24 +187,24 @@
 	<div class="row">
 		<div class="col-sm-2"></div>
 		<div class="col-sm-8">
-		<div class="row navbar navbar-default" >
+		<div class="row navbar navbar-default" style="background-color: #ffe6ff ">
 			
 				<br><br>
 				<div class="row">
 					<div class="col-sm-1"></div>
 					<div class="col-sm-7">
-						<div class="alert alert-success" role="alert">submitted on {{timeFormat(x.question)}}</div>
+						<div class="alert alert-info" role="alert">submitted on {{timeFormat(x.question)}}</div>
 					</div>
 					<div class="col-sm-1"></div>
 					<div class="col-sm-2">
-					<div class="alert alert-danger" role="alert">rating: {{x.question.QuestionRating| number:2}}</div>
+					<div class="alert alert-info" role="alert">rating: {{x.question.QuestionRating| number:2}}</div>
 					</div>
 					<div class="col-sm-1"></div>
 				</div>
 				<div class="row">
 					<div class="col-sm-2"></div>
 					<div class="col-sm-8">
-					<div class="panel panel-danger">
+					<div class="panel panel-info">
 					<div class="panel-heading">your question</div>
 					
 						{{x.question.questionTxt}}
@@ -213,12 +217,12 @@
 				<div class="row">
 				<div class="col-sm-3"></div>
 				<div class="col-sm-8">	
-				<div data-ng-show="isEmpt(x.questionTopics)">
-				<div class="alert alert-success" role="alert">
-				topics : 
+				<div data-ng-show="isEmpt(x.question.questionTopics)">
+				<div class="alert alert-info" role="alert">
+				<span class="glyphicon glyphicon-tags" aria-hidden="true"> </span>
 				<div data-ng-repeat="t in x.question.questionTopics" style="display:inline">
 				
-				<label class="label label-default">{{t}}</label>
+				<label class="label label-default"> {{t}}</label>
 					</div>
 				</div>
 				</div>
@@ -228,7 +232,7 @@
 				<div class="row">
 					<div class="col-sm-2"></div>
 					<div class="col-sm-8">
-					<div class="panel panel-danger">
+					<div class="panel panel-info">
 					<div class="panel-heading">your answer</div>
 					
 						{{x.answer.answerTxt}}
