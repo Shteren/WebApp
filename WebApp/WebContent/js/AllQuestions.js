@@ -215,11 +215,8 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already vote")){
 		    		 alert(result.Result); 
 		    	 }else{
-		    		 if (null==question.showAns){
+		    		 if (null==question){
 		    			return;
-		    		 }
-		    		 if (null == question) {
-		    			 return;
 		    		 }
 		    		 answer.answerVote--; 
 		    		 if (question.showAns==true){
@@ -235,6 +232,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		             $scope.status = 'Unable to connect' + error.message;
 		     }); 
 	    }
+	    
 		$scope.voteAnsUp = function(answer, question){
 	    	
 			$http({ method: 'PUT',
@@ -248,13 +246,8 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already vote")){
 		    		 alert(result.Result); 
 		    	 }else{
-
-		    		 if (null==question.showAns){
-			    			return;
-
 		    		 if (null == question) {
 		    			 return;
-
 		    		 }
 		    		 answer.answerVote++; 
 		    		 if (question.showAns==true){
@@ -263,10 +256,6 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    		 $scope.GetQuestionsAns(question ,true);
 		    		
 		    		 }
-		    	 }
-		    	 
-		    	 
-		    	 
 		     })
 		     .error(function (error) 
 		     {
