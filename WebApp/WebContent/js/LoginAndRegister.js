@@ -23,45 +23,46 @@
 		             $scope.status = 'Unable to connect' + error.message;
 		     });  
 		}
+	
 		
 		$scope.register = function()
 		{
 			//validate rules for username
-			if(null == $scope.RegistrationName )
+			if((null == $scope.RegistrationName )||(0 == $scope.RegistrationName.length ))
 			{
-				alert("Please Fill the Username Field");
+				
+				$scope.userNameErrorFlag = true;
+				$scope.userNameError="Please Fill the Username Field";
 				return;
 			}
 			if($scope.RegistrationName.length > 10 )
 			{
-				alert("Max characters in username is 10");
 				return;
 			}
-			if(null == $scope.RegistrationPassword )
+			if((null == $scope.RegistrationPassword )||(0 == $scope.RegistrationPassword.length ))
 			{
-				alert("Please Fill the Password Field");
+				$scope.paawordErrorFlag = true;
+				$scope.passwordError="Please Fill the Password";
 				return;
 			}
 			if($scope.RegistrationPassword.length > 8 )
 			{
-				alert("Max characters in Password is 8");
 				return;
 			}
-			if(null == $scope.RegistrationNickname )
+			if((null == $scope.RegistrationNickname )||(0 == $scope.RegistrationNickname.length ))
 			{
-				alert("Please Fill the Password Field");
+				$scope.nickNameErrorFlag = true;
+				$scope.nickNameError="Please Fill in your nickname";
 				return;
 			}
 			if($scope.RegistrationNickname.length > 20 )
 			{
-				alert("Max characters in Nickname is 20");
 				return;
 			}
 			if(null != $scope.RegistrationDescription )
 			{
 				if($scope.RegistrationDescription.length > 50 )
 				{
-					alert("Description must be not longer then 50 characters");
 					return;
 				}
 			}
@@ -132,11 +133,52 @@
 			$scope.LoginShowFlag = !$scope.LoginShowFlag;
 		};
 		
-		
+		$scope.checkRegistrationName = function(){
+		//function is checking registration name requirements and sets flag and error string accordingly  
+			if ($scope.RegistrationName.length > 10){
+				$scope.userNameError="Max characters in username is 10";
+				$scope.userNameErrorFlag = true;
+			}else if ($scope.RegistrationName.length>0){
+				$scope.userNameErrorFlag = false;
+			}
+		};
+		$scope.checkRegistrationPassword = function(){
+			//function is checking password requirements and sets flag and error string accordingly  
+				if ($scope.RegistrationPassword.length > 8){
+					$scope.passwordError="Max characters in password is 8";
+					$scope.paawordErrorFlag = true;
+				}else if ($scope.RegistrationPassword.length>0){
+					$scope.paawordErrorFlag = false;
+				}
+		};
+		$scope.checkRegistrationNickname = function(){
+			//function is checking registration nickname requirements and sets flag and error string accordingly  
+				if ($scope.RegistrationNickname.length > 20){
+					$scope.nickNameError="Max characters in nickname is 20";
+					$scope.nickNameErrorFlag = true;
+				}else if ($scope.RegistrationNickname.length>0){
+					$scope.nickNameErrorFlag = false;
+				}
+		};
+		$scope.checkRegistrationNickname = function(){
+			//function is checking registration description requirements and sets flag and error string accordingly  
+				if ($scope.RegistrationDescription.length > 50){
+					$scope.descriptionError="Max characters in desription is 50";
+					$scope.descriptionErrorFlag = true;
+				}else {
+					$scope.descriptionErrorFlag = false;
+				}
+		};
 		//////// Entering here be default-when page loading ////////////	
-		$scope.LoginShowFlag = true;
-		
-		$scope.CheckSession();
+		$scope.userNameErrorFlag = false; //show or not error
+		$scope.userNameError=""; //error init
+		$scope.paawordErrorFlag = false; //show or not error
+		$scope.passwordError=""; //error init
+		$scope.nickNameErrorFlag = false; //show or not error
+		$scope.nickNameError=""; //error init
+		$scope.descriptionErrorFlag = false; //show or not error
+		$scope.descriptionError=""; //error init
+		$scope.CheckSession();//check if someone is already logged in
 		
 
 }]);

@@ -25,24 +25,33 @@
 		<div class="panel-body">
 			
 				<form role="form">
-					<div class="form-group btn-group-vertical">
+					<div class="form-group btn-group-vertical" style="width:100%">
 					  <label>User Name:</label>
-					  <input class="form-control" placeholder="User Name" type="text" data-ng-model="RegistrationName" name="username" data-ng-change="RegistrationNameToLong()">
-					  <div data-ng-show="!longRegistrationName">
-						<label class="label label-danger" >User name should be less then 10 characters</label>
+					  <input class="form-control" placeholder="User Name" type="text" data-ng-model="RegistrationName" name="username" data-ng-change="checkRegistrationName()">
+					  <div data-ng-show=userNameErrorFlag>
+						<label class="label label-danger" >{{userNameError}}</label>
 					  </div>
 				  	</div>
-				  	<div class="form-group">
+				  	<div class="form-group btn-group-vertical" style="width:100%">
 				  		<label>Password:</label>
-				  		<input class="form-control" placeholder="Password" type="password" data-ng-model="RegistrationPassword" name="password">
+				  		<input class="form-control" placeholder="Password" type="password" data-ng-model="RegistrationPassword" name="password" data-ng-change="checkRegistrationPassword()">
+				  		<div data-ng-show=paawordErrorFlag>
+							<label class="label label-danger" >{{passwordError}}</label>
+					    </div>
 				  	</div>
-				  	<div class="form-group">
+				  	<div class="form-group btn-group-vertical" style="width:100%">
 				  		<label>Nick Name:</label>
-				  		<input class="form-control" placeholder="Nick Name" type="text" data-ng-model="RegistrationNickname" name="nickname" >
+				  		<input class="form-control" placeholder="Nick Name" type="text" data-ng-model="RegistrationNickname" name="nickname" data-ng-change="checkRegistrationNickname()">
+				  		<div data-ng-show=nickNameErrorFlag>
+							<label class="label label-danger" >{{nickNameError}}</label>
+					    </div>
 				  	</div>
-				  	<div class="form-group">
+				  	<div class="form-group btn-group-vertical" style="width:100%">
 				  		<label>Description:</label>
-				  		<input class="form-control"  placeholder="Description" type="text" data-ng-model="RegistrationDescription" name="description" >  
+				  		<input class="form-control"  placeholder="Description" type="text" data-ng-model="RegistrationDescription" name="description" data-ng-change="checkRegistrationNickname()">  
+				  		<div data-ng-show=descriptionErrorFlag>
+							<label class="label label-danger" >{{descriptionError}}</label>
+					    </div>
 				  	</div>
 				  	<div>
 				  		<label>PhotoURL:</label>
