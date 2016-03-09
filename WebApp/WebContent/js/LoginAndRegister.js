@@ -92,7 +92,7 @@
 		         }
 		         else 
 		         {
-		        	 alert('Registration Failed');
+		        	 alert('Username or Nickname are already registered');
 		         }
 		     })
 		     .error(function (error) 
@@ -121,7 +121,7 @@
 	   	         }
 	   	         else 
 	   	         {
-	   	        	 alert('Login Failed');
+	   	        	 alert('Username or Password are incorrect');
 	   	         }
 				
 			 });
