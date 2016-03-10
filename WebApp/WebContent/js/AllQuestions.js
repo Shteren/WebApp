@@ -521,23 +521,26 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
    	
 	   	$scope.tagMaker = function() 
 	   	{
+	   		//function checks if tag is not longer the 50 chars, and turns each input 
+	   		//terminated by comma in to a tag, then makes a list of tags
+	   		
+	   		
 	   		if( ($scope.topics.length) > 50)
 	   		{
 	   			$scope.HideShowTagCharacterError = true;
-	   			//$scope.topics = $scope.topics.substring(0, 50 );
 	   			return;
-	   		
-	   	}
+	   	    }
 		
-		$scope.HideShowTagCharacterError = false;
-          if ($scope.topics[ $scope.topics.length -1 ] == ",")
-          {
-           	if ($scope.tag.indexOf($scope.topics.substring(0, $scope.topics.length-1 )) == -1){  //push topic if it does not exist
+	   		$scope.HideShowTagCharacterError = false;
+	   		//if last character is comma, insert the topic to the tags array and clear the textbox
+	   		if ($scope.topics[ $scope.topics.length -1 ] == ",")
+	   		{
+	   			if ($scope.tag.indexOf($scope.topics.substring(0, $scope.topics.length-1 )) == -1){  //push topic if it does not exist
          	     
-          		$scope.tag.push( $scope.topics.substring(0, $scope.topics.length-1 ) );
-          	}
+	   				$scope.tag.push( $scope.topics.substring(0, $scope.topics.length-1 ) );
+	   			}
           	
-          	$scope.topics = "";
+	   			$scope.topics = "";
           }
       }
 	    
@@ -552,10 +555,12 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	    
 		$scope.showList = function()
 		{
+			//if questions are displayed, the search for topics option should disappear, instead there is a back button
 			$scope.showHideTopicList = true;
 		}
 	    
 	    $scope.displayListTopics = function(){
+	    	//display 20 topics each time, each topic is a button leading to its answers
 	    	$http({ method: 'GET',
 		        url: 'http://localhost:8080/WebApp/topics',
 					params: {currentPage:$scope.prevOrNextPageNumCounter
@@ -579,7 +584,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	    
 	    $scope.CheckTopicNextButton = function()
 		{
-
+	    	//disable if there are no topics in next page
 			if( $scope.NumOfTopicPages == $scope.prevOrNextTopicPageNumCounter)
 	   		 {
 		    		 $scope.NextTopicButtonFlag = true; // disabled
@@ -591,7 +596,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		}
 		$scope.CheckTopicPreviousButton = function()
 		{
-	    	
+			//disable if there are no topics in previous page
 	    	 if( 0 == $scope.prevOrNextTopicPageNumCounter )
     		 {
 	    		 $scope.PreviousTopicButtonFlag = true; // disabled
@@ -603,6 +608,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		}
 		$scope.nextTopicClick=function()
 		{
+			//get the questions for the next page
 			$scope.prevOrNextTopicPageNumCounter ++;
 
 			$http({ method: 'GET',
@@ -621,7 +627,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 
 		    	 
 		    	 $scope.GetTopicsResult = angular.copy(response.topics);
-		    	 
+		    	 //scroll to top of the list
 		    	 scroll(0,0);
 			
 		     })
@@ -633,6 +639,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		
 		$scope.previousTopicClick = function()
 		{
+			//get questions for the previous page
 			$scope.prevOrNextTopicPageNumCounter--;
 		
 			$http({ method: 'GET',
@@ -661,9 +668,10 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     });
 		}
 		
-		$scope.setTopic = function(obj)
+		$scope.setTopic = function(top)
+		//function receives a topic , gets all questions and makes the search for topics disappear
 		{
-			$scope.topic =  obj;
+			$scope.topic =  top;
 			$scope.GetAllQuestions();
 			$scope.showHideTopicList = false;
 		}
@@ -676,6 +684,8 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		}
 		
 		// Code start from here
+		
+		//init params
 	    $scope.tag = [];
 	    $scope.answerOpen=0;
 		$scope.showAns = false;
@@ -683,21 +693,17 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	    $scope.PreviousButtonFlag = true;
 		$scope.AnswerShowFlag = false;
 		$scope.sendTopic = null;
-	    //$scope.initTopicsPage();
-	  //  $scope.initNewQuestionsPage();
-	   // $scope.initAllQuestionsPage();
-	    $scope.selectPage();
 		$scope.showHideTopicList = true;
 	    $scope.HideShowTagCharacterError = false;	    
 		$scope.prevOrNextPageNumCounter = 0;
 		$scope.prevOrNextTopicPageNumCounter = 0;
 		$scope.GetQuestionsResult = [];
-		$scope.TopicToSearch=null;
-		//default values for get questions		
+		$scope.TopicToSearch=null;		
 		$scope.sendNewOrAll = "new";
-	    $scope.CheckSession();
 	    $scope.showPrevNext = true;
-	    //$scope.GetAllQuestions();
+	    //initiation functions
+	    $scope.selectPage();
+	    $scope.CheckSession();
 		
 		
 }]);
