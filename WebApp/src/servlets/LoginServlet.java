@@ -22,7 +22,7 @@ import com.google.gson.JsonObject;
 
 import webapp.constants.DBConstants;
 import webapp.constants.UserConstants;
-import webapp.utils.DBUtils;
+import webapp.utils.Utils;
 
 /**
  * Servlet implementation class LoginServlet
@@ -38,7 +38,11 @@ public class LoginServlet extends HttpServlet {
     }
 
 
-	@Override
+	/**
+	 * should support the api 
+	 * /login or /session 
+	 * for login - we sent the password in header and not in params for safety issues
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");
 		String uri = request.getRequestURI();
@@ -59,6 +63,10 @@ public class LoginServlet extends HttpServlet {
 		
 	}
 	
+	/**
+	 * should support the api 
+	 * /logout
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");
 		String uri = request.getRequestURI();
@@ -73,6 +81,13 @@ public class LoginServlet extends HttpServlet {
 		writer.close();
 	}
 	
+	/**
+	 * 
+	 * @param userName - username trying to login
+	 * @param password - password of username trying to login
+	 * @param session - for update the user now loged-in
+	 * @return Strign of answer for sending to client - response of success of insert to system
+	 */
 	private String login(String userName, String password, HttpSession session)
 	{
 		Connection conn = null;
@@ -84,7 +99,7 @@ public class LoginServlet extends HttpServlet {
     		Context context = new InitialContext();
     		BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
     		conn = ds.getConnection();
-    		
+    		// prepare statment of search for user with specific user name 
     		pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_NAME_STMT);
 
     		pstmt.setString(1, userName);
@@ -121,7 +136,7 @@ public class LoginServlet extends HttpServlet {
 	    		
     		}
     		
-    		DBUtils.closeResultAndStatment(rs, pstmt);
+    		Utils.closeResultAndStatment(rs, pstmt);
     		conn.close();
     		
 		} catch (SQLException | NamingException e) {
@@ -147,6 +162,11 @@ public class LoginServlet extends HttpServlet {
 		return answer;
 	}
 	
+	/**
+	 * 
+	 * @param session - update user now loged-in
+	 * @return response true or false for creating session 
+	 */
 	private String getSessionStatus(HttpSession session)
 	{	
 		
@@ -169,6 +189,11 @@ public class LoginServlet extends HttpServlet {
 		
 	}
 	
+	/**
+	 * 
+	 * @param session
+	 * @return response true or false of logout from system
+	 */
 	private String logOut(HttpSession session)
 	{
 		String answer;

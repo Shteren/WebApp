@@ -20,8 +20,13 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import com.google.gson.Gson;
 import webapp.constants.DBConstants;
 import webapp.constants.QuestionAndAnswersConstants;
-import webapp.utils.DBUtils;
+import webapp.utils.Utils;
 
+/**
+ * 
+ * this class implement some methods that common to answers and questions
+ *
+ */
 public class QuestionAndAnswerDBAccess {
 	
 	public static int getNumberOfLeftPages(int currentPage, String state)
@@ -53,7 +58,7 @@ public class QuestionAndAnswerDBAccess {
 			rs.next();
 			numberOfQuestions = rs.getInt(1);
 			
-	    	DBUtils.closeResultAndStatment(rs, pstmt);
+	    	Utils.closeResultAndStatment(rs, pstmt);
 			conn.close();
 			
 		}catch (SQLException | NamingException e) {
@@ -123,8 +128,8 @@ public class QuestionAndAnswerDBAccess {
 	    	writer.println(newlyQuestionsJsonResult);
 	    	writer.close();
 	    	
-	    	DBUtils.closeResultAndStatment(rs, pstmt);
-	    	DBUtils.closeResultAndStatment(rss, stmt);
+	    	Utils.closeResultAndStatment(rs, pstmt);
+	    	Utils.closeResultAndStatment(rss, stmt);
 			conn.close();
 			    		    		
 		}catch (SQLException | NamingException e) {
@@ -203,8 +208,8 @@ public class QuestionAndAnswerDBAccess {
 	    	writer.println(allQuestionsJsonResult);
 	    	writer.close();
 	    	
-	    	DBUtils.closeResultAndStatment(rs, pstmt);
-	    	DBUtils.closeResultAndStatment(rss, stmt);
+	    	Utils.closeResultAndStatment(rs, pstmt);
+	    	Utils.closeResultAndStatment(rss, stmt);
 			conn.close();
 			    		    		
 		}catch (SQLException | NamingException e) {
@@ -288,8 +293,8 @@ public class QuestionAndAnswerDBAccess {
 	    	writer.println(QuestionsByTopicsJsonResult);
 	    	writer.close();
 			
-	    	DBUtils.closeResultAndStatment(rs, pstmt);
-	    	DBUtils.closeResultAndStatment(rss, stmt);
+	    	Utils.closeResultAndStatment(rs, pstmt);
+	    	Utils.closeResultAndStatment(rss, stmt);
 			conn.close();
 			    		    		
 		}catch (SQLException | NamingException e) {
@@ -338,7 +343,7 @@ public class QuestionAndAnswerDBAccess {
 	    	writer.println(answersJsonResult);	    	
 	    	writer.close();  
 	    	
-	    	DBUtils.closeResultAndStatment(rs, pstmt);
+	    	Utils.closeResultAndStatment(rs, pstmt);
 			conn.close();
 			    		    		
 		}catch (SQLException | NamingException e) {

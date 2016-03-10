@@ -79,17 +79,12 @@ public class DBListener implements ServletContextListener, ServletContextAttribu
     		}catch (SQLException e){
     			//check if exception thrown since table was already created (so we created the database already 
     			//in the past
-    			System.out.println(e.toString());
     			created = tableAlreadyExists(e);
     			if (!created){
     				throw e;//re-throw the exception so it will be caught in the
     				//external try..catch and recorded as error in the log
     			}
-    			else{
-    				System.out.println("Succeed to create table");
-    			}
-    		}
- 		
+    		}		
       		//close connection
     		conn.close();
 

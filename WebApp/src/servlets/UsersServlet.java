@@ -28,12 +28,12 @@ import webapp.model.Question;
 import webapp.model.User;
 import webapp.model.UserQuestionAndAnswer;
 import webapp.model.UsersResponse;
-import webapp.utils.DBUtils;
+import webapp.utils.Utils;
 
 import com.google.gson.Gson;
 
 /**
- * Servlet implementation class RegisterServlet
+ * Servlet implementation class UserServlet
  */
 public class UsersServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -45,7 +45,10 @@ public class UsersServlet extends HttpServlet {
         super();
     }
     
-    
+	/**
+	 * should support
+	 * /users - get all users according to logic conditions
+	 */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			response.setContentType("application/json");
@@ -58,22 +61,21 @@ public class UsersServlet extends HttpServlet {
 			String[] requestPathParts = requestPath.split("/");
 			//if url path is larger than 2 it is wrong url so we have to return NOT_FOUND
 			if(requestPathParts.length > 2) {
-				DBUtils.buildJsonResult("Wrong uri" , response);
+				Utils.buildJsonResult("Wrong uri" , response);
 				return;
-			}
-			// get the user nickname from client request
-			//String userNickName = requestPathParts[1];
-			//In case the path is "/users/<someUserNickName>"
-			if(requestPathParts.length < 2) {
-			//	getUser(userNickName, response);
 			}
 		} catch(Exception e) {
 			//log.error("Exception in process, e);
-			DBUtils.buildJsonResult("false" , response);
+			Utils.buildJsonResult("false" , response);
 		}
 	}
 	
-    // search for 20 top rated users
+   /**
+    * this method is wrapper for search 20 users according to their rating
+    * @param request
+    * @param response
+    * @throws IOException
+    */
     private void searchUsers (HttpServletRequest request, HttpServletResponse response) throws IOException {
     	
     	searchForTopRatedUsers(response);
@@ -81,6 +83,13 @@ public class UsersServlet extends HttpServlet {
     
     ///////////******* methods handling with logic and DB *******///////////////
     
+    /**
+     * this method search for 20 top rated users- the 20 users have the best rating
+     * we collect in UserResponse class user and collection of is 5 last questions and
+     * collection of <UserQuestionAndAnswers> that save 5 last questions user answered and his answer
+     * @param response
+     * @throws IOException
+     */
 	private void searchForTopRatedUsers(HttpServletResponse response) throws IOException
 	{	
 		Connection conn = null;
@@ -162,8 +171,8 @@ public class UsersServlet extends HttpServlet {
 	    	writer.println(topRatedJsonResult);	    	
 	    	writer.close();  
 	    	    	   		
-	    	DBUtils.closeResultAndStatment(rs, pstmt);
-	    	DBUtils.closeResultAndStatment(answeredRS, stmt);
+	    	Utils.closeResultAndStatment(rs, pstmt);
+	    	Utils.closeResultAndStatment(answeredRS, stmt);
     		conn.close();
     		    		    		
 		}catch (SQLException | NamingException e) {
@@ -216,8 +225,8 @@ public class UsersServlet extends HttpServlet {
     			five_last_asked_questions.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, null));
     		}
     		
-    		DBUtils.closeResultAndStatment(rs, pstmt);
-    		DBUtils.closeResultAndStatment(rss, stmt);
+    		Utils.closeResultAndStatment(rs, pstmt);
+    		Utils.closeResultAndStatment(rss, stmt);
     		
 		}catch (SQLException e) {
 			System.out.println(e.toString());
@@ -234,95 +243,6 @@ public class UsersServlet extends HttpServlet {
 		return five_last_asked_questions;	
 	}
 	
-
-	
-/*	private void getUser(String userNickName, HttpServletResponse response) throws IOException{
-		
-		Connection conn = null;
-		PreparedStatement pstmt = null, stmt = null;
-		User userResult = null; 
-		Collection<Question> five_last_asked_questions = null;
-		Collection<Question> five_last_user_answered_questions = new ArrayList<Question>();
-		Collection<Answer> five_last_user_answers = new ArrayList<Answer>();
-		
-		try
-		{
-			Context context = new InitialContext();
-			BasicDataSource ds = (BasicDataSource)context.lookup(DBConstants.DB_DATASOURCE);
-			conn = ds.getConnection();
-			
-			pstmt = conn.prepareStatement(UserConstants.SELECT_USER_BY_NAME_STMT);
-			pstmt.setString(1, userNickName);
-    		ResultSet rs = pstmt.executeQuery();
-    		
-			String userName = rs.getString(1);
-			String usernickName = rs.getString(3);
-			String description = rs.getString(4);
-			String photoUrl = rs.getString(5);
-			double rating = rs.getDouble(6);
-			Collection<String> experties = findUserExperties(conn, usernickName);
-
-    		if (rs.next())
-    		{
-    			userResult = new User(userName, null, usernickName, description, rating, photoUrl, experties);
-    		}
-    		
-    		five_last_asked_questions = searchForUserAskedQuestions(userNickName);
-    		
-    		pstmt = conn.prepareStatement(UserConstants.SELECT_LAST_5_QUESTION_USER_ANSWERED_STMT);
-    		pstmt.setString(1, userNickName);
-    		rs = pstmt.executeQuery();
-    		
-    		while ( rs.next() ) {
-    			int questionId = rs.getInt(1);
-        		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
-        		stmt.setInt(1,questionId);
-        		ResultSet rss = stmt.executeQuery();
-        		ArrayList<String> topics = new ArrayList<>();
-        		while (rss.next())
-        		{
-        			topics.add(rss.getString(1));
-        		}
-        		rss.close();
-    			String submittionTime = rs.getString(2);
-    			String contentTxt = rs.getString(3);
-    			int votes = rs.getInt(4);
-    			int rate = rs.getInt(5);    			
-    			String submittedUser =  rs.getString(6);
-    			five_last_user_answered_questions.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, null));
-    			int answerId = rs.getInt(7);
-    			String answerSubmittionTime = rs.getString(8);
-    			String answerContentTxt = rs.getString(9);
-    			String answerSubmittedUser =  rs.getString(12);
-    			int answerVotes = rs.getInt(10);
-    			five_last_user_answers.add(new Answer(answerId,answerSubmittionTime ,answerContentTxt, answerVotes, questionId, answerSubmittedUser));
-    			
-    		}
-    		
-    		UsersResponse userResponse = new UsersResponse(userResult, five_last_asked_questions, five_last_user_answered_questions, five_last_user_answers);
-    		String UserJsonResult = gson.toJson(userResponse, UsersResponse.class);
-	        
-			PrintWriter writer = response.getWriter();
-	    	writer.println(UserJsonResult);
-	    	writer.close();
-
-    		rs.close();
-    		pstmt.close();
-    		conn.close();
-    		
-		}catch (SQLException | NamingException e) {
-			System.out.println(e.toString());
-			try {
-				if(pstmt != null)
-					pstmt.close();				
-				if(conn != null)
-					conn.close();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		}	
-	}
-	*/
 	
 	/**
 	 * 
@@ -353,7 +273,8 @@ public class UsersServlet extends HttpServlet {
 	
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * should support the api 
+	 * /users - register to our system
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//obtain CustomerDB data source from Tomcat's context
@@ -370,7 +291,7 @@ public class UsersServlet extends HttpServlet {
 				user = gson.fromJson(request.getReader(), User.class);
 			//Problem with reading json to question
 			} catch(Exception e) {
-				DBUtils.buildJsonResult("Problem reading incoming Json" , response);
+				Utils.buildJsonResult("Problem reading incoming Json" , response);
 				return;
 			}
 			// get the parameters from incoming json
@@ -400,8 +321,8 @@ public class UsersServlet extends HttpServlet {
 				pstmt.executeUpdate();
 			} else {
 				//build Json Answer
-				DBUtils.buildJsonResult("Please change your username", response);
-				DBUtils.closeResultAndStatment(rs, pstmt);
+				Utils.buildJsonResult("Please change your username", response);
+				Utils.closeResultAndStatment(rs, pstmt);
 				return;
 			}
 
@@ -416,8 +337,8 @@ public class UsersServlet extends HttpServlet {
 			session.setAttribute("Nickname", nickName);	
 			
 			//build Json Answer
-			DBUtils.buildJsonResult("true", response);
-			DBUtils.closeResultAndStatment(rs, pstmt);
+			Utils.buildJsonResult("true", response);
+			Utils.closeResultAndStatment(rs, pstmt);
 			
 			conn.close();
 			
@@ -441,7 +362,7 @@ public class UsersServlet extends HttpServlet {
 			session.invalidate();
 			
 			//build Json Answer
-			DBUtils.buildJsonResult("Please change your nickname", response);
+			Utils.buildJsonResult("Please change your nickname", response);
 		}
 	}
 }
