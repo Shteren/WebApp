@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="windows-1255">
+<meta charset="UTF-8">
 <title>Insert title here</title>
 <script src= "js/angular.min.js"></script>
 <script src="js/AllQuestions.js"></script>
@@ -11,7 +11,7 @@
 <body data-ng-app="MainApp" data-ng-controller="AllQuestionsController" class="backgroundIm">
 	<div class="container wordBreak">
 		<div class="row">
-			<nav role="navigation" class="navbar navbar-default backgroundColor" >
+			<nav class="navbar navbar-default backgroundColor" >
 			    <div class="navbar-header">
 			        <a class="navbar-brand">Hello {{NickName}}</a>
 			    </div>
@@ -49,7 +49,7 @@
 					<div class="row navbar navbar-default backgroundColor opacity7" >
 					<div class="marginTopics" data-ng-repeat="topic in GetTopicsResult">
 					<div class="topicCenter">
-						<h4><a class="cursPoint" data-ng-click="setTopic(topic)"><label  role="button" class="label label-default"  >{{topic}}</label></a></h4>
+						<h4><label class="label label-default cursPoint"  data-ng-click="setTopic(topic)">{{topic}}</label></h4>
 					</div>
 					</div>
 					</div>

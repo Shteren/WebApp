@@ -38,16 +38,16 @@
 		<table class="table">  
 	  		<thead >  
 	          <tr>  
-	            <div bgcolor="#b3d9ff"><th>pic</th></div> 
-	            <th bgcolor="#b3d9ff">Nickname</th>   
-	            <th bgcolor="#b3d9ff">rating</th>  
-	            <th bgcolor="#b3d9ff">expertise</th>
+	            <th class="thColor">pic</th>  
+	            <th class="thColor">Nickname</th>   
+	            <th class="thColor">rating</th>  
+	            <th class="thColor">expertise</th>
 	 
 	          </tr>  
 	        </thead> 
 	        <tbody> 
 	          <tr data-ng-repeat="x in GetUsersResult" > 
-	           <th scope = "row"> <img data-ng-src="{{x.user.photoUrl}}" alt="..." class="img-rounded"></th>
+	           <th scope = "row"> <img src="#" data-ng-src="{{x.user.photoUrl}}" alt="..." class="img-rounded"></th>
 	            <td><a href="" data-ng-click="goTouserprofile(x)">{{x.user.nickName}}</a></td>    
 	            <td>{{x.user.userRating | number:2}}</td>
 	            <td class="width30">
@@ -78,7 +78,7 @@
 				<div class = "row">
 					<div class="col-sm-1"></div>
 					<div class="col-sm-3">
-						<img data-ng-src="{{currentUser.user.photoUrl}}" alt="..." class="img-rounded">
+						<img src="#" data-ng-src="{{currentUser.user.photoUrl}}" alt="..." class="img-rounded">
 					</div>
 					<div class="col-sm-4">
 						<div><h4>Hi, I am {{currentUser.user.nickName}}</h4></div>
