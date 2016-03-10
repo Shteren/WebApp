@@ -68,7 +68,6 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    	 } else {
 		    		 $scope.showPrevNext = true;
 		    	 }
-		    		 
 		    	 $scope.CheckNextButton();
 		    	 $scope.CheckPreviousButton();
 		    	 $scope.GetQuestionsResult = angular.copy(response.questions); //array with all the questions of curren page
@@ -674,6 +673,12 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 			$scope.topic =  top;
 			$scope.GetAllQuestions();
 			$scope.showHideTopicList = false;
+		}
+		$scope.setTopicSearch = function(){
+			if ($scope.topic!=null){
+				$scope.GetAllQuestions();
+				$scope.showHideTopicList = false;
+			}
 		}
 		
 		// functions for all questions

@@ -6,14 +6,15 @@
 <script src= "js/angular.min.js"></script>
 <script src="js/LoginAndRegister.js"></script>
 <link rel="stylesheet" href="css/bootstrap.css">
+<link rel="stylesheet" href="css/style.css">
 </head>
-<body style="background-image:url('images/background3.jpg');">
+<body class="backgroundIm">
 <div  data-ng-app="MainApp" data-ng-controller="inTableController" >
 <br>
 <br>
-	<div class="row" style="word-wrap: break-word;">
+	<div class="row wordBreak">
 		<div class="col-sm-4"></div>
-		<div class="col-sm-4"><div class="alert alert-danger" role="alert" style="text-align: center;"><h2>Welcome to mom's Overflow!</h2></div>
+		<div class="col-sm-4"><div class="alert alert-danger topicCenter" role="alert"><h2>Welcome to mom's Overflow!</h2></div>
 		
 	
 		<!-- Register Form -->
@@ -25,28 +26,28 @@
 		<div >
 			
 				<form role="form">
-					<div class="form-group btn-group-vertical" style="width:100%">
+					<div class="form-group btn-group-vertical width100">
 					  <label>User Name:</label>
 					  <input class="form-control" placeholder="User Name" type="text" data-ng-model="RegistrationName" name="username" data-ng-change="checkRegistrationName()">
 					  <div data-ng-show=userNameErrorFlag>
 						<label class="label label-danger" >{{userNameError}}</label>
 					  </div>
 				  	</div>
-				  	<div class="form-group btn-group-vertical" style="width:100%">
+				  	<div class="form-group btn-group-vertical width100">
 				  		<label>Password:</label>
 				  		<input class="form-control" placeholder="Password" type="password" data-ng-model="RegistrationPassword" name="password" data-ng-change="checkRegistrationPassword()">
 				  		<div data-ng-show=paawordErrorFlag>
 							<label class="label label-danger" >{{passwordError}}</label>
 					    </div>
 				  	</div>
-				  	<div class="form-group btn-group-vertical" style="width:100%">
+				  	<div class="form-group btn-group-vertical width100">
 				  		<label>Nick Name:</label>
 				  		<input class="form-control" placeholder="Nick Name" type="text" data-ng-model="RegistrationNickname" name="nickname" data-ng-change="checkRegistrationNickname()">
 				  		<div data-ng-show=nickNameErrorFlag>
 							<label class="label label-danger" >{{nickNameError}}</label>
 					    </div>
 				  	</div>
-				  	<div class="form-group btn-group-vertical" style="width:100%">
+				  	<div class="form-group btn-group-vertical width100">
 				  		<label>Description:</label>
 				  		<input class="form-control"  placeholder="Description" type="text" data-ng-model="RegistrationDescription" name="description" data-ng-change="checkRegistrationDesc()">  
 				  		<div data-ng-show=descriptionErrorFlag>
@@ -58,7 +59,7 @@
 				  		<input class="form-control"  placeholder="insert your Photo url" type="text" data-ng-model="RegistrationPhoto" name="Photo" >  
 				  	</div>
 				  	<div class="form-group">
-				  		<br><button class="btn btn-primary " style="width:50%" data-ng-click="register()" >Register</button>
+				  		<br><button class="btn btn-primary width50"  data-ng-click="register()" >Register</button>
 				  		<label>Already registered?<a href="" data-ng-click = "switchLoginRegister()" >Login</a></label>
 				  	</div>
 				</form>

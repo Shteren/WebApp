@@ -1,5 +1,5 @@
 <div data-ng-show = showPrevNext>
-	<div class="row navbar navbar-default" style="background-color: #ffe6ff">
+	<div class="row navbar navbar-default backgroundColor" >
 			<div>
 				<br><br>
 				<div class = "mainNavBar"  data-ng-repeat="x in GetQuestionsResult">	
@@ -29,7 +29,7 @@
 									<div class="row-fluid">
 										<div class="col-xs-8">  
 										<div class="row">
-											<div class = "col-xs-8" class="btn-group-vertical">     
+											<div class = "col-xs-8 btn-group-vertical">     
 						                		<textarea class="form-control ansArea"   data-ng-focus="focusTxt()" data-ng-blur="blurTxt()" data-ng-change="AnswerLenWarn(x)" placeholder="So what is your answer Smartass"  data-ng-model="x.answerTxt"></textarea>
 						                		<div data-ng-show="x.ansLenShowErr">
   													<label class="label label-danger" >answer should be up to 300 characters</label>
@@ -62,7 +62,7 @@
 									</div>
 									<div class = "col-xs-4" >
 										<br>
-										<div class="btn-group-vertical"  role="group" aria-label="..." class="firstAnsVote" >
+										<div class="btn-group-vertical firstAnsVote"  role="group" aria-label="..." >
 										<button type="button" class="btn btn-default btn-xs" aria-label="Right Align" data-ng-click="voteAnsUp(x.firstAns[0], x)">
 										<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"> {{up}}</span></button>
 										<button type="button" class="btn btn-default btn-xs" aria-label="Right Align" >{{x.firstAns[0].answerVote}}</button>

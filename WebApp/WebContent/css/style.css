@@ -1,0 +1,88 @@
+.backgroundColor{
+	background-color: #ffe6ff;
+}
+.mainNavBar{
+	margin:auto;
+	width:85%;
+}
+.QButGroup{
+	margin-left:15%;
+}
+.ansArea{
+	resize:none;
+	
+}
+.leftAlign {
+	text-align: left!important;
+	margin-left: 0px;
+}
+.toicDisp{
+	display:inline;
+}
+.firstAnsVote{
+	margin-right:90%;
+}
+.showAnsButton{
+	margin-left:11.8%;
+}
+.answersVote{
+	margin-left:80%;
+}
+.answerInfo{
+	display:inline;
+}
+.backgroundIm{
+	background-image:url('../images/background5 .jpg');
+}
+.wordBreak{
+	word-wrap: break-word;
+}
+.activeColor{
+	background-color: #b3d9ff;
+}
+ .navbar-default .activeColor > li > a {
+   color: #b3d9ff; /*Change active text color here*/
+    }
+
+.insertQ{
+	margin:auto;
+	width:50%;
+}
+.questionNotResize{
+	resize:none;
+}
+.dispIn{
+	display:inline;
+}
+.width40{
+	width:40%;
+}
+.width50{
+	width:50%;
+}
+.width30{
+	width:30%;
+}
+.width100{
+	width:100%;
+}
+.ratingSize{
+	max-height:50px;
+	max-width:100px;
+}
+.opacity7{
+	opacity:0.7;
+}
+.marginTopics{
+	margin:auto;
+	width:60%;
+}
+.topicCenter{
+	text-align:center;
+}
+.margLeft{
+	margin:left;
+}
+.cursPoint{
+	cursor:pointer;
+}
