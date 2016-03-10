@@ -9,6 +9,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	var url = window.location.pathname.split('/')[2];
 	
 		$scope.CheckNextButton = function()
+		//function disables or enables the "next" button of the questions thread list 
 		{
 
 
@@ -22,6 +23,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	   		 }
 		}
 		$scope.CheckPreviousButton = function()
+				//function disables or enables the "prev" button of the questions thread list
 		{
 	    	 if( 0 == $scope.prevOrNextPageNumCounter )
     		 {
@@ -35,6 +37,8 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		
 		
 		$scope.GetAllQuestions = function()
+		//function asks the server for questions according to the page we currently in 
+		//if we are in home page- wee need only new questions, all questions if we are in "all questions" page and by topic in topic's page 
 		{
 			
 			if (url == "AllQuestions.html"){
@@ -53,12 +57,13 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     .success(function(response) 
 		     {
 
-		    	 $scope.NumOfPages = response.numOfPages ;
-		    	 if ($scope.NumOfPages < $scope.prevOrNextPageNumCounter ){
+		    	 $scope.NumOfPages = response.numOfPages ;//num of question pages- 20 questions each
+		    	 if ($scope.NumOfPages < $scope.prevOrNextPageNumCounter ){ //if we are in main page, and we answered a 
+		    		 //question which is single in a page we need to get the previous page instead refreshing the current one 
 		    		 $scope.prevOrNextPageNumCounter--;
 		    		 $scope.GetAllQuestions(); 
 		    	 } 
-		    	 if ($scope.NumOfPages == -1) {
+		    	 if ($scope.NumOfPages == -1) {//if list is empty no need to show the questions
 		    		 $scope.showPrevNext = false;
 		    	 } else {
 		    		 $scope.showPrevNext = true;
@@ -66,9 +71,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    		 
 		    	 $scope.CheckNextButton();
 		    	 $scope.CheckPreviousButton();
-		    	 //$scope.PreviousButtonFlag = true; // disable previous button
-		    	 
-		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
+		    	 $scope.GetQuestionsResult = angular.copy(response.questions); //array with all the questions of curren page
 		     })
 		     .error(function (error) 
 		     {
@@ -77,32 +80,34 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		}
 		
 		
-		$scope.GetQuestionsAns = function(obj ,show)
+		$scope.GetQuestionsAns = function(question ,show)
+		//function asks the server for all questions of a specific answer
+		//input : a question to get all its answers and a flag saying if the answers are open or not
 		{
-		
-			if (((obj.showAns == true) && (show == true) ) ||(show == false)){
-				$scope.falseShow(obj)
+			//if questions are currently open and we clicked on the button or we want it to be closed
+			if (((question.showAns == true) && (show == true) ) ||(show == false)){ 
+				question.showAns = false;
 				
 			}else{
-				$scope.trueShow(obj)
+				question.showAns = true;
 			}
 			{
 				$http({ method: 'GET',
-			        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId +'/answers',
+			        url: 'http://localhost:8080/WebApp/questions/'+question.questionId +'/answers',
 			     })
 			     .success(function(response) 
 			     {
-			    	 if(null == response || 0 == response.length)
+			    	 if(null == response || 0 == response.length) //no answers to this question
 			    	 {
-			    		 obj.firstAns=false;
+			    		 question.firstAns=false;
 			    		 return;
 			    	 }
 			    	 
-			    	 obj.firstAns=true;
-			    	 obj.numberOfAnswers = response.length;
-			    	 $scope.ShowButton(obj);
-			    	 obj.firstAns = response.slice(0, 1);
-			    	 obj.GetAnswerResults = response.slice(1, response.length);
+			    	 question.firstAns=true;//there is at least one answer
+			    	 question.numberOfAnswers = response.length;
+			    	 $scope.ShowButton(question); //check if there are more then one question - if so - show button to get more answers
+			    	 question.firstAns = response.slice(0, 1);//only first answer
+			    	 question.GetAnswerResults = response.slice(1, response.length);//the rest of the answers
 			     })
 			     .error(function (error) 
 			     {
@@ -111,19 +116,9 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 			}
 			
 		}
-		//ToDo can we delete it?
-		$scope.falseShow = function(obj)
-		{
-			obj.showAns = false;
-			
-		}
-		$scope.trueShow = function(obj)
-		{
-			obj.showAns = true;
-			
-		}
-		
+	
 		$scope.CheckSession = function()
+		//check if there is a user connected, if not go to login and registration page
 		{
 			$http({ method: 'GET',
 		        url: 'http://localhost:8080/WebApp/session',
@@ -150,7 +145,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		}
 		
 		$scope.logOut=function(){
-		     
+		    //go to login and register in order to log in with other user +disconnect session
 			$http({ method: 'POST',
 		        url: 'http://localhost:8080/WebApp/logout',
 		        headers: {'Content-Type': 'application/json'}
@@ -167,7 +162,8 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		}
 		$scope.ShowButton = function(obj)
 		{
-
+			//function checks if there are more then one question in order to determine 
+			//whether to show or not the "show more questions" button  
 			if (obj.numberOfAnswers > 1)
 			{
 				obj.showButton = true;
@@ -178,8 +174,9 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 			}
 			
 		}
-		$scope.voteUp = function(obj){
-	    	
+		$scope.voteQuestionUp = function(obj)
+		{
+			//function updates question's votes according to users vote 
 			$http({ method: 'PUT',
 		        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId,
 		        data: { questionVote: +1},
@@ -187,24 +184,47 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     })
 		     .success(function(result) 
 		     {
-		    	 
+		    	 //if user is unable to vote, display appropriate message 
 		    	 if ((result.Result == "It's your question")||(result.Result == "The user already vote")){
 		    		 alert(result.Result); 
 		    	 }else{
 		    		obj.questionVote++; 
 		    	 }
+		    	 //update questions as question location may have changed
 		    	 $scope.GetAllQuestions();
 		    	 
 		    	 
 		     })
 		     .error(function (error) 
 		     {
-		    	 alert("voteUp")
+		             $scope.status = 'Unable to connect' + error.message;
+		     }); 
+	    }
+		
+		$scope.voteQuestionDown = function(obj)
+		{	
+			//function updates question's votes according to users vote as described above in function "voteQuestionUp"
+			$http({ method: 'PUT',
+		        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId,
+		        data: { questionVote: -1},
+				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		     })
+		     .success(function(result) 
+		     {
+		    	 if ((result.Result == "It's your question")||(result.Result == "The user already vote")){
+		    		 alert(result.Result); 
+		    	 }else{
+		    		obj.questionVote--; 
+		    	 }
+		    	 $scope.GetAllQuestions();
+		     })
+		     .error(function (error) 
+		     {
 		             $scope.status = 'Unable to connect' + error.message;
 		     }); 
 	    }
 	    $scope.voteAnsDown = function(answer, question){
-	    	
+	    	//function updates answer's votes according to users vote
 			$http({ method: 'PUT',
 		        url: 'http://localhost:8080/WebApp/answers/'+answer.answerId,
 		        data: { answerVote: -1},
@@ -212,16 +232,20 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     })
 		     .success(function(result) 
 		     {
+		    	//if user is unable to vote, display appropriate message 
 		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already vote")){
 		    		 alert(result.Result); 
+		    		 return;
 		    	 }else{
-		    		 if (null==question){
+		    		 if (null==question){//nothing to update
 		    			return;
 		    		 }
 		    		 answer.answerVote--; 
+		    		 //if list is open this will make it not close - like i did not press the show button
 		    		 if (question.showAns==true){
 		    			 question.showAns=false;
 		    		 } 
+		    		//update answers as answers location may have changed
 		    		 $scope.GetQuestionsAns(question ,true);
 		    	 }
 		    	 
@@ -234,7 +258,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	    }
 	    
 		$scope.voteAnsUp = function(answer, question){
-	    	
+			//function updates answer's votes according to users vote as described above in function "voteAnsUp"	    	
 			$http({ method: 'PUT',
 		        url: 'http://localhost:8080/WebApp/answers/'+answer.answerId,
 		        data: { answerVote: +1},
@@ -263,31 +287,12 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		             $scope.status = 'Unable to connect' + error.message;
 		     }); 
 	    }
-	    $scope.voteDown = function(obj){
-	    	
-			$http({ method: 'PUT',
-		        url: 'http://localhost:8080/WebApp/questions/'+obj.questionId,
-		        data: { questionVote: -1},
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-		     })
-		     .success(function(result) 
-		     {
-		    	 if ((result.Result == "It's your question")||(result.Result == "The user already vote")){
-		    		 alert(result.Result); 
-		    	 }else{
-		    		obj.questionVote--; 
-		    	 }
-		    	 $scope.GetAllQuestions();
-		     })
-		     .error(function (error) 
-		     {
-		    	 alert("voteDown");
-		             $scope.status = 'Unable to connect' + error.message;
-		     }); 
-	    }
+	    
 	    
 	    $scope.timeFormat = function(obj)
 	    {
+	    	//input : question or answer 
+	    	//output: its submission time according to the requirements 
 	    	if (obj == null) {
 	    		return;
 	    	}
@@ -300,7 +305,10 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	    	obj.time = obj.time[0];
 	    	return obj.time
 	    };
+	    
+	    
 		$scope.nextClick=function()
+		//load next 20 questions
 		{
 			if (url == "AllQuestions.html"){
 				$scope.sendNewOrAll="all";
@@ -325,11 +333,9 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		    	 $scope.NumOfPages = response.numOfPages ;
 		    	 $scope.CheckNextButton();
 		    	 $scope.CheckPreviousButton();
-
-		    	 
 		    	 $scope.GetQuestionsResult = angular.copy(response.questions);
 		    	 
-		    	 scroll(0,0);
+		    	 scroll(0,0);//move back to top
 			
 		     })
 		     .error(function (error) 
@@ -339,6 +345,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		}
 		
 		$scope.previousClick = function()
+		//load previous 20 questions as in "nextClick"
 		{
 			if (url == "AllQuestions.html"){
 				$scope.sendNewOrAll="all";
@@ -376,24 +383,24 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     });
 		}
 		
-		$scope.addAnswer = function(obj)
+		$scope.addAnswer = function(question)
+		//add an answer to a specific question
 		{
-	
-			
 			 $http({ method: 'POST',
 			        url: 'http://localhost:8080/WebApp/answers',
 					data: {
-						answerTxt: obj.answerTxt ,
-						questionId: obj.questionId
+						answerTxt: question.answerTxt ,
+						questionId: question.questionId
 					},
 					headers: {'Content-Type': 'application/json'}
 			     })
 			     
 			     .success(function(response) 
 			     {
-			    	  obj.sentAnswerTxt = obj.answerTxt;
-			    	  obj.answerTxt = null;
-			    	  $scope.GetQuestionsAns(obj,false);
+			    	 question.sentAnswerTxt = question.answerTxt;
+			    	 question.answerTxt = null;
+			    	  $scope.GetQuestionsAns(question);//refresh the answers of the question in order for the 
+			    	  //answer to go in to its right place 
 			    	
 			    	  
 			    
@@ -405,6 +412,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		}
 		
 		$scope.QuestionLenWarn = function()
+		//warn if question exceed 300 characters 
 	    {
 	    	if ( ($scope.questionTxt.length)>300)
 	    	{
@@ -414,17 +422,19 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	    	$scope.HideShowQuestionCharacterError = false;
 	    }
 		
-	    $scope.AnswerLenWarn = function(obj)
+	    $scope.AnswerLenWarn = function(question)
+	    //warn if answer exceed 300 characters
+	    //input- the question the answer text box belongs to
 	    {
-	    	if (null == obj) {
+	    	if (null == question) {
 	    		return;
 	    	}
-	    	if ( (obj.answerTxt.length)>300)
+	    	if ( (question.answerTxt.length)>300)
 	    	{
-	    		obj.ansLenShowErr = true;
+	    		question.ansLenShowErr = true;
 	    		return;
 	    	}else{
-	    		obj.ansLenShowErr = false;
+	    		question.ansLenShowErr = false;
 	    		return;
 	    	}
 	    	
@@ -432,14 +442,17 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	    }
 	    
 	    $scope.focusTxt = function(){
+	    	//set "answerOpen" to true if there is a focused text box
 	    	$scope.answerOpen = true;
 	    }
 	    $scope.blurTxt = function(){
+	    	//set "answerOpen" to false the text box which was focused is blurred now
 	    	$scope.answerOpen = false;
 	    }
 	    
 	    $scope.selectPage = function() 
 	    {
+	    	//init page according to the one we are in 
 			if (url == "AllQuestions.html"){
 				$scope.initAllQuestionsPage();
 			}
@@ -453,6 +466,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		// refresh condition 
 		$scope.Newquestions = function ()
 		{
+			//if no focused text boxes it is safe to refresh
 			if ($scope.answerOpen == false){
 				$scope.GetAllQuestions();
 			}
@@ -461,18 +475,13 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	    // functions only for newQuestions page 
 	    $scope.initNewQuestionsPage = function() 
 	    {
-	    	//$scope.addQuestion();
-	    
-	    	//$scope.Newquestions();
 	    	$scope.GetAllQuestions();	
-	    	
 			//refresh every 2.5 sec
 			setInterval($scope.Newquestions, 4500);
 	    }
-	    
-
-	    
+	   
     	$scope.addQuestion=function(){
+    		
 	   	     if(null == $scope.questionTxt)
 	   			{
 	   				alert("Please fill in your question");
@@ -496,11 +505,12 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 	   	     })
 	   	     .success(function(response) 
 	   	     {
+	   	    	 //init the boxes and variables to be ready for new questions
 	   	    		$scope.questionTxt = "";
 	   		    	$scope.tag=[];
 	   		    	$scope.topics = "";
 	   		
-	   		        
+	   		        //refresh all questions to show the question
 	   		    	$scope.GetAllQuestions();
 	   	     })
 	   	     .error(function (error) 
