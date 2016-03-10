@@ -185,7 +185,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     .success(function(result) 
 		     {
 		    	 //if user is unable to vote, display appropriate message 
-		    	 if ((result.Result == "It's your question")||(result.Result == "The user already vote")){
+		    	 if ((result.Result == "It's your question")||(result.Result == "The user already voted")){
 		    		 alert(result.Result); 
 		    	 }else{
 		    		obj.questionVote++; 
@@ -211,7 +211,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     })
 		     .success(function(result) 
 		     {
-		    	 if ((result.Result == "It's your question")||(result.Result == "The user already vote")){
+		    	 if ((result.Result == "It's your question")||(result.Result == "The user already voted")){
 		    		 alert(result.Result); 
 		    	 }else{
 		    		obj.questionVote--; 
@@ -233,7 +233,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     .success(function(result) 
 		     {
 		    	//if user is unable to vote, display appropriate message 
-		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already vote")){
+		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already voted")){
 		    		 alert(result.Result); 
 		    		 return;
 		    	 }else{
@@ -267,7 +267,7 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     .success(function(result) 
 		     {
 		    	 
-		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already vote")){
+		    	 if ((result.Result == "It's your answer")||(result.Result == "The user already voted")){
 		    		 alert(result.Result); 
 		    	 }else{
 		    		 if (null == question) {
