@@ -59,8 +59,8 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 
 		    	 $scope.NumOfPages = response.numOfPages ;//num of question pages- 20 questions each
 		    	 if (response.Result=="There is no result for this topic"){
-		    		 alert(response.Result);
 		    		 $scope.showList();
+		    		 alert(response.Result);
 		    		 $scope.topic="";
 		    		 return;
 		    	 }
