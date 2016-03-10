@@ -1,7 +1,13 @@
 package webapp.model;
 
 import java.util.Collection;
-
+/**
+ * 
+ * class for create response for client - contains user . 
+ * is 5 last questions 
+ * and is 5 last answered questions and the answer of the user for each question
+ *
+ */
 public class UsersResponse {
 	private User user;
 	private Collection<Question> five_last_Questions;

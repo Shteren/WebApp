@@ -3,7 +3,11 @@ package webapp.model;
 import java.util.Collection;
 
 
-//class for build Json response of questions
+/**
+ * 
+ * this class is for create 20 questions and number of pages that left to send in response to client
+ *
+ */
 public class QuestionsResponse {
 	private Collection<Question> questions;
 	private int numOfPages;

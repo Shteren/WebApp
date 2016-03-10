@@ -26,7 +26,7 @@ import webapp.constants.QuestionAndAnswersConstants;
 import webapp.constants.UserConstants;
 import webapp.model.Answer;
 import webapp.model.UserAccessDB;
-import webapp.utils.DBUtils;
+import webapp.utils.Utils;
 
 /**
  * Servlet implementation class AnswersServlet
@@ -42,14 +42,14 @@ public class AnswersServlet extends HttpServlet {
     }
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * Should support /answers - request from client to insert new answer
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");
 		Gson gson = new Gson();
 		//there is no url from client
 		if(request.getPathInfo() != null){
-			DBUtils.buildJsonResult("Url is empty" , response);
+			Utils.buildJsonResult("Url is empty" , response);
 			return;
 		}
 
@@ -59,7 +59,7 @@ public class AnswersServlet extends HttpServlet {
 			answer = gson.fromJson(request.getReader(), Answer.class);
 		//Problem with reading json to question
 		} catch(Exception e) {
-			DBUtils.buildJsonResult("Problem reading incoming Json" , response);
+			Utils.buildJsonResult("Problem reading incoming Json" , response);
 			return;
 		}
 		// method that insert new answer to DB
@@ -69,20 +69,20 @@ public class AnswersServlet extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
+	 * Should support update of votes by /answers?answerVote
 	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");
 		String requestPath = request.getPathInfo();
 		// method put must get uri of answerId
 		if(requestPath == null) {
-			DBUtils.buildJsonResult("Uri is empty" , response);
+			Utils.buildJsonResult("Uri is empty" , response);
 			return;
 		}
 		String[] requestPathParts = requestPath.split("/");
 		//if uri path is smaller than 2 it is wrong uri so we have to return METHOD_NOT_ALLOWED
 		if(requestPathParts.length != 2) {
-			DBUtils.buildJsonResult("Wrong uri" , response);
+			Utils.buildJsonResult("Wrong uri" , response);
 			return;
 		}
 		Gson gson = new Gson();
@@ -99,13 +99,13 @@ public class AnswersServlet extends HttpServlet {
 			int numOfExistingVote = checkIfAnswerIdInDBandSendVoteNumber(request, response, answerId);	
 			// 
 			if(numOfExistingVote == Integer.MIN_VALUE){
-				DBUtils.buildJsonResult("Answer not existing in DB" , response);
+				Utils.buildJsonResult("Answer not existing in DB" , response);
 				return;
 			}
 			numOfVotes += numOfExistingVote;
 		//Problem with reading json to user
 		} catch(Exception e) {
-			DBUtils.buildJsonResult("Problem with incoming Json" , response);
+			Utils.buildJsonResult("Problem with incoming Json" , response);
 			return;
 		}
 		
@@ -115,10 +115,18 @@ public class AnswersServlet extends HttpServlet {
 			
 		} catch (Exception e) {
 			//log.error("Exception in process, e);
-			DBUtils.buildJsonResult("Update votes failed" , response);
+			Utils.buildJsonResult("Update votes failed" , response);
 		}
 	}
 	
+	/**
+	 * this method insert new answer to DB 
+	 *
+	 * @param request - request from client
+	 * @param response - sending true or false indicate for insert new answer to DB
+	 * @param answer
+	 * @throws IOException
+	 */
 	private void insertNewAnswer(HttpServletRequest request, HttpServletResponse response, Answer answer) throws IOException
 	{
 		BasicDataSource ds = null;
@@ -155,9 +163,9 @@ public class AnswersServlet extends HttpServlet {
 			conn.commit();		
 			
 			////// Success //////
-			DBUtils.buildJsonResult("true" , response);
+			Utils.buildJsonResult("true" , response);
         	
-        	DBUtils.closeResultAndStatment(null, pstmt);
+        	Utils.closeResultAndStatment(null, pstmt);
         	conn.close();
         	
 		} catch (SQLException | NamingException e) {
@@ -174,20 +182,20 @@ public class AnswersServlet extends HttpServlet {
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-			DBUtils.buildJsonResult("false" , response);
+			Utils.buildJsonResult("false" , response);
 		}		
 		
 	}
 	
     /**
-     * 
-     * @param request
-     * @param response
-     * @param answerId
-     * @return current number of votes of answer
+     * this method check if specific answer exist in DB and return the current votes for it.
+     * @param request - request of answer from client
+     * @param response - sending indicate from server to client if user trying to vote to is answer
+     * @param answerId - the answer user want to vote for
+     * @return current number of votes of answer - nubmer of votes for the answerId coming from DB
      * @throws IOException
      * 
-     * this method check if specific answer exist in DB and return the current votes for it.
+     * 
      */
     private int checkIfAnswerIdInDBandSendVoteNumber(HttpServletRequest request, HttpServletResponse response, int answerId) throws IOException
     {
@@ -213,7 +221,7 @@ public class AnswersServlet extends HttpServlet {
     			// user tring to vote to his answer
 				String nickName = (request.getSession().getAttribute("Nickname")).toString();
     			if (rs.getString(6).equals(nickName)) {
-    				DBUtils.buildJsonResult("It's your answer", response);
+    				Utils.buildJsonResult("It's your answer", response);
         	    	votes = Integer.MIN_VALUE;        	    	
     			}    				
     			else {
@@ -222,7 +230,7 @@ public class AnswersServlet extends HttpServlet {
     			}
     		}
     		
-    		DBUtils.closeResultAndStatment(rs, pstmt);
+    		Utils.closeResultAndStatment(rs, pstmt);
     		conn.close();
     		    		    		
 		}catch (SQLException | NamingException e) {
@@ -241,15 +249,14 @@ public class AnswersServlet extends HttpServlet {
     }
     
     /**
-     * 
-     * @param request
-     * @param response
-     * @param answerId
-     * @param numOfVotes
-     * @throws IOException
-     * 
      * this method update vote of answer after client vote for it , and insert to relation table of votes and answers
      * the user that vote - for handling voting twice 
+     * @param request - request from client for user answer votes 
+     * @param response - sending indicate from server to client if user trying to vote twice or success to vote
+     * @param answerId
+     * @param numOfVotes - the number of votes should be update in DB
+     * @throws IOException
+     * 
      */
     private void updateVoteOfAnswer(HttpServletRequest request,HttpServletResponse response,int answerId,int numOfVotes) throws IOException
     {
@@ -270,7 +277,7 @@ public class AnswersServlet extends HttpServlet {
     		if ( rs.next() )
     		{
     			// The user already voted
-    			DBUtils.buildJsonResult("The user already vote", response);
+    			Utils.buildJsonResult("The user already voted", response);
     	    	return;
     		}
     		// update votes of answer
@@ -303,9 +310,9 @@ public class AnswersServlet extends HttpServlet {
 			// update user rating after changing votes answer to DB
 			UserAccessDB.UpdateUserRating(conn, submittedUser);
 			// success
-			DBUtils.buildJsonResult("true", response);
+			Utils.buildJsonResult("true", response);
     		//close resultSet and statements
-        	DBUtils.closeResultAndStatment(rs, pstmt);        	
+        	Utils.closeResultAndStatment(rs, pstmt);        	
     		conn.close();
     		    		    		
 		}catch (SQLException | NamingException e) {
@@ -324,14 +331,14 @@ public class AnswersServlet extends HttpServlet {
     }
     
     /**
-     * 
+     * this method updating question rating after changing the votes of answer
      * @param request
-     * @param response
-     * @param questionId
+     * @param response - success to update question rating
+     * @param questionId - the question should be update
      * @throws SQLException
      * @throws IOException
      * 
-     * this method updating question rating after changing the votes of answer
+     * 
      */
     private void UpdateQuestionRating(Connection conn, HttpServletRequest request, HttpServletResponse response, int questionId) throws SQLException, IOException{
     	PreparedStatement  pstmt = null;
@@ -360,9 +367,9 @@ public class AnswersServlet extends HttpServlet {
     		}
     		
 			//build Json Answer
-    		DBUtils.buildJsonResult("true", response);
+    		Utils.buildJsonResult("true", response);
         	
-        	DBUtils.closeResultAndStatment(rss, pstmt);
+        	Utils.closeResultAndStatment(rss, pstmt);
 
     		    		    		
 		}catch (SQLException e) {

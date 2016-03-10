@@ -2,6 +2,11 @@ package webapp.model;
 
 import java.util.Collection;
 
+/**
+ * 
+ * this class create 20 topics to send in response to client
+ *
+ */
 public class TopicResponse {
 	private Collection<String> topics;
 	private int numOfPages;

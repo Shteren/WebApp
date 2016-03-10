@@ -1,11 +1,21 @@
 package webapp.model;
 
+/**
+ * 
+ * class for saving questions and their answer for specific user
+ *
+ */
 public class UserQuestionAndAnswer {
 	
 	private Question question;
 	private Answer answer;
 	
-	
+	/**
+	 * 
+	 * @param question
+	 * @param answer
+	 * 
+	 */
 	public UserQuestionAndAnswer(Question question, Answer answer) {
 		super();
 		this.question = question;

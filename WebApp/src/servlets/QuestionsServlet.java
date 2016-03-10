@@ -31,7 +31,7 @@ import webapp.constants.UserConstants;
 import webapp.model.Question;
 import webapp.model.QuestionAndAnswerDBAccess;
 import webapp.model.UserAccessDB;
-import webapp.utils.DBUtils;
+import webapp.utils.Utils;
 
 /**
  * Servlet implementation class Questions
@@ -46,7 +46,12 @@ public class QuestionsServlet extends HttpServlet {
         super();
     }
    
-    @Override
+    /**
+     * should support :
+     *  /questions - search for all questions
+     *  /question/<questionId> - search for specific question
+     *  /question/<questionId>/answers - search all answers of specific question
+     */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	response.setContentType("application/json");
 		//In case there is only query params or no params
@@ -58,7 +63,7 @@ public class QuestionsServlet extends HttpServlet {
 		String[] requestPathParts = requestPath.split("/");
 		//if uri path is larger than 3 it is wrong uri so we have to return NOT_FOUND
 		if(requestPathParts.length > 3) {
-			DBUtils.buildJsonResult("Url is empty" , response);
+			Utils.buildJsonResult("Url is empty" , response);
 			return;
 		}
 		String questionId = requestPathParts[1];
@@ -79,19 +84,19 @@ public class QuestionsServlet extends HttpServlet {
 		//resource is not answers and we are not handling that
 		} else
 		{
-			DBUtils.buildJsonResult("unexpected uri" , response);
+			Utils.buildJsonResult("unexpected uri" , response);
 			return;
 		}
     }
 						
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * Should support /questions - for insert new question to DB. get in incoming json the data of new question
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		response.setContentType("application/json");
 		if(request.getPathInfo() != null){
-			DBUtils.buildJsonResult("Uri is empty" , response);
+			Utils.buildJsonResult("Uri is empty" , response);
 			return;
 		}
 		Gson gson = new Gson();
@@ -101,27 +106,29 @@ public class QuestionsServlet extends HttpServlet {
 			question = gson.fromJson(request.getReader(), Question.class);
 		//Problem with reading json to question
 		} catch(Exception e) {
-			DBUtils.buildJsonResult("Problem reading incoming Json" , response);
+			Utils.buildJsonResult("Problem reading incoming Json" , response);
 			return;
 		}
 		// method that insert new question to DB
 		insertNewQuestion(request, response, question);
 	}		
 	
-@Override
+	/**
+	 * Should support /questions/<questionId>?questionVotes - update questionVotes of specific question
+	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");
 		Gson gson = new Gson();
 		String requestPath = request.getPathInfo();
 		// method put must get uri of questionId
 		if(requestPath == null) {
-			DBUtils.buildJsonResult("Uri is empty" , response);
+			Utils.buildJsonResult("Uri is empty" , response);
 			return;
 		}
 		String[] requestPathParts = requestPath.split("/");
 		//if uri path is smaller than 2 it is wrong url so we have to return METHOD_NOT_ALLOWED
 		if(requestPathParts.length != 2) {
-			DBUtils.buildJsonResult("Wrong uri" , response);
+			Utils.buildJsonResult("Wrong uri" , response);
 			return;
 		}
 		// get the questionId from client request
@@ -135,14 +142,14 @@ public class QuestionsServlet extends HttpServlet {
 						// return from DB the current num of votes
 			int numOfExistingVote = checkIfQuestionIdInDBandSendVoteNumber(request, response, questionId);
 			if(numOfExistingVote == Integer.MIN_VALUE){
-				DBUtils.buildJsonResult("Question not existing in DB" , response);
+				Utils.buildJsonResult("Question not existing in DB" , response);
 				return;
 			}
 			numOfVotes += numOfExistingVote;
 
 		//Problem with reading json to question
 		} catch(Exception e) {
-			DBUtils.buildJsonResult("Problem with incoming Json" , response);
+			Utils.buildJsonResult("Problem with incoming Json" , response);
 			return;
 		}
 		
@@ -153,7 +160,7 @@ public class QuestionsServlet extends HttpServlet {
 			
 		} catch (Exception e) {
 			//log.error("Exception in process, e);
-			DBUtils.buildJsonResult("false" , response);
+			Utils.buildJsonResult("false" , response);
 		}
 	}
 
@@ -161,13 +168,12 @@ public class QuestionsServlet extends HttpServlet {
 	//////////////*** implementation of methods that handling with DB ***/////////////////	
 
 	/**
-	 * 
+	 * this method search for questions according to the page client came from
+	 * according to number of questions from each type (new, all , topics) we send each time collection of questions. 
 	 * @param request
 	 * @param response
 	 * @throws IOException
 	 * 
-	 * this method search for questions according to the page client came from
-	 * according to number of questions from each type (new, all , topics) we send each time collection of questions. 
 	 */
 	public static void searchQuestions(HttpServletRequest request, HttpServletResponse response) throws IOException
 	{		
@@ -214,12 +220,10 @@ public class QuestionsServlet extends HttpServlet {
 	}
 	
 	/**
-	 * 
+	 * this method returns to client the data of a specific question
 	 * @param questionId
 	 * @param request
 	 * @param response
-	 * 
-	 * this method returns to client the data of a specific question
 	 * @throws IOException 
 	 * 
 	 */
@@ -268,8 +272,8 @@ public class QuestionsServlet extends HttpServlet {
 	    	writer.println(questionJsonResult);
 	    	writer.close();
     		
-	    	DBUtils.closeResultAndStatment(rs, pstmt);
-	    	DBUtils.closeResultAndStatment(rss, stmt);
+	    	Utils.closeResultAndStatment(rs, pstmt);
+	    	Utils.closeResultAndStatment(rss, stmt);
 	    	
     		conn.close();
     		
@@ -287,13 +291,12 @@ public class QuestionsServlet extends HttpServlet {
 	}
 	
 	/**
-	 * 
+	 * this method is for insert new question to DB
 	 * @param request
 	 * @param response
 	 * @param question
 	 * @throws IOException
 	 * 
-	 * this method is for insert new question to DB
 	 */
 	private void insertNewQuestion(HttpServletRequest request, HttpServletResponse response, Question question) throws IOException
 	{
@@ -346,9 +349,9 @@ public class QuestionsServlet extends HttpServlet {
 			////// Success //////
 			
 			//build Json Answer
-    		DBUtils.buildJsonResult("true", response);
+    		Utils.buildJsonResult("true", response);
         	
-			DBUtils.closeResultAndStatment(rs, pstmt);
+			Utils.closeResultAndStatment(rs, pstmt);
 			conn.close();
 			
 		} catch (SQLException | NamingException e) {
@@ -357,13 +360,13 @@ public class QuestionsServlet extends HttpServlet {
 			try {
 				if(pstmt != null){
 					//build Json Answer
-					DBUtils.buildJsonResult("false", response);
+					Utils.buildJsonResult("false", response);
 					pstmt.close();
 				}
 				
 				if(conn != null){
 					//build Json Answer
-					DBUtils.buildJsonResult("false", response);
+					Utils.buildJsonResult("false", response);
 					conn.rollback();
 					conn.close();
 				}
@@ -377,13 +380,12 @@ public class QuestionsServlet extends HttpServlet {
 	}
 	
 	/**
-	 * 
+	 * this method insert to DB - relation table of questions and topics all topics of specific question
 	 * @param connection
 	 * @param topiclist
 	 * @param id
 	 * @throws SQLException
 	 * 
-	 * this method insert to DB - relation table of questions and topics all topics of specific question
 	 */
     public void InsertTopicsQusrtionRel(Connection connection, List<String> topiclist, String id) throws SQLException {
     	PreparedStatement pstmt = null;
@@ -417,14 +419,13 @@ public class QuestionsServlet extends HttpServlet {
     }
     
     /**
-     * 
+     * this method check if specific question exist in DB and return the current votes for it.
      * @param request
      * @param response
      * @param questionId
      * @return current number of votes of question
      * @throws IOException
      * 
-     * this method check if specific question exist in DB and return the current votes for it.
      */
     private int checkIfQuestionIdInDBandSendVoteNumber(HttpServletRequest request, HttpServletResponse response, int questionId) throws IOException
     {
@@ -450,14 +451,14 @@ public class QuestionsServlet extends HttpServlet {
     		{
 				String nickName = (request.getSession().getAttribute("Nickname")).toString();
     			if (rs.getString(6).equals(nickName)) {
-    				DBUtils.buildJsonResult("It's your question", response);
+    				Utils.buildJsonResult("It's your question", response);
         	    	votes = Integer.MIN_VALUE;
     			} else {
     				votes = rs.getInt(4);
     			}   				
     		}
     		
-    		DBUtils.closeResultAndStatment(rs, pstmt);
+    		Utils.closeResultAndStatment(rs, pstmt);
     		conn.close();
     		    		    		
 		}catch (SQLException | NamingException e) {
@@ -476,15 +477,14 @@ public class QuestionsServlet extends HttpServlet {
     }
     
     /**
-     * 
+     * this method update vote of question after client vote for it , and insert to relation table of votes and questions
+     * the user that vote - for handling voting twice 
      * @param request
      * @param response
      * @param questionId
      * @param numOfVotes
      * @throws IOException
      * 
-     * this method update vote of question after client vote for it , and insert to relation table of votes and questions
-     * the user that vote - for handling voting twice 
      */
     private void updateVoteOfQuesion(HttpServletRequest request,HttpServletResponse response,int questionId,int numOfVotes) throws IOException
     {
@@ -513,7 +513,7 @@ public class QuestionsServlet extends HttpServlet {
     		if ( rs.next() )
     		{
     			// The user already voted
-    			DBUtils.buildJsonResult("The user already vote", response);
+    			Utils.buildJsonResult("The user already voted", response);
     			return;
     		}
     		else
@@ -546,9 +546,9 @@ public class QuestionsServlet extends HttpServlet {
         		UserAccessDB.UpdateUserRating(conn, votedUserNickName);
 
     			//build Json Answer
-        		DBUtils.buildJsonResult("true", response);
+        		Utils.buildJsonResult("true", response);
             	
-            	DBUtils.closeResultAndStatment(rs, pstmt);
+            	Utils.closeResultAndStatment(rs, pstmt);
         		conn.close();
     		}
     		

@@ -19,12 +19,10 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
 import webapp.constants.DBConstants;
 import webapp.constants.QuestionAndAnswersConstants;
-import webapp.model.QuestionsResponse;
 import webapp.model.TopicResponse;
-import webapp.utils.DBUtils;
+import webapp.utils.Utils;
 
 import com.google.gson.Gson;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.util.QEncoderStream;
 
 
 /**
@@ -33,16 +31,13 @@ import com.sun.xml.internal.messaging.saaj.packaging.mime.util.QEncoderStream;
 public class TopicsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+
     public TopicsServlet() {
-        super();
     }
     
     /**
-     * Should support the api
-     * /topics?currentPage
+     * Should support 
+     * /topics?currentPage - search for 20 topics according to currentPage
      * @throws IOException 
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -52,11 +47,19 @@ public class TopicsServlet extends HttpServlet {
 			return;
 			
 		} catch(Exception e) {
-			DBUtils.buildJsonResult("Wrong uri" , response);
+			Utils.buildJsonResult("Wrong uri" , response);
 			return;
 		}
 	}
 	
+    /**
+     * this method is wrapper for search 20 topics each time
+     * @param request
+     * @param response
+     * @throws NumberFormatException
+     * @throws IOException
+     * 
+     */
     private void searchTopics(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, IOException {
     	String currentPage = request.getParameter("currentPage");
 		if(currentPage == null) {
@@ -66,7 +69,12 @@ public class TopicsServlet extends HttpServlet {
 		selectTopicsByCurrentPage(Integer.parseInt(currentPage), response);			
 	}
     
-    
+    /**
+     * this method set all topics in DB according to their popularity 
+     * @param currentPage
+     * @param response
+     * @throws IOException
+     */
     private void selectTopicsByCurrentPage(int currentPage, HttpServletResponse response) throws IOException {
     	
 		Connection conn = null;
@@ -90,7 +98,7 @@ public class TopicsServlet extends HttpServlet {
     			String topicName = rs.getString(2);
         		topics.add(topicName);        		
     		}  
-    		
+    		/* check number of questions to how much pages we need for all topics */
     		int numberOfQuestions = 0;
 			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_TOPICS_STMT);
 			// get number of questions
@@ -104,6 +112,7 @@ public class TopicsServlet extends HttpServlet {
 				numberOfQuestions = (numberOfQuestions / 20);
 			}	
 			
+			/* prepare the collection of topic to be send to client */
 			TopicResponse topicsResponse = new TopicResponse(topics, numberOfQuestions);
 			String TopicsJsonResult = gson.toJson(topicsResponse, TopicResponse.class);
 	        
@@ -111,7 +120,7 @@ public class TopicsServlet extends HttpServlet {
 	    	writer.println(TopicsJsonResult);
 	    	writer.close();
     		
-	    	DBUtils.closeResultAndStatment(rs, pstmt);
+	    	Utils.closeResultAndStatment(rs, pstmt);
     		conn.close();
     		    		    		
 		}catch (SQLException | NamingException e) {
