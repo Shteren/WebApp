@@ -244,54 +244,58 @@ public class QuestionAndAnswerDBAccess {
 			pstmt.setString(1, topicName);
 			pstmt.setInt(2, fromQuestion);    		
 			ResultSet rs = pstmt.executeQuery();
-			while( rs.next() )
-			{
-				int questionId = rs.getInt(1);
-	    		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
-	    		stmt.setInt(1,questionId);
-	    		rss = stmt.executeQuery();
-	    		ArrayList<String> topics = new ArrayList<>();
-	    		while (rss.next())
-	    		{
-	    			topics.add(rss.getString(1));
-	    		}
-		    	if(null != rss) {
-		    		rss.close();
-		    	}
-		    	stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_FIRST_ANSWER_BY_QUESTION_ID_STMT);
-	    		stmt.setInt(1,questionId);
-	    		rss = stmt.executeQuery();
-	    		Answer answer = null;
-	    		if (rss.next()) {
-	    			answer = new Answer(rss.getInt(1), rss.getString(2), rss.getString(3), rss.getInt(4), rss.getInt(5), rss.getString(6));
-	    		}
-				String submittionTime = rs.getString(2);
-				String contentTxt = rs.getString(3);
-				int votes = rs.getInt(4);
-				int rate = rs.getInt(5);    			
-				String submittedUser =  rs.getString(6);
-				QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, answer));
-			}  
-			int numOfQuestions = 0;
-			pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_QUESTIONS_BY_TOPIC_STMT);
-			pstmt.setString(1, topicName);
-			rs = pstmt.executeQuery();
-			if ( rs.next() )
-			{
-				numOfQuestions = rs.getInt(1);
+			if ( !rs.next() )
+				Utils.buildJsonResult("There is no result for this topic", response);
+			else {
+				while( rs.next() )
+				{
+					int questionId = rs.getInt(1);
+		    		stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_TOPICS_BY_QUESTION_STMT);
+		    		stmt.setInt(1,questionId);
+		    		rss = stmt.executeQuery();
+		    		ArrayList<String> topics = new ArrayList<>();
+		    		while (rss.next())
+		    		{
+		    			topics.add(rss.getString(1));
+		    		}
+			    	if(null != rss) {
+			    		rss.close();
+			    	}
+			    	stmt = conn.prepareStatement(QuestionAndAnswersConstants.SELECT_FIRST_ANSWER_BY_QUESTION_ID_STMT);
+		    		stmt.setInt(1,questionId);
+		    		rss = stmt.executeQuery();
+		    		Answer answer = null;
+		    		if (rss.next()) {
+		    			answer = new Answer(rss.getInt(1), rss.getString(2), rss.getString(3), rss.getInt(4), rss.getInt(5), rss.getString(6));
+		    		}
+					String submittionTime = rs.getString(2);
+					String contentTxt = rs.getString(3);
+					int votes = rs.getInt(4);
+					int rate = rs.getInt(5);    			
+					String submittedUser =  rs.getString(6);
+					QuestionResults.add(new Question(questionId, submittionTime ,contentTxt ,topics, submittedUser, votes, rate, answer));
+				}  
+				int numOfQuestions = 0;
+				pstmt = conn.prepareStatement(QuestionAndAnswersConstants.COUNT_QUESTIONS_BY_TOPIC_STMT);
+				pstmt.setString(1, topicName);
+				rs = pstmt.executeQuery();
+				if ( rs.next() )
+				{
+					numOfQuestions = rs.getInt(1);
+				}
+				if ((numOfQuestions % 20) == 0) {
+					numOfQuestions = (numOfQuestions / 20) - 1;
+				} else {
+					numOfQuestions = (numOfQuestions / 20);
+				}		
+				QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numOfQuestions);
+				String QuestionsByTopicsJsonResult = gson.toJson(qestionsResponse, QuestionsResponse.class);
+		    	//String QuestionsByTopicsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
+		        
+				PrintWriter writer = response.getWriter();
+		    	writer.println(QuestionsByTopicsJsonResult);
+		    	writer.close();
 			}
-			if ((numOfQuestions % 20) == 0) {
-				numOfQuestions = (numOfQuestions / 20) - 1;
-			} else {
-				numOfQuestions = (numOfQuestions / 20);
-			}		
-			QuestionsResponse qestionsResponse = new QuestionsResponse(QuestionResults, numOfQuestions);
-			String QuestionsByTopicsJsonResult = gson.toJson(qestionsResponse, QuestionsResponse.class);
-	    	//String QuestionsByTopicsJsonResult = gson.toJson(QuestionResults, QuestionAndAnswersConstants.QUESTIONS_COLLECTION);
-	        
-			PrintWriter writer = response.getWriter();
-	    	writer.println(QuestionsByTopicsJsonResult);
-	    	writer.close();
 			
 	    	Utils.closeResultAndStatment(rs, pstmt);
 	    	Utils.closeResultAndStatment(rss, stmt);
