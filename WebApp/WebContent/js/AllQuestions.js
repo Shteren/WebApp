@@ -58,6 +58,12 @@ app.controller('AllQuestionsController',['$scope','$http', function($scope, $htt
 		     {
 
 		    	 $scope.NumOfPages = response.numOfPages ;//num of question pages- 20 questions each
+		    	 if (response.Result=="There is no result for this topic"){
+		    		 alert(response.Result);
+		    		 $scope.showList();
+		    		 $scope.topic="";
+		    		 return;
+		    	 }
 		    	 if ($scope.NumOfPages < $scope.prevOrNextPageNumCounter ){ //if we are in main page, and we answered a 
 		    		 //question which is single in a page we need to get the previous page instead refreshing the current one 
 		    		 $scope.prevOrNextPageNumCounter--;

@@ -40,9 +40,9 @@
 .activeColor{
 	background-color: #b3d9ff;
 }
- .navbar-default .activeColor > li > a {
-   color: #b3d9ff; /*Change active text color here*/
-    }
+.logimImg{
+	background-image:url('../images/background4.jpg');
+}
 
 .insertQ{
 	margin:auto;
