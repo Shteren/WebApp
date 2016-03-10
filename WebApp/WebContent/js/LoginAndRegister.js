@@ -2,10 +2,11 @@
  * 
  */	
 
-	angular.module('MainApp',[]).controller('inTableController',['$scope','$http', function($scope, $http) {
+angular.module('MainApp',[]).controller('inTableController',['$scope','$http', function($scope, $http) {
 		
 		$scope.CheckSession = function()
 		{
+			//if user is already connected skip the login and go to main page
 			$http({ method: 'GET',
 		        url: 'http://localhost:8080/WebApp/session'
 		     })
@@ -13,7 +14,6 @@
 		     {
 		         if (response.Result == true) 
 		         {
-		           //alert('Resistration was successful');
 		        	window.location.assign("MainPage.html");
 		         }
 		        
@@ -26,7 +26,9 @@
 	
 		
 		$scope.register = function()
+		//function validates input and registers user, unless username or nickname are already in the system
 		{
+			
 			//validate rules for username
 			if((null == $scope.RegistrationName )||(0 == $scope.RegistrationName.length ))
 			{
@@ -79,16 +81,16 @@
 						description: $scope.RegistrationDescription,
 						photoUrl: $scope.RegistrationPhoto,
 					},
-		         //params: { username: $scope.U_Name, password: $scope.U_PWD, action: "login" },
 				headers: {'Content-Type': 'application/json'}
 		     })
 		     .success(function (result) 
 		     {
-		    	 //alert(result);
+		    	 //if registration succeeded go to main page
 		         if (result.Result == "true") 
 		         {
 		        	 window.location.assign("MainPage.html")
 		         }else{
+		        	 //else alert the reason of the failure
 		           alert(result.Result);
 		         }
 		         
@@ -112,10 +114,8 @@
 					headers: {'password': $scope.password}
 				
 			}).success( function(response) {
-					//alert(response.Result)
 	   	         if (response.Result == true) 
 	   	         {
-	   	           //alert('Resistration was successful');
 	   	        	window.location.assign("MainPage.html");
 	   	         }
 	   	         else 
@@ -129,6 +129,7 @@
 		
 		$scope.switchLoginRegister = function()
 		{
+			//flag- show registration of login
 			$scope.LoginShowFlag = !$scope.LoginShowFlag;
 		};
 		
